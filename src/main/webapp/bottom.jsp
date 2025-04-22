@@ -7,7 +7,7 @@
 <style>
 
 .bottom_box{
-	background-color:rgba(44, 62, 80,0.7);
+	background-color: rgb(84, 102, 120);
 	height:200px;
 	text-align: center;
 }

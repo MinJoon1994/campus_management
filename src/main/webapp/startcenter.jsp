@@ -10,7 +10,7 @@
 	<!-- FullCalendar 라이브러리의 스타일 시트 -->
 	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 </head>
-<body style="background-image: url('./img/see.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center;">
+<body style="background-image: url('../images/background4.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
 	<div class="container mt-4">
 		<!-- 슬라이드 영역 -->
 		<div class="row mb-4">
@@ -19,13 +19,13 @@
 					<div id="imageCarousel" class="carousel slide" data-bs-ride="carousel" style="max-height: 300px; overflow: hidden;">
 						<div class="carousel-inner">
 							<div class="carousel-item active">
-								<div class="d-block w-100" style="height: 300px; background-image: url('./img/see.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+								<div class="d-block w-100" style="height: 300px; background-image: url('../images/background1.png'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
 							</div>
 							<div class="carousel-item">
-								<div class="d-block w-100" style="height: 300px; background-image: url('./img/see.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+								<div class="d-block w-100" style="height: 300px; background-image: url('../images/background2.png'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
 							</div>
 							<div class="carousel-item">
-								<div class="d-block w-100" style="height: 300px; background-image: url('./img/see.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+								<div class="d-block w-100" style="height: 300px; background-image: url('../images/background3.png'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
 							</div>
 						</div>
 					</div>
