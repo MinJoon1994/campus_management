@@ -1,7 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
+    <%
+   	 	String contextPath = request.getContextPath();
+    %>
+
+
 <script>
-	//Main.jsp 요청
-	location.href="campus/main";
+	// main.jsp 메인 화면 요청
+	location.href="main.jsp";
 </script>
