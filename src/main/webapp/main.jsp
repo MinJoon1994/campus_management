@@ -12,7 +12,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EveryOne</title>
+<title>학사관리시스템</title>
 
 <style>
 html, body {
@@ -32,6 +32,7 @@ html, body {
 .top {
 	flex: 0 0 auto;
 	height: 10%;
+	margin-bottom:50px;
 }
 
 .center {
@@ -44,7 +45,6 @@ html, body {
 	flex: 0 0 auto;
 	height: 20%;
 }
-
 </style>
 </head>
 <body>

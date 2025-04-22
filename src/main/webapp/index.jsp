@@ -8,5 +8,5 @@
 
 <script>
 	// main.jsp 메인 화면 요청
-	location.href="main.jsp";
+	location.href="campus/main";
 </script>

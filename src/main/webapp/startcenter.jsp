@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>나의 새 페이지</title>
+	<title>학사관리시스템</title>
 	<!-- 부트스트랩 5.3.3 버전의 스타일시트 -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<!-- FullCalendar 라이브러리의 스타일 시트 -->

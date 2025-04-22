@@ -30,8 +30,8 @@ public class MainController extends HttpServlet{
         if (action.equals("/main")) {
             System.out.println("/main 요청 처리 시작");
             
-            request.setAttribute("center", "/centerMain.jsp");
-            nextPage = "/campusmain.jsp";
+            request.setAttribute("center", "/startcenter.jsp");
+            nextPage = "/main.jsp";
         }
         
         if (nextPage != null) {
