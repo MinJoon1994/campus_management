@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import member.vo.StudentVO;
-import student.vo.lectureVO;
+import student.vo.LectureVO;
 
 public class StudentServiceImpl implements StudentService {
 
@@ -16,7 +16,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<lectureVO> getLectureList(HttpServletRequest req) {
+	public List<LectureVO> getLectureList(HttpServletRequest req) {
 		// TODO Auto-generated method stub
 		return null;
 	}

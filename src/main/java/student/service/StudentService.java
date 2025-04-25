@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import member.vo.StudentVO;
-import student.vo.lectureVO;
+import student.vo.LectureVO;
 
 public interface StudentService {
 	
@@ -13,7 +13,7 @@ public interface StudentService {
 	public void enroll(HttpServletRequest req);
 	
 	//학생 수강목록 확인
-	public List<lectureVO> getLectureList(HttpServletRequest req);
+	public List<LectureVO> getLectureList(HttpServletRequest req);
 
 	//학생 수강신청 취소요청
 	public void enrollDelete(HttpServletRequest req);

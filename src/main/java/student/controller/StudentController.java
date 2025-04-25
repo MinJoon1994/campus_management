@@ -16,7 +16,7 @@ import member.vo.StudentVO;
 import member.vo.UserVO;
 import student.service.StudentService;
 import student.service.StudentServiceImpl;
-import student.vo.lectureVO;
+import student.vo.LectureVO;
 
 @WebServlet("/student/*")
 public class StudentController extends HttpServlet{
@@ -54,7 +54,7 @@ public class StudentController extends HttpServlet{
         }else if(action.equals("/courcelist")) { //학생 수강목록 확인
 			
         	//학생 수강목록 LIST 로 받아오기
-            List<lectureVO> list = studentService.getLectureList(req);
+            List<LectureVO> list = studentService.getLectureList(req);
             
             //뷰쪽에 LIST 형태로 전달
             req.setAttribute("list", list);
@@ -172,6 +172,8 @@ public class StudentController extends HttpServlet{
         	out.println("location.href='"+req.getContextPath()+"/qna/list;");
         	out.println("</script>");
         	
+        	return;
+        	
         }else if(action.equals("/qnacampus")) {//학생 학교관련 질문글 등록 요청
         	
         	studentService.qnaCampus(req);
@@ -180,6 +182,8 @@ public class StudentController extends HttpServlet{
 			out.println("alert('질문등록이 완료되었습니다.');");
 			out.println("location.href='"+req.getContextPath()+"/qna/list;");
 			out.println("</script>");
+			
+			return;
         	
         }
         
