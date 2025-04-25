@@ -1,4 +1,4 @@
-package student.vo;
+package qna.vo;
 
 public class QnaVO {
 

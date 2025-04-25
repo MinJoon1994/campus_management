@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import qna.vo.QnaVO;
 import student.vo.LectureVO;
-import student.vo.QnaVO;
 
 public interface AdminService {
 	

@@ -12,11 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import admin.service.AdminService;
 import admin.service.AdminServiceImpl;
-import member.vo.StudentVO;
-import student.service.StudentService;
-import student.service.StudentServiceImpl;
+import qna.vo.QnaVO;
 import student.vo.LectureVO;
-import student.vo.QnaVO;
 
 @WebServlet("/admin/*")
 public class AdminController extends HttpServlet{
