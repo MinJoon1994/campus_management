@@ -1,4 +1,4 @@
-package Vo;
+package member.vo;
 
 public class UserVO {
 	private int id;

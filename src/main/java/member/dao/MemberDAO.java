@@ -1,13 +1,14 @@
-package Dao;
+package member.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import Vo.ProfessorVO;
-import Vo.StudentVO;
-import Vo.UserVO;
+import main.DbcpBean;
+import member.vo.ProfessorVO;
+import member.vo.StudentVO;
+import member.vo.UserVO;
 
 public class MemberDAO {
 	

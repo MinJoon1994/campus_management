@@ -1,12 +1,12 @@
-package Service;
+package member.service;
 
 import javax.servlet.http.HttpServletRequest;
 
-import Dao.MemberDAO;
-import Vo.ProfessorVO;
-import Vo.StaffVO;
-import Vo.StudentVO;
-import Vo.UserVO;
+import member.dao.MemberDAO;
+import member.vo.ProfessorVO;
+import member.vo.StaffVO;
+import member.vo.StudentVO;
+import member.vo.UserVO;
 
 public class MemberService {
 	

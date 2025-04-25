@@ -1,4 +1,4 @@
-package Vo;
+package member.vo;
 
 public class StaffVO {
 	private String staff_id;	//직원 ID

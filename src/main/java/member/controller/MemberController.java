@@ -1,4 +1,4 @@
-package Controller;
+package member.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import Service.MemberService;
-import Vo.UserVO;
+import member.service.MemberService;
+import member.vo.UserVO;
 
 @WebServlet("/member/*")
 public class MemberController extends HttpServlet{
