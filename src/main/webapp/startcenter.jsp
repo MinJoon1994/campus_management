@@ -62,6 +62,29 @@
 						</tbody>
 					</table>
 				</div>
+				<!-- QNA 박스 -->
+				<div class="qna-box p-3 bg-light border rounded mt-5">
+					<h4>질문게시판</h4>
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>번호</th>
+								<th>제목</th>
+								<th>작성자</th>
+								<th>날짜</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>공지사항 테스트</td>
+								<td>관리자</td>
+								<td>2025-04-22</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
 			</div>
 		</div>
 	</div>
@@ -77,10 +100,28 @@
 			var calendarEl = document.getElementById('calendar');
 			var calendar = new FullCalendar.Calendar(calendarEl, {
 				initialView: 'dayGridMonth',
-				locale: 'ko' // 한국어 설정
+				locale: 'ko', // 한국어 설정
+				 // ✅ 여기 추가
+		        events: function(info, successCallback, failureCallback) {
+		            fetch('${pageContext.request.contextPath}/campus/calendarEvent')
+		                .then(response => response.json())
+		                .then(data => {
+		                    successCallback(data);
+		                })
+		                .catch(error => {
+		                    console.error('Error fetching calendar events:', error);
+		                    failureCallback(error);
+		                });
+		        },
+		        // (선택) 일정 클릭했을 때 팝업
+		        eventClick: function(info) {
+		            alert('제목: ' + info.event.title + '\n내용: ' + (info.event.extendedProps.description || ''));
+		        }
 			});
 			calendar.render();
 		});
+		
+		
 	</script>
 </body>
 </html>

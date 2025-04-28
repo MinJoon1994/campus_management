@@ -13,6 +13,15 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<div class="container w-50">
+		<h5>학생 수강 신청</h5>
+		
+		<table class="">
+			<tr>
+			
+			</tr>
+		
+		</table>
+	</div>
 </body>
 </html>
