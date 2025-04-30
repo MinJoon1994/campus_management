@@ -27,6 +27,9 @@
             font-weight: bold;
         }
 	</style>
+	
+	<!-- jQuery 라이브러리 -->
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body style="background-image: url('../images/background4.png'); background-size: cover; background-repeat: no-repeat; background-position: center;">
 	<div class="container mt-4">
