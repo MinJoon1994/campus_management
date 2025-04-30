@@ -14,6 +14,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>학사관리시스템</title>
 
+<!-- 부트스트랩 5.3.3 버전의 스타일시트 -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
 html, body {
 	margin: 0;

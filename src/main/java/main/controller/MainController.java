@@ -45,24 +45,6 @@
 	        	
 	            System.out.println("/main 요청 처리 시작");
 	            
-	            
-	            //공지사항 
-	            int page = request.getParameter("page") != null ? Integer.parseInt(request.getParameter("page")) : 1;
-	            int pageSize = 5; // 한 페이지에 보여줄 게시글 수
-	
-	            List<NoticeVO> noticeList = mainService.getAllNotices(page, pageSize);
-	
-	            int totalCount = mainService.getNoticeCount();
-	            int totalPage = (int)Math.ceil((double)totalCount / pageSize);
-	
-	            request.setAttribute("noticeList", noticeList);
-	            request.setAttribute("page", page);
-	            request.setAttribute("totalPage", totalPage);
-	                       
-	            request.setAttribute("center", "/startcenter.jsp");
-	                     
-	            //QNA 게시글
-	            
 	            nextPage = "/main.jsp";
 	            
 	        }
