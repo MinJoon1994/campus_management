@@ -127,12 +127,65 @@
 	<!-- toggle 사이드바 -->
     <div class="side-bar-hidden">
         <div class="menu_side_bar">
-            <h5>학생</h5>
-            <hr>
-            <ul class="planner_menu">
-                <li><a href="#">수강신청</a></li>
-
-            </ul>
+        	<c:choose>
+        		<c:when test="${vo.role=='STUDENT'}">
+	            <h5>학생</h5>
+	            <hr>
+	            <ul class="planner_menu">
+	                <li><a href="${contextPath}/student/enrollForm">수강신청</a></li>
+	                <li><a href="${contextPath}/student/enrollForm">수강목록</a></li>
+	                <li><a href="${contextPath}/student/enrollForm">성적조회</a></li>
+	                <li><a href="${contextPath}/student/enrollForm">개인시간표</a></li>
+	                <li><a href="${contextPath}/student/enrollForm">개인정보수정</a></li>
+	            </ul>
+	            <br>
+	            <h5>게시판</h5>
+	            <hr>
+	            <ul class="planner_menu">
+                    <li><a href="${contextPath}/notice/list">공지사항</a></li>
+                    <li><a href="${contextPath}/qna/list">질문게시판</a></li>
+                    <li><a href="${contextPath}/student/qnaform">질문남기기</a></li>
+	            </ul>
+	            </c:when>
+        		<c:when test="${vo.role=='PROFESSOR'}">
+	            <h5>교수</h5>
+	            <hr>
+	            <ul class="planner_menu">
+	                <li><a href="${contextPath}/professor/main">교수메인</a></li>
+	                <li><a href="${contextPath}/professor/lectures">강의목록</a></li>
+	                <li><a href="${contextPath}/professor/lecturerequest">강의요청확인</a></li>
+	                <li><a href="${contextPath}/professor/lectureplan">강의계획서조회</a></li>
+	                <li><a href="${contextPath}/professor/enrolledstudent">수강신청 학생조회</a></li>
+	            </ul>
+	            <br>
+	            <h5>게시판</h5>
+	            <hr>
+	            <ul class="planner_menu">
+                    <li><a href="${contextPath}/notice/list">공지사항</a></li>
+                    <li><a href="${contextPath}/qna/list">질문게시판</a></li>
+                    <li><a href="${contextPath}/professor/qnalist">강의관련질문</a></li>
+                    <li><a href="${contextPath}/professor/qnaform">질문남기기</a></li>
+	            </ul>
+	            </c:when>
+        		<c:when test="${vo.role=='ADMIN'}">
+	            <h5>관리자</h5>
+	            <hr>
+	            <ul class="planner_menu">
+	                <li><a href="${contextPath}/admin/memberlist">교내구성원 목록</a></li>
+	                <li><a href="${contextPath}/admin/memberlist">강의등록 목록</a></li>
+	                <li><a href="${contextPath}/admin/memberlist">학사일정 등록</a></li>
+	            </ul>
+	            <br>
+	            <h5>게시판</h5>
+	            <hr>
+	            <ul class="planner_menu">
+                    <li><a href="${contextPath}/notice/list">공지사항</a></li>
+                    <li><a href="${contextPath}/qna/list">질문게시판</a></li>
+                    <li><a href="${contextPath}/admin/qnalist">학교관련질문글</a></li>
+                    <li><a href="${contextPath}/admin/replyform">답변작성폼요청</a></li>
+	            </ul>
+	            </c:when>
+            </c:choose>
         </div>
     </div>
 </div>
