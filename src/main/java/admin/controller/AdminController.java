@@ -3,6 +3,7 @@ package admin.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,8 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import admin.service.AdminService;
 import admin.service.AdminServiceImpl;
+import admin.vo.Admin_StudentVO;
 import qna.vo.QnaVO;
 import student.vo.LectureVO;
 
@@ -29,19 +34,80 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
 		AdminService adminService = new AdminServiceImpl();
 		
 		//============= 교내 구성원 관련 ==============
-        if (action.equals("/memberlist")) { //전체 구성원 목록 조회
-        	
-        	//구성원 목록 LIST 형태로 받아오기
-        	List list = adminService.getMemberList(req);
-        	
-        	//뷰쪽에 LIST 전달
-        	req.setAttribute("list",list);
-            
-            req.setAttribute("center", "admins/memberlist.jsp");
-            
-            nextPage = "/main.jsp";
-            
-        }
+		if (action.equals("/memberlist")) {
+			int studentPage = 1;
+			int professorPage = 1;
+			
+			String activeTab = req.getParameter("activeTab");
+			
+			if (req.getParameter("studentPage") != null) {
+				studentPage = Integer.parseInt(req.getParameter("studentPage"));
+			}
+			if (req.getParameter("professorPage") != null) {
+				professorPage = Integer.parseInt(req.getParameter("professorPage"));
+			}
+
+			List studentlist = adminService.getStudentList(req, studentPage);
+			List professorlist = adminService.getProfessorList(req, professorPage);
+
+			req.setAttribute("studentlist", studentlist);
+			req.setAttribute("professorlist", professorlist);
+			req.setAttribute("studentPage", studentPage);
+			req.setAttribute("professorPage", professorPage);
+			
+			int studentTotal = adminService.getStudentCount();
+			int professorTotal = adminService.getProfessorCount();
+
+			int pageSize = 10;
+			int studentTotalPage = (int)Math.ceil((double)studentTotal / pageSize);
+			int professorTotalPage = (int)Math.ceil((double)professorTotal / pageSize);
+
+			req.setAttribute("studentTotalPage", studentTotalPage);
+			req.setAttribute("professorTotalPage", professorTotalPage);
+			
+			req.setAttribute("activeTab", activeTab); // ⭐ 반드시 추가해야 작동함
+
+			req.setAttribute("center", "admins/memberlist.jsp");
+			nextPage = "/main.jsp";
+		}
+		//학생 필터링 ajax 요청
+		else if(action.equals("/filterStudent")) {
+			resp.setContentType("application/json; charset=UTF-8");
+			req.setCharacterEncoding("UTF-8");
+
+			String grade = req.getParameter("grade");
+			String status = req.getParameter("status");
+
+			int page = Integer.parseInt(Optional.ofNullable(req.getParameter("page")).orElse("1"));
+			int pageSize = Integer.parseInt(Optional.ofNullable(req.getParameter("pageSize")).orElse("10"));
+			int offset = (page - 1) * pageSize;
+
+			List<Admin_StudentVO> list = adminService.getFilteredStudentList(grade, status, offset, pageSize);
+			int total = adminService.getFilteredStudentCount(grade, status);
+
+			JSONObject result = new JSONObject();
+			JSONArray arr = new JSONArray();
+
+			for (Admin_StudentVO s : list) {
+				JSONObject o = new JSONObject();
+				o.put("user_id", s.getUser_id());
+				o.put("email", s.getEmail());
+				o.put("name", s.getName());
+				o.put("password", s.getPassword());
+				o.put("student_number", s.getStudent_number());
+				o.put("department", s.getDepartment());
+				o.put("grade", s.getGrade());
+				o.put("status", s.getStatus());
+				arr.add(o);
+			}
+
+			result.put("studentList", arr);
+			result.put("totalCount", total);
+
+			out.print(result.toString());
+			return;
+		}
+		
         //공지사항 관련
         else if(action.equals("/noticeForm")) { //공지사항 등록폼 요청
         	

@@ -9,8 +9,23 @@ import student.vo.LectureVO;
 
 public interface AdminService {
 	
-	//전체 구성원 목록 조회
-	public List getMemberList(HttpServletRequest req);
+	//학생 구성원 목록 조회
+	public List getStudentList(HttpServletRequest req, int page);
+	
+	//교수 구성원 목록 조회
+	public List getProfessorList(HttpServletRequest req, int page);
+	
+	//학생 수 조회
+	public int getStudentCount();
+	
+	//교수 수 조회
+	public int getProfessorCount();
+	
+	//학생 핕터링 요청
+	public List getFilteredStudentList(String grade,String status, int offset, int pageSize);
+	
+	//학생 필터링 총 수
+	public int getFilteredStudentCount(String grade, String status);
 	
 	//공지사항 등록폼 요청
 	public void addNotice(HttpServletRequest req);
@@ -38,5 +53,9 @@ public interface AdminService {
 	
 	//답변 작성 요청
 	public void reply(HttpServletRequest req);
+
+
+
+	
 
 }
