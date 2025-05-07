@@ -76,6 +76,8 @@ public class MemberController extends HttpServlet{
 			
 			HttpSession session = req.getSession();
 			
+			session.setAttribute("professor_id", 4);
+			
 			//로그인 처리
 			UserVO vo = memberService.login(email, password);
 			
@@ -107,7 +109,7 @@ public class MemberController extends HttpServlet{
 			
 			out.println("<script>");
 			out.println("alert('로그아웃 되었습니다.');");
-			out.println("location.href='"+req.getContextPath()+"/campus/main';");
+			out.println("location.href='"+req.getContextPath()+"/professor/main';");
 			out.println("</script>");
 			
 			return;
