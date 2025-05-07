@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Vector;
 
+import main.DbcpBean;
 import professorvo.EnrolledStudentVo;
 import professorvo.LectureListVo;
 import professorvo.LecturePlanVo;

@@ -32,6 +32,6 @@
 </head>
 <body>
     <img class="register-success-img" alt="이미지 오류"
-         src="${pageContext.request.contextPath}/img/FirstViewImg.png">
+         src="${pageContext.request.contextPath}/images/FirstViewImg.png">
 </body>
 </html>
