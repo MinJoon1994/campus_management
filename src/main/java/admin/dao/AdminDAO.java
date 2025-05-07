@@ -296,5 +296,41 @@ public class AdminDAO {
 		
 		return list;
 	}
+	
+	//교수가 등록한 강의 승인 처리
+	public void approveLecture(HttpServletRequest req) {
+		
+		try {
+			con = DbcpBean.getConnection();
+			String sql = "UPDATE subject SET is_available = ? WHERE subject_code  = ?";
+			pstmt =  con.prepareStatement(sql);
+			pstmt.setBoolean(1, true);
+			pstmt.setString(2, req.getParameter("subject_code"));
+			pstmt.executeUpdate();
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+	}
+	
+	//교수가 등록한 강의 거부 처리
+	public void rejectLecture(HttpServletRequest req) {
+		
+		try {
+			con = DbcpBean.getConnection();
+			String sql = "UPDATE subject SET is_available = ? WHERE subject_code  = ?";
+			pstmt =  con.prepareStatement(sql);
+			pstmt.setBoolean(1, false);
+			pstmt.setString(2, req.getParameter("subject_code"));
+			pstmt.executeUpdate();
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+	}
 
 }

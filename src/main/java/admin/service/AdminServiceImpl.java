@@ -79,14 +79,12 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public void approveLecture(HttpServletRequest req) {
-		// TODO Auto-generated method stub
-
+		adminDAO.approveLecture(req);
 	}
 
 	@Override
 	public void rejectLecture(HttpServletRequest req) {
-		// TODO Auto-generated method stub
-
+		adminDAO.rejectLecture(req);
 	}
 
 	@Override

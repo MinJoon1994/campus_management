@@ -37,7 +37,6 @@ public class MemberController extends HttpServlet{
             
         }else if(action.equals("/new")) { //회원가입 요청
         	
-        	
         	memberService.insertMember(req);
         	
         	out.println("<script>");
@@ -81,26 +80,26 @@ public class MemberController extends HttpServlet{
 			 *  추가한 부분
 			 *  = session.setAttribute("professor_id", 4);
 			 */
-			session.setAttribute("professor_id", 4);
 			
+		
 			//로그인 처리
 			UserVO vo = memberService.login(email, password);
 			
 			if(vo != null) {
 				
+				//교수 로그인시 교수 아이디 세션에 저장
+				if(vo.getRole().equals("PROFESSOR")) {
+					session.setAttribute("professor_id", vo.getProfessorVO().getProfessor_id());
+				}
+				
 				session.setAttribute("vo", vo);
 				System.out.println(vo);
 				
+				
+				
 				out.println("<script>");
 				out.println("alert('로그인 성공');");
-				//out.println("location.href='"+req.getContextPath()+"/campus/main';");
-				out.println("location.href='"+req.getContextPath()+"/professor/main';");
-				/*
-				 *  황도균
-				 *  수정한 부분
-				 *  = out.println("location.href='"+req.getContextPath()+"/campus/main';");
-				 *  => out.println("location.href='"+req.getContextPath()+"/professor/main';"); 로 변경
-				 */
+				out.println("location.href='"+req.getContextPath()+"/campus/main';");
 				out.println("</script>");
 				
 				return;
@@ -121,7 +120,7 @@ public class MemberController extends HttpServlet{
 			
 			out.println("<script>");
 			out.println("alert('로그아웃 되었습니다.');");
-			out.println("location.href='"+req.getContextPath()+"/professor/main';");
+			out.println("location.href='"+req.getContextPath()+"/campus/main';");
 			out.println("</script>");
 			
 			return;

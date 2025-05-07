@@ -66,7 +66,7 @@
 <body>
 <div class="container">
 	
-	<h2>교수 강의 목록</h2>
+	<h2>강의 신청 목록</h2>
 	
 	<table class="lecture-table">
 	    <thead>
@@ -102,16 +102,16 @@
 	                            승인됨
 	                        </c:when>
 	                        <c:otherwise>
-	                            대기중
+	                            거부됨
 	                        </c:otherwise>
 	                    </c:choose>
 	                </td>
 	                <td>
-	                    <form method="post" action="${contextPath}/admins/approve" style="display:inline;">
+	                    <form method="post" action="${contextPath}/admin/approve" style="display:inline;">
 	                        <input type="hidden" name="subject_code" value="${lecture.subject_code}">
 	                        <button type="submit" class="btn-approve">승인</button>
 	                    </form>
-	                    <form method="post" action="${contextPath}/admins/deny" style="display:inline;">
+	                    <form method="post" action="${contextPath}/admin/reject" style="display:inline;">
 	                        <input type="hidden" name="subject_code" value="${lecture.subject_code}">
 	                        <button type="submit" class="btn-deny">거부</button>
 	                    </form>
