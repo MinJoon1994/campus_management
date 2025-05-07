@@ -106,7 +106,7 @@
         let isSubjectCodeChecked = false;
         let isProfessorIdChecked = false;
 
-        function validateForm() {
+        async function validateForm() {
             if (!isSubjectCodeChecked) {
                 alert("과목 코드 중복 체크를 완료하세요!");
                 return false;
@@ -125,7 +125,10 @@
             const days = document.getElementsByName("day[]"); // ex 월, 월, 수
             const startTimes = document.getElementsByName("start_time[]"); // ex 1, 2, 5
             const endTimes = document.getElementsByName("end_time[]"); // ex 3, 3, 6
-			let tempDay = {"월": [], "화": [], "수": [], "목": [], "금": []};
+			
+            let tempDay = {"월": [], "화": [], "수": [], "목": [], "금": []};
+            let promises = [];
+            
             for (let i = 0; i < startTimes.length; i++) {
             	// i = 0 일때 월 1 ~ 3
             	// i = 1 일때 월 2 ~ 3
@@ -150,13 +153,29 @@
 		                return false;
 		            }
 		        }
+		        
 		        // 겹치지 않으면 tempDay에 시간 등록
 		        for (let t = start; t <= end; t++) {
 		            tempDay[day].push(t);
 		        }
-            }
-            return true;
+		     
+		        // 중복 체크 fetch (await로 바로 응답 확인)
+		        const res = await fetch("<%=contextPath%>/professors/check_schedule_overlap.jsp", {
+		            method: "POST",
+		            headers: { "Content-Type": "application/json" },
+		            body: JSON.stringify({ professorId: "<%=professor_id%>", day, start, end })
+		        });
+		        const result = await res.text();
+
+		        if (result.trim() === "DUPLICATE") {
+		            alert(`${i + 1}번째 입력 (${day} ${start}~${end}교시)는 DB에 이미 존재하는 강의와 겹칩니다.`);
+		            return false;
+		        }
+		    }
+
+		    return true;
         }
+
         // 과목코드 중복체크
         function checkSubjectCode() {
             const subjectCode = document.getElementById('subject_code').value.trim();
@@ -248,6 +267,13 @@
                 button.parentElement.remove();
             }
         }
+        // 제출 버튼 처리
+        async function handleSubmit() {
+            const isValid = await validateForm();
+            if (isValid) {
+                document.getElementById("lectureForm").submit(); // 수동 제출
+            }
+        }
     </script>
 </head>
 
@@ -255,7 +281,7 @@
 	<div class="container">
 		<h2 style="text-align: center; padding-bottom: 20px;">과목 등록</h2>
 		<form action="<%=contextPath%>/professor/lecturecreate" method="post"
-			onsubmit="return validateForm();">
+			onsubmit="return false;">
 			<table>
 				<tr>
 					<th>항목</th>
@@ -334,7 +360,7 @@
 	
 			<div class="center_button">
 				<input type="hidden" name="current_enrollment" value="0"> 
-				<input type="submit" value="과목 등록">
+				<input type="submit" value="과목 등록" onclick="handleSubmit()">
 			</div>
 		</form>
 	</div>
