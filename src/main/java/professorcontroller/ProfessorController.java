@@ -136,7 +136,7 @@ public class ProfessorController extends HttpServlet {
 		        request.setAttribute("center", "/professors/CompleteRegisteringLecture.jsp");
 		    } else {
 		        request.setAttribute("message", "강의 등록에 실패했습니다. 다시 시도해주세요.");
-		        request.setAttribute("center", "/professorss/FailRegisteringLecture.jsp");
+		        request.setAttribute("center", "/professors/FailRegisteringLecture.jsp");
 		    }
 		    nextPage = "/professors/ProfessorMain.jsp";
 		}

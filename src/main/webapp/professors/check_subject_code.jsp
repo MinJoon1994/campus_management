@@ -1,4 +1,4 @@
-<%@page import="professordao.DbcpBean"%>
+<%@page import="main.DbcpBean"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
