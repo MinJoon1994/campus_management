@@ -105,7 +105,7 @@
 <div class="top_box d-flex justify-content-between">
 	<div class="d-flex justify-content-center align-items-center logo_box">
 		<img class="ms-3" src="../images/logo.png">
-		<a class="me-3 ms-4" href="/campus/main"><p>OO 대학교</p></a>
+		<a class="me-3 ms-4" href="${contextPath}/campus/main"><p>OO 대학교</p></a>
 	</div>
 	<c:if test="${vo == null}">
 		<div class="d-flex justify-content-center align-items-center">
@@ -152,10 +152,6 @@
 	            <hr>
 	            <ul class="planner_menu">
 	                <li><a href="${contextPath}/professor/main">교수메인</a></li>
-	                <li><a href="${contextPath}/professor/lectures">강의목록</a></li>
-	                <li><a href="${contextPath}/professor/lecturerequest">강의요청확인</a></li>
-	                <li><a href="${contextPath}/professor/lectureplan">강의계획서조회</a></li>
-	                <li><a href="${contextPath}/professor/enrolledstudent">수강신청 학생조회</a></li>
 	            </ul>
 	            <br>
 	            <h5>게시판</h5>
@@ -163,8 +159,6 @@
 	            <ul class="planner_menu">
                     <li><a href="${contextPath}/notice/list">공지사항</a></li>
                     <li><a href="${contextPath}/qna/list">질문게시판</a></li>
-                    <li><a href="${contextPath}/professor/qnalist">강의관련질문</a></li>
-                    <li><a href="${contextPath}/professor/qnaform">질문남기기</a></li>
 	            </ul>
 	            </c:when>
         		<c:when test="${vo.role=='ADMIN'}">
@@ -172,8 +166,9 @@
 	            <hr>
 	            <ul class="planner_menu">
 	                <li><a href="${contextPath}/admin/memberlist">교내구성원 목록</a></li>
-	                <li><a href="${contextPath}/admin/memberlist">강의등록 목록</a></li>
-	                <li><a href="${contextPath}/admin/memberlist">학사일정 등록</a></li>
+	                <li><a href="${contextPath}/admin/lecturelist">강의등록 목록</a></li>
+	                <li><a href="${contextPath}/admin/schedulelist">학사일정 등록</a></li>
+	                <li><a href="${contextPath}/admin/noticeform">공지사항 등록</a></li>
 	            </ul>
 	            <br>
 	            <h5>게시판</h5>

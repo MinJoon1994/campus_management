@@ -159,7 +159,7 @@
 		            list.forEach(function(notice, index) {
 		                html += "<tr>";
 		                html += "<td>" + notice.noticeId + "</td>";
-		                html += "<td><a class='notice_title' href='#'>" + notice.title + "</a></td>";
+		                html += "<td><a class='notice_title' href='${pageContext}/notice/detail?noticeId="+notice.noticeId+"'>" + notice.title + "</a></td>";
 		                html += "<td>관리자</td>"; // 작성자
 		                html += "<td>" + notice.createdAt + "</td>";
 		                html += "</tr>";
@@ -218,7 +218,7 @@
                     list.forEach(function(qna, index) {
                         html += "<tr>";
                         html += "<td>" + qna.qnaId + "</td>";
-                        html += "<td><a class='notice_title' href='#'>" + qna.title + "</a></td>";
+                        html += "<td><a class='notice_title' href='${pageContext}/notice/detail?qnaId="+qna.qnaId+"'>" + qna.title + "</a></td>";
                         html += "<td>" + qna.questioner+ "</td>"; // 작성자
                         html += "<td>" + qna.questiontime + "</td>";
                         html += "</tr>";

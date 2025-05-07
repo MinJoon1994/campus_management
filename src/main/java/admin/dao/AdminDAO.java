@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import admin.vo.Admin_LectureVO;
 import admin.vo.Admin_ProfessorVO;
 import admin.vo.Admin_StudentVO;
 import main.DbcpBean;
@@ -233,6 +234,67 @@ public class AdminDAO {
 		}
 
 		return count;
+	}
+	
+	//공지사항 추가
+	public void addNotice(HttpServletRequest req) {
+		
+		try {
+			
+			con = DbcpBean.getConnection();
+			String sql = "INSERT INTO notice (title, content, created_at,admin_id) VALUES (?, ?, NOW(),6)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, req.getParameter("title"));
+			pstmt.setString(2, req.getParameter("content"));
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+	}
+	
+	//교수가 등록한 강의 목록 보기
+	public List<Admin_LectureVO> getLectureList(HttpServletRequest req) {
+		
+		List<Admin_LectureVO> list = new ArrayList<>();
+		
+		try {
+			
+			con = DbcpBean.getConnection();
+			String sql = "SELECT * FROM subject";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				
+				Admin_LectureVO lectureVO = new Admin_LectureVO();
+				
+				lectureVO.setSubject_code(rs.getString("subject_code"));
+				lectureVO.setSubject_name(rs.getString("subject_name"));
+				lectureVO.setSubject_type(rs.getString("subject_type"));
+				lectureVO.setOpen_grade(rs.getInt("open_grade"));
+				lectureVO.setDivision(rs.getString("division"));
+				lectureVO.setCredit(rs.getInt("credit"));
+				lectureVO.setProfessor_id(rs.getInt("professor_id"));
+				lectureVO.setProfessor_name(rs.getString("professor_name"));
+				lectureVO.setSchedule(rs.getString("schedule"));
+				lectureVO.setCapacity(rs.getInt("capacity"));
+				lectureVO.setIs_available(rs.getBoolean("is_available"));
+				
+				list.add(lectureVO);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+		return list;
 	}
 
 }

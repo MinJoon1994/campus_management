@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import admin.service.AdminService;
 import admin.service.AdminServiceImpl;
 import admin.vo.Admin_StudentVO;
+import admin.vo.Admin_LectureVO;
 import qna.vo.QnaVO;
 import student.vo.LectureVO;
 
@@ -109,11 +110,11 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
 		}
 		
         //공지사항 관련
-        else if(action.equals("/noticeForm")) { //공지사항 등록폼 요청
+        else if(action.equals("/noticeform")) { //공지사항 등록폼 요청
         	
         	req.setAttribute("center", "admins/noticeForm.jsp");
         	
-        	nextPage = "/noticeForm.jsp";
+        	nextPage = "/main.jsp";
         	
         }else if(action.equals("/notice")) { //공지사항 등록 요청
 			
@@ -158,7 +159,7 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
         else if(action.equals("/lecturelist")) {//교수가 등록한 강의 목록 보기
 			
         	//교수가 등록한 강의목록을 LIST 형태로 들고오기
-        	List<LectureVO> list = adminService.getlectureList(req);
+        	List<Admin_LectureVO> list = adminService.getlectureList(req);
         	
         	//강의목록 VIEW 쪽에 전달
         	req.setAttribute("lectureList", list);
@@ -191,7 +192,7 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
         	return;
         }
         //============= 학사일정 관련 ==============
-        else if(action.equals("/schedule")) {
+        else if(action.equals("/schedulelist")) {
         	
         	return;
         }

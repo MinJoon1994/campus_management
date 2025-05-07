@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import admin.dao.AdminDAO;
 import admin.vo.Admin_StudentVO;
+import admin.vo.Admin_LectureVO;
 import qna.vo.QnaVO;
 import student.vo.LectureVO;
 
@@ -49,10 +50,12 @@ public class AdminServiceImpl implements AdminService {
 		
 		return adminDAO.getFilteredStudentCount(grade, status);
 	}
-
+	
+	//공지사항 추가
 	@Override
 	public void addNotice(HttpServletRequest req) {
-		// TODO Auto-generated method stub
+		
+		adminDAO.addNotice(req);
 
 	}
 
@@ -69,9 +72,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<LectureVO> getlectureList(HttpServletRequest req) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Admin_LectureVO> getlectureList(HttpServletRequest req) {
+		
+		return adminDAO.getLectureList(req);
 	}
 
 	@Override
