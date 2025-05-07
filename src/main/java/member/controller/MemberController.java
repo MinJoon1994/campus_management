@@ -76,6 +76,11 @@ public class MemberController extends HttpServlet{
 			
 			HttpSession session = req.getSession();
 			
+			/*
+			 *  황도균 : 임시로 추가 ( 이메일 대신 교수 아이디를 사용하기 위해서)
+			 *  추가한 부분
+			 *  = session.setAttribute("professor_id", 4);
+			 */
 			session.setAttribute("professor_id", 4);
 			
 			//로그인 처리
@@ -88,7 +93,14 @@ public class MemberController extends HttpServlet{
 				
 				out.println("<script>");
 				out.println("alert('로그인 성공');");
-				out.println("location.href='"+req.getContextPath()+"/campus/main';");
+				//out.println("location.href='"+req.getContextPath()+"/campus/main';");
+				out.println("location.href='"+req.getContextPath()+"/professor/main';");
+				/*
+				 *  황도균
+				 *  수정한 부분
+				 *  = out.println("location.href='"+req.getContextPath()+"/campus/main';");
+				 *  => out.println("location.href='"+req.getContextPath()+"/professor/main';"); 로 변경
+				 */
 				out.println("</script>");
 				
 				return;
