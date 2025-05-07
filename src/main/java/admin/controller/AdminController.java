@@ -194,7 +194,9 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
         //============= 학사일정 관련 ==============
         else if(action.equals("/schedulelist")) {
         	
-        	return;
+        	req.setAttribute("center", "admins/schedulelist.jsp");
+        	
+        	nextPage = "/main.jsp";
         }
         //============= 질문글 관련 ==============
         else if(action.equals("/qnalist")) {//전체 질문글 목록 조회

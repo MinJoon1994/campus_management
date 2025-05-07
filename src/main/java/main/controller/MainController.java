@@ -42,17 +42,13 @@
 			
 			//1.메인화면 페이지
 	        if (action.equals("/main")) {
-	        	
-	            System.out.println("/main 요청 처리 시작");
-	            
+	        
 	            nextPage = "/main.jsp";
 	            
 	        }
 	        //2.학사일정 달력 AJAX요청
 	        else if (action.equals("/calendarEvent")) {
 	        	
-	            System.out.println("/calendarEvent 요청 처리 시작");
-	
 	            // 학사일정 DB에서 조회
 	            List<AcademicCalendarVO> calendarList = mainService.getAllEvents(); // 서비스/DAO 구현 필요
 	
