@@ -159,7 +159,7 @@
 		            list.forEach(function(notice, index) {
 		                html += "<tr>";
 		                html += "<td>" + notice.noticeId + "</td>";
-		                html += "<td><a class='notice_title' href='${pageContext}/notice/detail?noticeId="+notice.noticeId+"'>" + notice.title + "</a></td>";
+		                html += "<td><a class='notice_title' href='${pageContext}/notice/detail?noticeId="+notice.noticeId+"'>" + truncateTitle(notice.title,18) + "</a></td>";
 		                html += "<td>관리자</td>"; // 작성자
 		                html += "<td>" + notice.createdAt + "</td>";
 		                html += "</tr>";
@@ -203,6 +203,12 @@
 		    });
 		}
 		
+		function truncateTitle(title, maxLength) {
+		    if (title.length > maxLength) {
+		        return title.substring(0, maxLength) + "...";
+		    }
+		    return title;
+		}
 		
 		function loadQnaPage(page){
 			$.ajax({
@@ -218,7 +224,7 @@
                     list.forEach(function(qna, index) {
                         html += "<tr>";
                         html += "<td>" + qna.qnaId + "</td>";
-                        html += "<td><a class='notice_title' href='${pageContext}/notice/detail?qnaId="+qna.qnaId+"'>" + qna.title + "</a></td>";
+                        html += "<td><a class='notice_title' href='${pageContext}/notice/detail?qnaId="+qna.qnaId+"'>" + truncateTitle(qna.title,18) + "</a></td>";
                         html += "<td>" + qna.questioner+ "</td>"; // 작성자
                         html += "<td>" + qna.questiontime + "</td>";
                         html += "</tr>";
