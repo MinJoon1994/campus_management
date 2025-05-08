@@ -54,6 +54,15 @@ public interface AdminService {
 	
 	//답변 작성 요청
 	public void reply(HttpServletRequest req);
+	
+	//학사 일정 추가
+	public boolean addCalendarEvent(HttpServletRequest req);
+	
+	//학사 일정 수정
+	public boolean updateCalendarEvent(HttpServletRequest req);
+	
+	//학사 일정 삭제
+	public boolean deleteCalendarEvent(HttpServletRequest req);
 
 
 

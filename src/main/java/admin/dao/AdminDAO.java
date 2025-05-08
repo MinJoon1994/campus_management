@@ -332,5 +332,96 @@ public class AdminDAO {
 		}
 		
 	}
+	//학사 일정 추가
+	public boolean addCalendarEvent(HttpServletRequest req) {
+		
+		boolean result = false;
+		
+		try {
+			
+			con = DbcpBean.getConnection();
+			String sql = "INSERT INTO academiccalendar(title,start,end,description,color,admin_id) VALUES(?,?,?,?,?,?)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, req.getParameter("title"));
+			pstmt.setString(2, req.getParameter("start"));
+			pstmt.setString(3, req.getParameter("end"));
+			pstmt.setString(4, req.getParameter("description"));
+			pstmt.setString(5, req.getParameter("color"));
+			pstmt.setInt(6, 6); // 관리자 ID를 하드코딩
+			
+			int num  = pstmt.executeUpdate();
+			
+			// 성공적으로 추가되었다면 true 리턴
+			if(num > 0) {
+				result = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+		return result;
+	}
+	
+	//학사 일정 수정
+	public boolean updateCalendarEvent(HttpServletRequest req) {
+		
+		boolean result = false;
+		
+		try {
+			
+			con = DbcpBean.getConnection();
+			String sql = "update academiccalendar set title=?,description=? where calendar_id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, req.getParameter("title"));
+			pstmt.setString(2, req.getParameter("description"));
+			pstmt.setInt(3, Integer.parseInt(req.getParameter("id")));
+			
+			int num = pstmt.executeUpdate();
+			
+			// 성공적으로 수정되었다면 true 리턴
+			if(num > 0) {
+				result = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+		return result;
+	}
+	
+	//학사 일정 삭제
+	public boolean deleteCalendarEvent(HttpServletRequest req) {
+		
+		boolean result = false;
+		
+		try {
+			
+			con = DbcpBean.getConnection();
+			String sql = "delete from academiccalendar where calendar_id=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(req.getParameter("id")));
+			
+			int num = pstmt.executeUpdate();
+			
+			// 성공적으로 삭제되었다면 true 리턴
+			if(num > 0) {
+				result = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+		return result;
+	}
 
 }

@@ -198,6 +198,40 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
         	
         	nextPage = "/main.jsp";
         }
+		//학사일정 추가
+        else if (action.equals("/addEvent")) {
+        	resp.setContentType("application/json; charset=UTF-8");
+        	
+        	boolean success = adminService.addCalendarEvent(req); // boolean 리턴 받는다고 가정
+        	
+        	JSONObject result = new JSONObject();
+        	result.put("success", success);
+        	out.print(result.toString());
+        	return;
+        }
+		//학사일정 수정
+        else if (action.equals("/updateEvent")) {
+        	resp.setContentType("application/json; charset=UTF-8");
+        	
+        	boolean success = adminService.updateCalendarEvent(req);
+        	
+        	JSONObject result = new JSONObject();
+        	result.put("success", success);
+        	out.print(result.toJSONString());
+        	return;
+        }
+		//학사일정 삭제
+        else if (action.equals("/deleteEvent")) {
+        	resp.setContentType("application/json; charset=UTF-8");
+        	
+        	boolean success = adminService.deleteCalendarEvent(req);
+        	
+        	JSONObject result = new JSONObject();
+        	result.put("success", success);
+        	out.print(result.toJSONString());
+        	return;
+        }
+		
         //============= 질문글 관련 ==============
         else if(action.equals("/qnalist")) {//전체 질문글 목록 조회
         	

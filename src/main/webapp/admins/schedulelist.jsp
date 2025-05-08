@@ -114,28 +114,31 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         
-        const newEvent = {
-            title: document.getElementById('newTitle').value,
-            description: document.getElementById('newDesc').value,
-            start: document.getElementById('newStart').value,
-            end: document.getElementById('newEnd').value || document.getElementById('newStart').value,
-            color: document.getElementById('newColor').value,
-            admin_id: ${vo.id}
-        };
-        fetch('${contextPath}/campus/addEvent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newEvent)
-        }).then(res => res.json())
-          .then(result => {
-              if (result.success) {
-                  calendar.addEvent(newEvent);
-                  closeAddModal();
-              } else {
-                  alert("등록 실패!");
-              }
-          });
-    });
+        fetch('${contextPath}/admin/addEvent', {
+        	  method: 'POST',
+        	  headers: {
+        	    'Content-Type': 'application/x-www-form-urlencoded'
+        	  },
+        	  body: new URLSearchParams({
+        	    title: document.getElementById('newTitle').value,
+        	    description: document.getElementById('newDesc').value,
+        	    start: document.getElementById('newStart').value,
+        	    end: document.getElementById('newEnd').value || document.getElementById('newStart').value,
+        	    color: document.getElementById('newColor').value,
+        	    admin_id: ${vo.id} // 세션에서 받아온 admin_id (예: ${vo.id})
+        	  })
+        	})
+        	.then(res => res.json())
+        	.then(result => {
+        	  if (result.success) {
+        	    alert("일정이 등록되었습니다.");
+        	    closeAddModal();
+        	    calendar.refetchEvents();
+        	  } else {
+        	    alert("등록 실패!");
+        	  }
+        	});
+});
 
     // 수정 모드 진입
     document.getElementById('editBtn').addEventListener('click', function () {
@@ -146,48 +149,54 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 수정 완료
-    document.getElementById('saveBtn').addEventListener('click', function () {
-        const newTitle = document.getElementById('detailTitle').value;
-        const newDesc = document.getElementById('detailDesc').value;
-
-        fetch('${contextPath}/campus/updateEvent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id: currentEvent.id,
-                title: newTitle,
-                description: newDesc
-            })
-        }).then(res => res.json())
-          .then(result => {
-              if (result.success) {
-                  currentEvent.setProp('title', newTitle);
-                  currentEvent.setExtendedProp('description', newDesc);
-                  closeDetailModal();
-              } else {
-                  alert("수정 실패!");
-              }
-          });
-    });
+	document.getElementById('saveBtn').addEventListener('click', function () {
+	    const newTitle = document.getElementById('detailTitle').value;
+	    const newDesc = document.getElementById('detailDesc').value;
+	
+	    fetch('${contextPath}/admin/updateEvent', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded'
+	        },
+	        body: new URLSearchParams({
+	            id: currentEvent.id,
+	            title: newTitle,
+	            description: newDesc
+	        })
+	    }).then(res => res.json())
+	      .then(result => {
+	          if (result.success) {
+	              currentEvent.setProp('title', newTitle);
+	              currentEvent.setExtendedProp('description', newDesc);
+	              closeDetailModal();
+	          } else {
+	              alert("수정 실패!");
+	          }
+	      });
+	});
 
     // 삭제
-    document.getElementById('deleteBtn').addEventListener('click', function () {
-        if (confirm("정말 삭제할까요?")) {
-            fetch('${contextPath}/campus/deleteEvent', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: currentEvent.id })
-            }).then(res => res.json())
-              .then(result => {
-                  if (result.success) {
-                      currentEvent.remove();
-                      closeDetailModal();
-                  } else {
-                      alert("삭제 실패!");
-                  }
-              });
-        }
-    });
+	document.getElementById('deleteBtn').addEventListener('click', function () {
+	    if (confirm("정말 삭제할까요?")) {
+	        fetch('${contextPath}/admin/deleteEvent', {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/x-www-form-urlencoded'
+	            },
+	            body: new URLSearchParams({
+	                id: currentEvent.id
+	            })
+	        }).then(res => res.json())
+	          .then(result => {
+	              if (result.success) {
+	                  currentEvent.remove();
+	                  closeDetailModal();
+	              } else {
+	                  alert("삭제 실패!");
+	              }
+	          });
+	    }
+	});
 });
 </script>
 
