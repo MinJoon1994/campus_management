@@ -14,6 +14,9 @@ public interface StudentService {
 	
 	//학생 수강목록 확인
 	public List<LectureVO> getLectureList(HttpServletRequest req);
+	
+	//수강 신청 내역 조회
+	public List<LectureVO> getRegisteredLectures(HttpServletRequest req);
 
 	//학생 수강신청 취소요청
 	public void enrollDelete(HttpServletRequest req);
@@ -38,6 +41,8 @@ public interface StudentService {
 	
 	//학생 학교관련 질문글 등록 요청
 	public void qnaCampus(HttpServletRequest req);
+	
+	
 	
 	
 

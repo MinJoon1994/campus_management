@@ -52,20 +52,13 @@ public class StudentController extends HttpServlet{
         	return;
         
         }else if(action.equals("/courcelist")) { //학생 수강목록 확인
-			
-        	//학생 수강목록 LIST 로 받아오기
-            List<LectureVO> list = studentService.getLectureList(req);
-            
-            //뷰쪽에 LIST 형태로 전달
+            List<LectureVO> list = studentService.getRegisteredLectures(req);  // 내 신청 목록 조회
             req.setAttribute("list", list);
-            
-            //학생 수강목록 확인 VIEW
-            req.setAttribute("center", "students/courcelist.jsp");
-            
+            req.setAttribute("center", "students/courselist.jsp");
             nextPage = "/main.jsp";
+            return;
 			
-			return;
-        	
+
         }else if(action.equals("/enrolldelete")) { //학생 수강신청 취소요청
         	
         	studentService.enrollDelete(req);
@@ -136,6 +129,7 @@ public class StudentController extends HttpServlet{
         	
         	req.setAttribute("center", "students/profile.jsp");
         	
+  
         	nextPage = "/main.jsp";
         	
         	return;

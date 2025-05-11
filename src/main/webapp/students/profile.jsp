@@ -1,18 +1,25 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ include file="../top.jsp" %>
+
+<div style="display:flex; justify-content:center; margin-top:40px;">
+  <div style="width:80%; background:white; padding:40px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+    <h2 style="text-align:center; margin-bottom:30px;">학생 마이페이지</h2>
     
-<%-- JSTL 중에서 core 태그를 사용하기 위해 주소를 import --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- 한글 인코딩 --%>
-<% request.setCharacterEncoding("UTF-8"); %>
+    <table style="width:100%; border-collapse:collapse; font-size:16px;">
+      <tr style="border-bottom:1px solid #ccc;">
+        <td style="padding:10px; font-weight:bold;">이름</td>
+        <td style="padding:10px;">${studentVO.name}</td>
+      </tr>
+      <tr style="border-bottom:1px solid #ccc;">
+        <td style="padding:10px; font-weight:bold;">학번</td>
+        <td style="padding:10px;">${studentVO.studentId}</td>
+      </tr>
+      <tr style="border-bottom:1px solid #ccc;">
+        <td style="padding:10px; font-weight:bold;">학과</td>
+        <td style="padding:10px;">${studentVO.departmentName}</td>
+      </tr>
+    </table>
+  </div>
+</div>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
-</html>
+<%@ include file="../bottom.jsp" %>
