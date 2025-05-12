@@ -138,8 +138,7 @@
 		        },
 		        // (선택) 일정 클릭했을 때 팝업
 		        eventClick: function(info) {
-		            alert('제목: ' + info.event.title + '\n내용: ' + (info.event.extendedProps.description || ''));
-		        }
+		        	window.location.href = '${contextPath}/campus/calendarDetail?calendarId=' + info.event.id;		        }
 			});
 			calendar.render();
 		});

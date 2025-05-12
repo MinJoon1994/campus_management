@@ -2,7 +2,9 @@
 	
 	import java.io.IOException;
 	import java.io.PrintWriter;
-	import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 	
 	import javax.servlet.RequestDispatcher;
 	import javax.servlet.ServletException;
@@ -62,7 +64,14 @@
 	                obj.put("title", event.getTitle());
 	                obj.put("start", event.getStart().toString()); // 날짜 형식에 맞게 변환 필요
 	                if (event.getEnd() != null) {
-	                    obj.put("end", event.getEnd().toString());
+	                	Calendar calendar = Calendar.getInstance();
+	                	calendar.setTime(event.getEnd());
+	                	calendar.add(Calendar.DATE, 1); // 종료일을 포함하기 위해 하루 더함(jsCalendar에서 종료일은 포함하지 않음)
+	                	
+	                	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // ★ 포맷 추가
+	                	String fixedEndDate = sdf.format(calendar.getTime()); // ★ 변환
+	                	obj.put("end", fixedEndDate); // ★ ISO8601 형식으로 넣기 (jsCalendar가 인식할 수 있는 형식)
+	                	
 	                }
 	                obj.put("description", event.getDescription());
 	                obj.put("color", event.getColor());
@@ -120,8 +129,23 @@
 	            result.put("currentPage", page);
 	            result.put("totalPage", (int)Math.ceil((double)mainService.getQnaCount() / pageSize)); // ← 총 페이지 수 계산 필요
 	            out.print(result.toString());
+	            
 	        	return;
 	        }
+	        else if(action.equals("/calendarDetail")) {
+	        	
+	        	int calendarId = Integer.parseInt(request.getParameter("calendarId"));
+	        	
+	        	AcademicCalendarVO calendarVO = mainService.getCalendarById(calendarId);
+	        	
+	        	request.setAttribute("calendarVO", calendarVO);
+	        	
+	        	request.setAttribute("center", "calendar/calendarDetail.jsp");
+	        	
+	        	nextPage = "/main.jsp";
+	        	
+	        }
+	        
 	        
 	        if (nextPage != null) {
 	            System.out.println("페이지 이동(forward) 처리: " + nextPage);

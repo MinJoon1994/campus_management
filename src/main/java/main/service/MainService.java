@@ -23,5 +23,8 @@ public interface MainService {
 	//5. QNA 글 수 가져오기
 	int getQnaCount();
 	
+	//6. 학사일정 자세히 보기
+	AcademicCalendarVO getCalendarById(int calendarId);
+	
 
 }

@@ -186,4 +186,35 @@ public class MainDAO {
 	    return count;
 	}
 
+	public AcademicCalendarVO getCalendarById(int calendarId) {
+		
+		try {
+			con = DbcpBean.getConnection();
+			String sql = "SELECT * FROM academiccalendar WHERE calendar_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, calendarId);
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				AcademicCalendarVO vo = new AcademicCalendarVO();
+				vo.setCalendarId(rs.getInt("calendar_id"));
+				vo.setTitle(rs.getString("title"));
+				vo.setDescription(rs.getString("description"));
+				vo.setStart(rs.getDate("start"));
+				vo.setEnd(rs.getDate("end"));
+				vo.setColor(rs.getString("color"));
+				
+				return vo;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+		// 해당 ID의 학사일정이 없을 경우 null 반환
+		return null;
+	}
+
 }
