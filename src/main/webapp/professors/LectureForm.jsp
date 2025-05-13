@@ -1,33 +1,98 @@
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@page import="professorvo.SubjectVo"%>
+<%@page import="java.util.Vector"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%
 	request.setCharacterEncoding("UTF-8"); // 한글 처리
 	String contextPath = request.getContextPath();
 	String professor_id = (String) request.getAttribute("professor_id");
 %>
+<%
+	Vector<SubjectVo> subjectVo = (Vector<SubjectVo>) request.getAttribute("subjectList");
+	// 시간표 초기화
+	String[][] timetable = new String[5][9]; // [요일][교시]
+	String[] days = { "월", "화", "수", "목", "금" };
+    
+	Map<String, String> subjectColorMap = new HashMap<>();
+    
+	for(SubjectVo v : subjectVo) {
+    	String subjectName = v.getSubjectName();
+    	System.out.println("과목명 : " + subjectName);
+    	// 월 3-5교시, 화 4-7교시
+    	String schedule = v.getSchedule();
+    	System.out.println("시간표 : " + schedule);
+    	
+        // 과목별 고유 색상 만들기
+        int hash = Math.abs(subjectName.hashCode()); // 
+        String color = String.format("#%06X", (hash & 0xFFFFFF));
+        subjectColorMap.put(subjectName, color);
 
+        // 시간표 채우기
+        String[] blocks = schedule.split(",");
+        for (String block : blocks) {
+            block = block.trim();
+            // block[0] = 월 3-5교시
+           	// block[1] = 화 4-7교시
+            for (int i = 0; i < days.length; i++) {
+                if (block.startsWith(days[i])) {
+                	String timePart = block.replaceAll("[^0-9\\-]", ""); // 3-5
+                	String[] range = timePart.split("-"); // range[0] = 3, range[1] = 5
+					// 0부터 시작하는 timetable 배열 때문에 -1 처리
+                	int start = Integer.parseInt(range[0]) - 1;
+                	int end = (range.length > 1) ? Integer.parseInt(range[1]) - 1 : start;
+					
+                	for (int j = start; j <= end; j++) { // 2~4
+                	    if (timetable[i][j] == null) timetable[i][j] = subjectName;
+                	    // [월][2], [월][3], [월][4]
+                	}
+                }
+            }
+        }
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>과목 등록</title>
 	<style>
-		body {
-			margin: 0;  /* 화면을 꽉 차게 하기위한 기본설정 */
-	        padding: 0;
-			font-family: Arial, sans-serif;
-		}
-		.container {
-	        width: 90%;         /* 전체 폭의 90% 사용 (양쪽 5% 여백) */
-	        margin: 0 auto;     /* 중앙 정렬 */
-	        padding-top: 20px;
-    	}
-		table {
-			width: 800px;
-			border-collapse: collapse;
-			margin: 0 auto;
-			background-color: #f9f9f9;
+	    body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+	    .main-wrapper {
+	        display: flex;
+	        justify-content: center;
+	        align-items: flex-start;
+	        gap: 10px;
+	        width: 90%;
+	        margin: 0 auto;
+	        padding-top: 10px;
+	    }
+	    .left-box, .right-box {
+	        max-width: 700px;
+	    }
+	    .left-box {
+		    flex: 6;           /* 전체 중 60% 차지 */
+		    max-width: 700px;
 		}
 		
+		.right-box {
+			margin-top: 100px;
+		    flex: 4;           /* 전체 중 40% 차지 */
+		    max-width: 700px;
+		}
+	    
+	    .left-box table {
+	    	margin: 0;
+	        width: 100%;
+	        border-collapse: collapse;
+	        background-color: #f9f9f9;
+	    }
+		.right-box table {
+			margin: 0;
+			width: 80%;
+	        border-collapse: collapse;
+	        background-color: #f9f9f9;
+		}
 		th, td {
 			padding: 12px;
 			border: 1px solid #ddd;
@@ -84,9 +149,6 @@
 			cursor: pointer;
 		}
 		
-		.center_button {
-			text-align: center;
-		}
 		.input-with-button {
 		    display: flex;
 		    align-items: center;
@@ -100,6 +162,29 @@
 		    margin-left: 10px; /* 버튼과 input 사이 약간의 간격 */
 		    padding: 8px 16px;
 		    cursor: pointer;
+		}
+		.timetable-container {
+		    width: 90%;
+		    margin: 40px auto;
+		    padding-top: 20px;
+		}
+		
+		.timetable-container table {
+		    width: 80%;
+		    border-collapse: collapse;
+		}
+		
+		.timetable-container th, .timetable-container td {
+		    width: 100px;
+		    height: 50px;
+		    text-align: center;
+		    border: 1px solid #ccc;
+		}
+		.full-fill-img {
+		    height: 100px;       /* 원하는 고정 높이 */
+		    width: 100%;         /* 부모 요소의 너비를 모두 채움 */
+		    object-fit: cover;   /* 이미지 비율을 유지하면서 공간을 꽉 채움 (잘릴 수 있음) */
+		    display: block;      /* 인라인 공간 제거 */
 		}
 	</style>
 	<script>
@@ -221,6 +306,14 @@
 		// 수업 요일/시작 교시/종료 교시 입력란 한 세트를 동적으로 추가
         function addDayTimeRow() {
             const container = document.getElementById('dayTimeContainer');
+            
+            const currentCount = container.getElementsByClassName('day-time-row').length;
+
+            if (currentCount >= 2) {
+                alert("요일/시간은 최대 2개까지만 추가할 수 있습니다.");
+                return;
+            }
+           
             const row = document.createElement('div');
             row.className = 'day-time-row';
 
@@ -278,10 +371,11 @@
 </head>
 
 <body>
-	<div class="container">
-		<h2 style="text-align: center; padding-bottom: 20px;">과목 등록</h2>
-		<form action="<%=contextPath%>/professor/lecturecreate" method="post"
+<h2 style="text-align: center; padding-top: 20px;">과목 등록</h2>
+<form id="lectureForm" action="<%=contextPath%>/professor/lecturecreate" method="post"
 			onsubmit="return false;">
+<div class="main-wrapper">
+	<div class="left-box">
 			<table>
 				<tr>
 					<th>항목</th>
@@ -344,7 +438,7 @@
 					<td>개설 요일/시간</td>
 					<td>
 						<div id="dayTimeContainer"></div>
-						<div class="center_button">
+						<div class="center_button" style="text-align: center;">
 							<button type="button" class="add-button" onclick="addDayTimeRow()">
 							요일/시간 추가
 							</button>
@@ -357,12 +451,43 @@
 					<td><input type="number" name="capacity" required></td>
 				</tr>
 			</table>
-	
-			<div class="center_button">
-				<input type="hidden" name="current_enrollment" value="0"> 
-				<input type="submit" value="과목 등록" onclick="handleSubmit()">
-			</div>
-		</form>
 	</div>
+	<div class="right-box">
+		<table align="center">
+		    <tr>
+		        <th>시간/요일</th>
+		        <th>월</th>
+		        <th>화</th>
+		        <th>수</th>
+		        <th>목</th>
+		        <th>금</th>
+		    </tr>
+		    <%
+		        for (int i = 0; i < 9; i++) {
+		    %>
+				    <tr>
+				        <td><%= (i+1) %>교시</td>
+				        <%
+				            for (int j = 0; j < 5; j++) {
+				                String cell = timetable[j][i];
+				                String bgColor = (cell != null && subjectColorMap.containsKey(cell)) ? subjectColorMap.get(cell) : "";
+				        %>
+				            <td style="background-color:<%= bgColor %>;">
+				                <%= (cell != null ? cell : "") %>
+				            </td>
+				        <% 
+				        	} 
+				        %>
+				    </tr>
+		    <% 
+		    	} 
+		    %>
+		</table>
+		<input type="hidden" name="current_enrollment" value="0"> 
+		<input type="submit" value="과목 등록" onclick="handleSubmit()" style="margin-top:30px; margin-left: 220px; width: 150px; height: 50px;">
+	</div>
+</div>
+</form>	
+	
 </body>
 </html>
