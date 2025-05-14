@@ -703,7 +703,8 @@ public class ProfessorDao {
     }
 
     public boolean deleteStudentQna(String[] qnaIds) {
-
+        boolean allDeleted = true;
+        
         try {
             conn = DbcpBean.getConnection();
 
@@ -723,7 +724,10 @@ public class ProfessorDao {
             for (String qnaIdStr : qnaIds) {
                 int qnaId = Integer.parseInt(qnaIdStr);
                 pstmt.setInt(1, qnaId);
-                return pstmt.executeUpdate() == 1;
+                int result = pstmt.executeUpdate();
+                if (result != 1) {
+                    allDeleted = false; // 하나라도 실패
+                }
             }
 
         } catch (Exception e) {
@@ -732,8 +736,9 @@ public class ProfessorDao {
             DbcpBean.close(conn, pstmt);
         }
 
-        return false;
+        return allDeleted;
     }
+    
 
     // ✅ 1. 과목코드 + 날짜 기준 출결 데이터 조회
     public Vector<AttendanceViewVo> getAttendanceListBySubjectAndDate(String subjectCode, String date) {
@@ -821,5 +826,77 @@ public class ProfessorDao {
 			DbcpBean.close(conn, pstmt, rs);
 		}
 		return noticeList;
+	}
+	// 공지사항(교수) 테이블에 데이터 추가
+	public void insertNoticeProfessor(NoticeProfessorVo vo) {
+        String sql = "INSERT INTO NoticeProfessor (title, content, user_id, file_name, file_path, file_size) VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+        	conn = DbcpBean.getConnection();
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, vo.getTitle());
+            pstmt.setString(2, vo.getContent());
+            pstmt.setInt(3, vo.getUserId());
+            pstmt.setString(4, vo.getFileName());
+            pstmt.setString(5, vo.getFilePath());
+            pstmt.setLong(6, vo.getFileSize());
+
+            pstmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        	DbcpBean.close(conn, pstmt, rs);
+        }
+	}
+	// 공지사항(교수)에서 선택한 공지사항 삭제
+	public boolean deleteProfessorNotice(String[] noticeIds) {
+        try {
+            conn = DbcpBean.getConnection();
+
+            String sql = "DELETE FROM NoticeProfessor WHERE notice_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            for (String noticeStr : noticeIds) {
+                int noticeId = Integer.parseInt(noticeStr);
+                pstmt.setInt(1, noticeId);
+                pstmt.executeUpdate(); 
+            }
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(conn, pstmt);
+        }
+
+        return false;
+	}
+	// 공지사항 아이디로 공지사항 상세 조회
+	public NoticeProfessorVo getNoticeById(String noticeId) {
+		NoticeProfessorVo vo = new NoticeProfessorVo();
+		String sql = "select * from NoticeProfessor where notice_id = ?";
+		
+		try {
+			conn = DbcpBean.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, noticeId);
+			rs = pstmt.executeQuery();
+	
+			if(rs.next()) {
+	            vo.setNoticeId(rs.getInt("notice_id"));
+	            vo.setTitle(rs.getString("title"));
+	            vo.setContent(rs.getString("content"));
+	            vo.setCreatedAt(rs.getTimestamp("created_at"));
+	            vo.setUserId(rs.getInt("user_id"));
+	            vo.setFileName(rs.getString("file_name"));
+	            vo.setFilePath(rs.getString("file_path"));
+	            vo.setFileSize(rs.getLong("file_size"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(conn, pstmt, rs);
+		}
+		return vo;
 	}
 }

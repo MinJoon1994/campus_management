@@ -114,4 +114,17 @@ public class ProfessorService {
 	public Vector<NoticeProfessorVo> getAllNoticeProfessorList(String professor_id) {
 		return professorDao.getAllNoticeProfessorList(professor_id);
 	}
+	// 교수 공지사항 등록
+	public void insertNoticeProfessor(NoticeProfessorVo vo) {
+		professorDao.insertNoticeProfessor(vo);
+		
+	}
+	// 교수 공지사항 삭제
+	public boolean deleteProfessorNotice(String[] noticeIds) {
+		return professorDao.deleteProfessorNotice(noticeIds);
+	}
+	// 교수 공지사항 내용 조회
+	public NoticeProfessorVo getNoticeById(String noticeId) {
+		return professorDao.getNoticeById(noticeId);
+	}
 }

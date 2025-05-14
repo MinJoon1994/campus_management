@@ -61,7 +61,7 @@
 	<script>
 		function openQnaWindow(qnaId) {
 		    var _width = 650;
-		    var _height = 380;
+		    var _height = 800;
 		 
 		    // 팝업을 가운데 위치시키기 위해 아래와 같이 값 구하기
 		    var _left = Math.ceil(( window.screen.width - _width)/2);
@@ -79,14 +79,15 @@
 		        return;
 		    }
 
+		    const params = new URLSearchParams();
+		    qnaIds.forEach(id => params.append("qnaIds", id));
+
 		    fetch('<%=contextPath%>/professor/deleteqna', {
 		        method: 'POST',
 		        headers: {
 		            'Content-Type': 'application/x-www-form-urlencoded'
 		        },
-		        body: new URLSearchParams({
-		            qnaIds: qnaIds // 서버에서 request.getParameterValues("qnaIds")로 받을 수 있음
-		        })
+		        body: params
 		    })
 		    .then(response => {
 		        if (!response.ok) throw new Error("삭제 실패");
@@ -94,7 +95,7 @@
 		    })
 		    .then(data => {
 		        alert("삭제되었습니다.");
-		        location.reload(); // 현재 페이지 다시 로드하여 리스트 갱신
+		        location.reload(); // 새로고침으로 목록 갱신
 		    })
 		    .catch(error => {
 		        alert("삭제 중 오류 발생: " + error.message);
@@ -150,8 +151,8 @@
 		</tbody>
     </table>
     <div style="text-align: right; margin-top: 10px;">
-    <button type="button" class="delete-btn" onclick="deleteSelectedQna()">삭제</button>
-</div>
+    	<button type="button" class="delete-btn" onclick="deleteSelectedQna()">삭제</button>
+	</div>
 </div>
 
 <script>

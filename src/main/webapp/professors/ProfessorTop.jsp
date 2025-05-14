@@ -89,6 +89,7 @@
         <a href="${pageContext.request.contextPath}/professor/attendancemanage">수강생 출석관리</a>
       </div>
     </div>
+    
     <div class="nav-item">
       <div class="nav-link">성적 관리</div>
       <div class="dropdown">
@@ -96,6 +97,7 @@
         <a href="${pageContext.request.contextPath}/professor/gradesedit">수강생 성적입력/수정</a>
       </div>
     </div>
+    
     <div class="nav-item">
       <div class="nav-link">커뮤니케이션</div>
       <div class="dropdown">
