@@ -158,12 +158,12 @@
 		            list.forEach(function(notice, index) {
 		                html += "<tr>";
 		                html += "<td>" + notice.noticeId + "</td>";
-		                html += "<td><a class='notice_title' href='${pageContext}/notice/detail?noticeId="+notice.noticeId+"'>" + truncateTitle(notice.title,18) + "</a></td>";
+		                html += "<td><a class='notice_title' href='${contextPath}/notice/detail?noticeID="+notice.noticeId+"'>" + truncateTitle(notice.title,18) + "</a></td>";
 		                html += "<td>관리자</td>"; // 작성자
 		                html += "<td>" + notice.createdAt + "</td>";
 		                html += "</tr>";
 		            });
-		            
+
 		            $("#noticeTableBody").html(html);
 
 		            // 2. 페이징 버튼
@@ -223,7 +223,7 @@
                     list.forEach(function(qna, index) {
                         html += "<tr>";
                         html += "<td>" + qna.qnaId + "</td>";
-                        html += "<td><a class='notice_title' href='${pageContext}/notice/detail?qnaId="+qna.qnaId+"'>" + truncateTitle(qna.title,18) + "</a></td>";
+                        html += "<td><a class='notice_title' href='${contextPath}/qna/detail?qnaId="+qna.qnaId+"'>" + truncateTitle(qna.title,18) + "</a></td>";
                         html += "<td>" + qna.questioner+ "</td>"; // 작성자
                         html += "<td>" + qna.questiontime + "</td>";
                         html += "</tr>";

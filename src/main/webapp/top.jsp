@@ -132,11 +132,7 @@
 	            <h5>학생</h5>
 	            <hr>
 	            <ul class="planner_menu">
-	                <li><a href="${contextPath}/student/enrollForm">수강신청</a></li>
-	                <li><a href="${contextPath}/student/enrollForm">수강목록</a></li>
-	                <li><a href="${contextPath}/student/enrollForm">성적조회</a></li>
-	                <li><a href="${contextPath}/student/enrollForm">개인시간표</a></li>
-	                <li><a href="${contextPath}/student/enrollForm">개인정보수정</a></li>
+	                <li><a href="${contextPath}/student/main">학생 메인</a></li>
 	            </ul>
 	            <br>
 	            <h5>게시판</h5>

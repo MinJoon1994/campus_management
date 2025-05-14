@@ -32,15 +32,18 @@ public class StudentController extends HttpServlet{
 		
 		StudentService studentService = new StudentServiceImpl();
 		
-		//============= 학생 수강신청 관련==============
-        if (action.equals("/enrollForm")) { //학생 수강신청 화면 요청
+		//학생 메인 화면 요청
+        if (action.equals("/main")) { //학생 메인 화면 요청
+            
+        	nextPage = "/students/StudentMain.jsp";
+            
+        }else if (action.equals("/enrollForm")) { //학생 수강신청 화면 요청
             
             req.setAttribute("center", "students/enrollForm.jsp"); //수강 신청화면 요청
             
             nextPage = "/main.jsp";
             
         }else if(action.equals("/enroll")) { // 학생 수강신청 요청
-        	
         	
         	studentService.enroll(req);
         	
