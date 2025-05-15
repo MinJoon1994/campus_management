@@ -16,7 +16,7 @@ import member.vo.StudentVO;
 import member.vo.UserVO;
 import student.service.StudentService;
 import student.service.StudentServiceImpl;
-import student.vo.LectureVO;
+import student.vo.SubjectVO;
 
 @WebServlet("/student/*")
 public class StudentController extends HttpServlet{
@@ -52,7 +52,7 @@ public class StudentController extends HttpServlet{
         	return;
         
         }else if(action.equals("/courcelist")) { //학생 수강목록 확인
-            List<LectureVO> list = studentService.getRegisteredLectures(req);  // 내 신청 목록 조회
+            List<SubjectVO> list = studentService.getRegisteredLectures(req);  // 내 신청 목록 조회
             req.setAttribute("list", list);
             req.setAttribute("center", "students/courselist.jsp");
             nextPage = "/main.jsp";

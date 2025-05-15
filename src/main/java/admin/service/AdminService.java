@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import qna.vo.QnaVO;
-import student.vo.LectureVO;
+import student.vo.SubjectVO;
 
 public interface AdminService {
 	
@@ -22,7 +22,7 @@ public interface AdminService {
 	public void deleteNotice(HttpServletRequest req);
 	
 	//교수가 등록한 강의 목록 보기
-	public List<LectureVO> getlectureList(HttpServletRequest req);
+	public List<SubjectVO> getlectureList(HttpServletRequest req);
 	
 	//교수가 등록한 강의 승인 처리
 	public void approveLecture(HttpServletRequest req);

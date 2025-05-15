@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import qna.vo.QnaVO;
-import student.vo.LectureVO;
+import student.vo.SubjectVO;
 
 public class AdminServiceImpl implements AdminService {
 
@@ -34,7 +34,7 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public List<LectureVO> getlectureList(HttpServletRequest req) {
+	public List<SubjectVO> getlectureList(HttpServletRequest req) {
 		// TODO Auto-generated method stub
 		return null;
 	}

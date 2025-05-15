@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import admin.service.AdminService;
 import admin.service.AdminServiceImpl;
 import qna.vo.QnaVO;
-import student.vo.LectureVO;
+import student.vo.SubjectVO;
 
 @WebServlet("/admin/*")
 public class AdminController extends HttpServlet{
@@ -92,7 +92,7 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
         else if(action.equals("/lecturelist")) {//교수가 등록한 강의 목록 보기
 			
         	//교수가 등록한 강의목록을 LIST 형태로 들고오기
-        	List<LectureVO> list = adminService.getlectureList(req);
+        	List<SubjectVO> list = adminService.getlectureList(req);
         	
         	//강의목록 VIEW 쪽에 전달
         	req.setAttribute("lectureList", list);
