@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import grade.vo.GradeVO;
 import main.DbcpBean;
 import member.vo.StudentVO;
 import student.vo.SubjectVO;
@@ -180,22 +181,134 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List getGrades(HttpServletRequest req) {
-        // TODO: 성적 조회 구현
-        return null;
+    public List<GradeVO> getGrades(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String studentId = (String) session.getAttribute("studentId");
+        List<GradeVO> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = DbcpBean.getConnection();
+            String sql =
+                "SELECT s.subject_code, s.subject_name, s.professor_name, s.credit, " +
+                "       g.score, g.grade AS letter_grade, g.reg_date " +
+                "FROM Enrollment e " +
+                "JOIN Subject s ON e.subject_code = s.subject_code " +
+                "JOIN Grade g   ON e.enrollment_id  = g.enrollment_id " +
+                "WHERE e.student_id = ? " +
+                "ORDER BY g.reg_date DESC";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, studentId);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                GradeVO gv = new GradeVO();
+                gv.setSubject_code(    rs.getString("subject_code"));
+                gv.setSubject_name(    rs.getString("subject_name"));
+                gv.setProfessor_name(  rs.getString("professor_name"));
+                gv.setCredit(          rs.getInt   ("credit"));
+                gv.setScore(rs.getDouble("score"));
+                gv.setGrade(rs.getString("letter_lettergrade"));
+                gv.setReg_date(rs.getTimestamp("reg_date"));
+                list.add(gv);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(conn, pstmt, rs);
+        }
+        return list;
     }
 
-    @Override
-    public List getGradesDetail(HttpServletRequest req) {
-        // TODO: 성적 상세조회 구현
-        return null;
-    }
 
     @Override
-    public List getTimeTable(HttpServletRequest req) {
-        // TODO: 시간표 조회 구현
-        return null;
+    public List<GradeVO> getGradesDetail(HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        String studentId = (String) session.getAttribute("studentId");
+        String subjectCode = req.getParameter("subject_code");
+
+        List<GradeVO> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DbcpBean.getConnection();
+            String sql =
+                "SELECT s.subject_code, s.subject_name, s.professor_name, s.credit, " +
+                "       g.score, g.grade AS letter_grade, g.reg_date " +
+                "FROM Enrollment e " +
+                "JOIN Subject s ON e.subject_code = s.subject_code " +
+                "JOIN Grade g   ON e.enrollment_id  = g.enrollment_id " +
+                "WHERE e.student_id = ? AND s.subject_code = ? " +
+                "ORDER BY g.reg_date DESC";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, studentId);
+            pstmt.setString(2, subjectCode);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                GradeVO gv = new GradeVO();
+                gv.setSubject_code(   rs.getString("subject_code"));
+                gv.setSubject_name(   rs.getString("subject_name"));
+                gv.setProfessor_name( rs.getString("professor_name"));
+                gv.setCredit(         rs.getInt("credit"));
+                gv.setScore(          rs.getDouble("score"));
+                gv.setGrade(          rs.getString("letter_grade"));
+                gv.setReg_date(       rs.getTimestamp("reg_date"));
+                list.add(gv);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(conn, pstmt, rs);
+        }
+        return list;
     }
+
+
+    @Override
+    public List<SubjectVO> getTimeTable(HttpServletRequest req) {
+    			// 학생의 시간표를 조회하는 메서드
+        HttpSession session = req.getSession();
+       
+        String studentId = (String) session.getAttribute("studentId");
+        
+        List<SubjectVO> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DbcpBean.getConnection();
+            String sql =
+                "SELECT s.subject_code, s.subject_name, s.professor_name, " +
+                "       s.schedule, s.credit " +
+                "FROM Enrollment e " +
+                "JOIN Subject s ON e.subject_code = s.subject_code " +
+                "WHERE e.student_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, studentId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                SubjectVO sv = new SubjectVO();
+                sv.setSubjectCode(rs.getString("subject_code"));
+                sv.setSubjectName(rs.getString("subject_name"));
+                sv.setProfessorName(rs.getString("professor_name"));
+                sv.setSchedule(rs.getString("schedule"));
+                sv.setCredit(rs.getInt("credit"));
+                list.add(sv);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(conn, pstmt, rs);
+        }
+
+        return list;
+    }
+
 
     @Override
     public StudentVO getStudent(HttpServletRequest req) {
