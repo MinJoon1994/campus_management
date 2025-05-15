@@ -103,50 +103,31 @@ public class StudentController extends HttpServlet{
         
         }
         //============= 학생 시간표 관련 ==============
-        else if(action.equals("/timetable")) {//학생 시간표조회
-        	
-        	//학생 시간표 LIST 형태로 받아오기
-        	List list = studentService.getTimeTable(req);
-        	
-        	//뷰쪽에 LIST 형태로 전달
-        	req.setAttribute("list", list);
-        	
-        	req.setAttribute("center", "students/timetable.jsp");
-        	
-        	nextPage = "/main.jsp";
-        	
-        	return;
-        	
+        else if (action.equals("/timetable")) {
+            List<SubjectVO> list = studentService.getTimeTable(req);
+            req.setAttribute("list", list);
+            req.setAttribute("center", "students/timetable.jsp");
+            nextPage = "/main.jsp";
+            return;
         }
-        //============= 학생 개인 정보 관련 ==============
-        else if(action.equals("/profile")) {//학생 개인정보 조회
-        	
-        	//학생 개인 정보 조회
-        	StudentVO studentVO = studentService.getStudent(req);
-        	
-        	//뷰쪽에 학생 개인정보 전달
-        	req.setAttribute("studentVO", studentVO);
-        	
-        	req.setAttribute("center", "students/profile.jsp");
-        	
-  
-        	nextPage = "/main.jsp";
-        	
-        	return;
-        	
-        }else if(action.equals("/profileupdate")){//학생 개인정보 수정 요청
-        	
-        	//학생 개인 정보 수정
-        	studentService.updateStudent(req);
-        	
-        	out.println("<script>");
-        	out.println("alert('수정이 완료되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/profile;");
-        	out.println("</script>");
-        	
-        	return;
-        	
+        
+        else if (action.equals("/profile")) {
+            StudentVO studentVO = studentService.getStudent(req);
+            req.setAttribute("studentVO", studentVO);
+            req.setAttribute("center", "students/profile.jsp");
+            nextPage = "/main.jsp";
+            return;
         }
+
+        else if (action.equals("/profileupdate")) {
+            studentService.updateStudent(req);
+            out.println("<script>");
+            out.println("alert('개인정보가 수정되었습니다.');");
+            out.println("location.href='" + req.getContextPath() + "/student/profile';");
+            out.println("</script>");
+            return;
+        }
+
         //============= 학생 질문글 관련 ==============
         else if(action.equals("/qnaform")) {//학생 질문글 관련 등록
         	

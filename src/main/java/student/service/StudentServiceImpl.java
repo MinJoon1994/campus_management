@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import grade.vo.GradeVO;
 import main.DbcpBean;
 import member.vo.StudentVO;
+import member.vo.UserVO;
 import student.vo.SubjectVO;
 
 public class StudentServiceImpl implements StudentService {
@@ -268,37 +271,58 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public List<SubjectVO> getTimeTable(HttpServletRequest req) {
-    			// 학생의 시간표를 조회하는 메서드
+    public List<Map<String, Object>> getTimeTable(HttpServletRequest req) {
         HttpSession session = req.getSession();
-       
-        String studentId = (String) session.getAttribute("studentId");
-        
-        List<SubjectVO> list = new ArrayList<>();
+        UserVO vo = (UserVO) session.getAttribute("vo");
+        int studentId = vo.getId();
+
+        List<Map<String, Object>> events = new ArrayList<>();
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
             conn = DbcpBean.getConnection();
-            String sql =
-                "SELECT s.subject_code, s.subject_name, s.professor_name, " +
-                "       s.schedule, s.credit " +
-                "FROM Enrollment e " +
-                "JOIN Subject s ON e.subject_code = s.subject_code " +
-                "WHERE e.student_id = ?";
+            String sql = "SELECT s.subject_code, s.subject_name, s.schedule"+
+            			 " FROM Enrollment e " +
+                         "JOIN Subject s ON e.subject_code = s.subject_code " +
+                         "WHERE e.student_id = ?";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, studentId);
+            pstmt.setInt(1, studentId);
             rs = pstmt.executeQuery();
+            String subjectCode = rs.getString("subject_code");
 
             while (rs.next()) {
-                SubjectVO sv = new SubjectVO();
-                sv.setSubjectCode(rs.getString("subject_code"));
-                sv.setSubjectName(rs.getString("subject_name"));
-                sv.setProfessorName(rs.getString("professor_name"));
-                sv.setSchedule(rs.getString("schedule"));
-                sv.setCredit(rs.getInt("credit"));
-                list.add(sv);
+                String subjectName = rs.getString("subject_name");
+                String schedule = rs.getString("schedule"); // 예: "월 10:00~12:00, 수 14:00~16:00"
+
+                if (schedule != null && !schedule.isEmpty()) {
+                    String[] entries = schedule.split(",");
+                    for (String entry : entries) {
+                        entry = entry.trim();
+                        if (entry.length() < 3) continue;
+
+                        String dayStr = entry.substring(0, 1);
+                        String timeStr = entry.substring(2); // "10:00~12:00"
+
+                        String[] timeParts = timeStr.split("~");
+                        if (timeParts.length != 2) continue;
+
+                        String startTime = timeParts[0].trim();
+                        String endTime = timeParts[1].trim();
+
+                        String dayNum = convertDayToNumber(dayStr);
+                        if (dayNum == null) continue;
+
+                        Map<String, Object> event = new HashMap<>();
+                        event.put("title", subjectName);
+                        event.put("daysOfWeek", List.of(dayNum));
+                        event.put("startTime", startTime);
+                        event.put("endTime", endTime);
+                        event.put("subjectCode", subjectCode);
+                        events.add(event);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -306,19 +330,89 @@ public class StudentServiceImpl implements StudentService {
             DbcpBean.close(conn, pstmt, rs);
         }
 
-        return list;
+        return events;
+    }
+
+    private String convertDayToNumber(String day) {
+        return switch (day) {
+            case "월" -> "1";
+            case "화" -> "2";
+            case "수" -> "3";
+            case "목" -> "4";
+            case "금" -> "5";
+            case "토" -> "6";
+            case "일" -> "0";
+            default -> null;
+        };
     }
 
 
     @Override
     public StudentVO getStudent(HttpServletRequest req) {
-        // 기존 구현 유지 또는 스키마에 맞게 수정하세요.
-        return null;
+        HttpSession session = req.getSession();
+        UserVO vo = (UserVO) session.getAttribute("vo");
+        int userId = vo.getId();
+
+        StudentVO student = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DbcpBean.getConnection();
+            String sql = "SELECT u.name, s.department, s.grade, s.status " +
+                         "FROM User u JOIN Student s ON u.user_id = s.user_id " +
+                         "WHERE u.user_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, userId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                student = new StudentVO();
+                student.setStudent_id(String.valueOf(userId));
+                student.setName(rs.getString("name"));
+                student.setDepartment(rs.getString("department"));
+                student.setGrade(String.valueOf(rs.getInt("grade")));
+                student.setStatus(rs.getString("status"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(conn, pstmt, rs);
+        }
+
+        return student;
     }
 
     @Override
     public void updateStudent(HttpServletRequest req) {
-        // TODO: 개인정보 수정 구현
+        HttpSession session = req.getSession();
+        UserVO vo = (UserVO) session.getAttribute("vo");
+        int userId = vo.getId();
+
+        String department = req.getParameter("department");
+        int grade = Integer.parseInt(req.getParameter("grade"));
+        String status = req.getParameter("status");
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DbcpBean.getConnection();
+            String sql = "UPDATE Student SET department = ?, grade = ?, status = ? WHERE user_id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, department);
+            pstmt.setInt(2, grade);
+            pstmt.setString(3, status);
+            pstmt.setInt(4, userId);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DbcpBean.close(pstmt);
+            DbcpBean.close(conn);
+        }
     }
 
     @Override
