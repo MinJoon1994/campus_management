@@ -9,10 +9,10 @@ import qna.vo.QnaVO;
 public interface QnaService {
 	
 	//질문글 목록 요청
-	List<QnaVO> getQnaList(HttpServletRequest req);
+	public List<QnaVO> getQnaList(int studentId);
 	
 	
 	//특정 질문글 조회 요청
-	QnaVO getQnaDetail(HttpServletRequest req);
+	public QnaVO getQnaDetail(int qnaId);
 
 }
