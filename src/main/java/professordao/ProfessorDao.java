@@ -157,14 +157,14 @@ public class ProfessorDao {
 	    return false;
 	}
 	// 강의계획서 삭제
-	public boolean deleteLecturePlan(String id) {
-		String sql = "delete from lecture_plan where professor_id = ?";
+	public boolean deleteLecturePlan(String subjectCode) {
+		String sql = "delete from lecture_plan where subject_code = ?";
 		
 		try {
 			conn = DbcpBean.getConnection();
 	        pstmt = conn.prepareStatement(sql);
 
-	        pstmt.setString(1, id);
+	        pstmt.setString(1, subjectCode);
 
 	        int result = pstmt.executeUpdate();
 	        return result > 0;
@@ -743,15 +743,14 @@ public class ProfessorDao {
     // ✅ 1. 과목코드 + 날짜 기준 출결 데이터 조회
     public Vector<AttendanceViewVo> getAttendanceListBySubjectAndDate(String subjectCode, String date) {
         Vector<AttendanceViewVo> list = new Vector<>();
-        String sql = """
-            SELECT e.enrollment_id, u.name, a.status
-            FROM Enrollment e
-            JOIN Student s ON e.student_id = s.user_id
-            JOIN User u ON s.user_id = u.user_id
-            LEFT JOIN Attendance a ON e.enrollment_id = a.enrollment_id AND a.date = ?
-            WHERE e.subject_code = ?
-            ORDER BY u.name ASC
-        """;
+        String sql = 
+        	    "SELECT e.enrollment_id, u.name, a.status " +
+        	    "FROM Enrollment e " +
+        	    "JOIN Student s ON e.student_id = s.user_id " +
+        	    "JOIN User u ON s.user_id = u.user_id " +
+        	    "LEFT JOIN Attendance a ON e.enrollment_id = a.enrollment_id AND a.date = ? " +
+        	    "WHERE e.subject_code = ? " +
+        	    "ORDER BY u.name ASC";
 
         try (Connection conn = DbcpBean.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -777,13 +776,11 @@ public class ProfessorDao {
 
     // ✅ 2. 출결 저장 (INSERT or UPDATE)
     public void saveOrUpdateAttendance(int enrollmentId, String date, String status, int professorId) {
-        String sql = """
-            INSERT INTO Attendance (enrollment_id, date, status, checked_by)
-            VALUES (?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-                status = VALUES(status),
-                checked_by = VALUES(checked_by)
-        """;
+    	String sql = "INSERT INTO Attendance (enrollment_id, date, status, checked_by) " +
+                "VALUES (?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "status = VALUES(status), " +
+                "checked_by = VALUES(checked_by)";
 
         try (Connection conn = DbcpBean.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -827,27 +824,30 @@ public class ProfessorDao {
 		}
 		return noticeList;
 	}
-	// 공지사항(교수) 테이블에 데이터 추가
-	public void insertNoticeProfessor(NoticeProfessorVo vo) {
-        String sql = "INSERT INTO NoticeProfessor (title, content, user_id, file_name, file_path, file_size) VALUES (?, ?, ?, ?, ?, ?)";
-        try {
-        	conn = DbcpBean.getConnection();
-            pstmt = conn.prepareStatement(sql);
+	// 공지사항(교수) 테이블에 데이터 추가 or 수정
+	public void insertOrUpdateNoticeProfessor(NoticeProfessorVo vo) {
+	    String sql = "INSERT INTO NoticeProfessor (notice_id, title, content, user_id, file_name, file_path, file_size) " +
+	                 "VALUES (?, ?, ?, ?, ?, ?, ?) " +
+	                 "ON DUPLICATE KEY UPDATE title = VALUES(title), content = VALUES(content), " +
+	                 "file_name = VALUES(file_name), file_path = VALUES(file_path), file_size = VALUES(file_size)";
+	    try {
+	        conn = DbcpBean.getConnection();
+	        pstmt = conn.prepareStatement(sql);
 
-            pstmt.setString(1, vo.getTitle());
-            pstmt.setString(2, vo.getContent());
-            pstmt.setInt(3, vo.getUserId());
-            pstmt.setString(4, vo.getFileName());
-            pstmt.setString(5, vo.getFilePath());
-            pstmt.setLong(6, vo.getFileSize());
+	        pstmt.setInt(1, vo.getNoticeId());  // notice_id 값 설정
+	        pstmt.setString(2, vo.getTitle());
+	        pstmt.setString(3, vo.getContent());
+	        pstmt.setInt(4, vo.getUserId());
+	        pstmt.setString(5, vo.getFileName());
+	        pstmt.setString(6, vo.getFilePath());
+	        pstmt.setLong(7, vo.getFileSize());
 
-            pstmt.executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-        	DbcpBean.close(conn, pstmt, rs);
-        }
+	        pstmt.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(conn, pstmt, rs);
+	    }
 	}
 	// 공지사항(교수)에서 선택한 공지사항 삭제
 	public boolean deleteProfessorNotice(String[] noticeIds) {

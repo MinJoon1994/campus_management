@@ -4,7 +4,6 @@
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,45 +11,62 @@
     <title>공지사항 상세</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
             padding: 0;
+            background-color: #f4f6f9;
         }
         .container {
-            width: 90%;
-            margin: 30px auto;
+            width: 60%;
+            margin: 50px auto;
             padding: 20px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
         h2 {
             text-align: center;
             color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 24px;  /* 글자 크기 키움 */
         }
         .notice-details {
             margin: 20px 0;
         }
         .notice-details label {
             font-weight: bold;
+            font-size: 16px;  /* 글자 크기 키움 */
+            margin-bottom: 10px;
+            display: block;
+            color: #333;
         }
         .notice-details p {
-            margin: 10px 0;
+            margin: 15px 0;
+            font-size: 15px;  /* 글자 크기 키움 */
+            color: #555;
         }
         .button-area {
             text-align: right;
             margin-top: 20px;
         }
         .button-area button {
-            padding: 8px 16px;
+            padding: 12px 25px;
             background-color: #3498db;
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
         }
         .button-area button:hover {
             background-color: #2980b9;
+        }
+        .button-area button[type="button"] {
+            background-color: #ccc;
+        }
+        .button-area button[type="button"]:hover {
+            background-color: #999;
         }
     </style>
 </head>
@@ -72,39 +88,25 @@
             <p>${noticeVo.createdAt}</p>
 
             <label>첨부파일:</label>
-            <p><a href="${contextPath}/uploads/${noticeVo.fileName}" download>파일 다운로드</a></p>
+            <p><a href="#" onclick="downloadFile('${noticeVo.fileName}')">${noticeVo.fileName}</a></p>
         </div>
 
-        <div class="button-area">
-            <button onclick="location.href='${contextPath}/professor/editNotice.do?noticeId=${noticeVo.noticeId}'">수정</button>
-            <button onclick="deleteNotice(${noticeVo.noticeId})">삭제</button>
-        </div>
+        <!-- 수정 버튼을 클릭하면 폼으로 데이터 전송 -->
+        <form action="${contextPath}/professors/NoticeEdit.jsp" method="get">
+            <!-- hidden으로 noticeVo의 값을 넘겨줌 -->
+            <input type="hidden" name="noticeId" value="${noticeVo.noticeId}" />
+            <input type="hidden" name="title" value="${noticeVo.title}" />
+            <input type="hidden" name="content" value="${noticeVo.content}" />
+            <input type="hidden" name="createdAt" value="${noticeVo.createdAt}" />
+            <input type="hidden" name="fileName" value="${noticeVo.fileName}" />
+
+            <div class="button-area">
+                <button type="submit">수정</button>
+            </div>
+        </form>
     </c:if>
 
 </div>
-
-<script>
-    // 공지사항 삭제 기능
-    function deleteNotice(noticeId) {
-        if (confirm('정말로 이 공지사항을 삭제하시겠습니까?')) {
-            fetch('${contextPath}/professor/deleteNotice.do', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'noticeId=' + noticeId
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('공지사항이 삭제되었습니다.');
-                    window.close(); // 창 닫기
-                } else {
-                    alert('삭제 실패');
-                }
-            });
-        }
-    }
-</script>
 
 </body>
 </html>

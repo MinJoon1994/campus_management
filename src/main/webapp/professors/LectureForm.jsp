@@ -253,7 +253,7 @@
 		        const result = await res.text();
 
 		        if (result.trim() === "DUPLICATE") {
-		            alert(`${i + 1}번째 입력 (${day} ${start}~${end}교시)는 DB에 이미 존재하는 강의와 겹칩니다.`);
+		            alert((i + 1) + "번째 입력 " + day + " (" + start + "~" + (end) + "교시)는 이미 등록한 강의와 겹칩니다.");
 		            return false;
 		        }
 		    }

@@ -115,8 +115,8 @@ public class ProfessorService {
 		return professorDao.getAllNoticeProfessorList(professor_id);
 	}
 	// 교수 공지사항 등록
-	public void insertNoticeProfessor(NoticeProfessorVo vo) {
-		professorDao.insertNoticeProfessor(vo);
+	public void insertOrUpdateNoticeProfessor(NoticeProfessorVo vo) {
+		professorDao.insertOrUpdateNoticeProfessor(vo);
 		
 	}
 	// 교수 공지사항 삭제

@@ -2,8 +2,11 @@ package professorcontroller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -65,7 +68,7 @@ public class ProfessorController extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=utf-8");
 
-		PrintWriter pw = response.getWriter();
+		
 
 		String action = request.getPathInfo();
 		System.out.println("요청한 2단계 주소 이거:" + action);
@@ -196,13 +199,16 @@ public class ProfessorController extends HttpServlet {
 			String subjectCode = request.getParameter("subjectCode");
 			
 			LecturePlanVo lecturePlanVo = professorService.getAllLecturePlanList(subjectCode);
-			request.setAttribute("subjectList", subjectList);
 			request.setAttribute("lecturePlanVo", lecturePlanVo);
+
+			request.setAttribute("subjectList", subjectList);
+			
 			nextPage = "/professors/LecturePlan.jsp";
 		}
 
 		// ✅ 나의 강의목록 조회 / 강의계획서 추가
 		else if (action.equals("/lectures/lectureplanadd.do")) {
+			PrintWriter pw = response.getWriter();
 			planvo.setSubjectCode(request.getParameter("subjectCode"));
 			planvo.setSubjectName(request.getParameter("subjectName"));
 	        planvo.setProfessorId(request.getParameter("professorId"));
@@ -227,6 +233,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 나의 강의목록 조회 / 강의계획서 수정
 		else if (action.equals("/lectures/lectureplanupdate.do")) {
+			PrintWriter pw = response.getWriter();
 			planvo.setSubjectCode(request.getParameter("subjectCode"));
 			planvo.setSubjectName(request.getParameter("subjectName"));
 	        planvo.setProfessorId(request.getParameter("professorId"));
@@ -249,12 +256,16 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 나의 강의목록 조회 / 강의계획서 삭제
 		else if (action.equals("/lectures/lectureplandelete.do")) {
-			String id = (String)session.getAttribute("id");
-			System.out.println("강의게획서 삭제... : " + id);
+			PrintWriter pw = response.getWriter();
+			String subjectCode = request.getParameter("subjectCode");
 			
-			boolean result = professorService.deleteLecturePlan(id);
+			System.out.println("강의계획서 삭제... ");
+			
+			boolean result = professorService.deleteLecturePlan(subjectCode);
 			if (result) {
-				pw.println("<script>alert('삭제 성공');history.back();</script>");
+				pw.println("<script>alert('삭제 성공');</script>");
+				response.sendRedirect(request.getContextPath() + "/professor/lectures/lectureplan");
+				return;
 		    } else {
 		        pw.println("<script>alert('삭제 실패');history.back();</script>");
 		        return;
@@ -297,7 +308,7 @@ public class ProfessorController extends HttpServlet {
 			Vector<LectureListVo> subjectVo = professorService.getAllLectureList2(professor_id);
 			request.setAttribute("subjectList", subjectVo);
 			
-			// 과목과 날짜가 선택된 경우에만 출결 목록 조회
+			// 과목과 날짜가 선택된 경우에만 출결 목록 조회(옵션에서 선택한 과목과 날짜)
 	        String subjectCode = request.getParameter("subject_code");
 	        String date = request.getParameter("date");			
 	        
@@ -456,7 +467,8 @@ public class ProfessorController extends HttpServlet {
 			nextPage = "/professors/ProfessorMain.jsp";
 		}
 		// ✅ 공지사항 / 교수 공지사항 등록
-		else if(action.equals("/noticeinsert.do")) {
+		else if(action.equals("/noticeinsertorupdate.do")) {
+			 PrintWriter pw = response.getWriter();
 			 File currentDirPath = new File("c:\\file_repo");
 			 DiskFileItemFactory factory = new DiskFileItemFactory();
 			 factory.setSizeThreshold(1024*1024);
@@ -515,16 +527,19 @@ public class ProfessorController extends HttpServlet {
 	            vo.setFilePath(currentDirPath + "/" + fileName); // DB에는 상대 경로 저장 추천
 	            vo.setFileSize(fileSize);
 	            
-	            professorService.insertNoticeProfessor(vo);
+	            professorService.insertOrUpdateNoticeProfessor(vo);
 	            
-	            nextPage = "/professor/noticeprofessor";
+	            response.sendRedirect(request.getContextPath() + "/professor/noticeprofessor");
+	            return;
 			 } catch (Exception e) {
 				 e.printStackTrace();
 				 pw.println("<script>alert('등록 실패');history.back();</script>");
+				 
 			 }
 		}
 		// ✅ 공지사항 / 교수 공지사항 삭제
 		else if(action.equals("/deletenotice.do")) {
+			PrintWriter pw = response.getWriter();
 			response.setContentType("text/plain; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			
@@ -546,13 +561,52 @@ public class ProfessorController extends HttpServlet {
 			System.out.println("noticeid : "+noticeId);
 			
 			NoticeProfessorVo notice = professorService.getNoticeById(noticeId);
-			System.out.println("noticevo : "+notice);
 			
 			request.setAttribute("noticeVo", notice);
 			
 			nextPage = "/professors/NoticeDetail.jsp";
 		}
-		
+		// ✅ 공지사항 / 파일 다운로드 처리
+		else if (action.equals("/noticedownload.do")) {
+		    String file_repo = "C:\\file_repo";
+		    String fileName = request.getParameter("fileName");
+		    String downFile = file_repo + "\\" + fileName;
+
+		    File file = new File(downFile);
+		    
+		    if (!file.exists()) {
+		        // 예외나 로그만 찍고 return; (절대 response.getWriter() 쓰지 말 것)
+		        response.sendError(HttpServletResponse.SC_NOT_FOUND, "파일을 찾을 수 없습니다.");
+		        return;
+		    }
+
+		    // 응답 헤더 설정
+		    response.setContentType("application/octet-stream");
+		    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		    response.setHeader("Pragma", "no-cache");
+		    response.setHeader("Expires", "0");
+
+		    String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", "%20");
+		    response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"");
+
+		    try (
+		        FileInputStream in = new FileInputStream(file);
+		        OutputStream out = response.getOutputStream();
+		    ) {
+		        byte[] buffer = new byte[8192];
+		        int bytesRead;
+		        while ((bytesRead = in.read(buffer)) != -1) {
+		            out.write(buffer, 0, bytesRead);
+		        }
+		        out.flush();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "파일 다운로드 중 오류 발생");
+		    }
+
+		    return;
+		}
+
 		// ✅ 질문,답변 / 강의 관련 질문 모아보기
 		else if(action.equals("/qnalist")) {
 			String professor_id = (String)session.getAttribute("id");
@@ -580,6 +634,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 질문,답변 / 교수가 학생 질문 삭제
 		else if (action.equals("/deleteqna")) {
+			PrintWriter pw = response.getWriter();
 			response.setContentType("text/plain; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			
@@ -597,6 +652,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 질문,답변 / 교수 답변 등록
 		else if (action.equals("/qnaprofessor/append.do")) {
+			PrintWriter pw = response.getWriter();
 		    BufferedReader reader = request.getReader();
 		    Gson gson = new Gson();
 		    ReplyProfessorVo vo = gson.fromJson(reader, ReplyProfessorVo.class);
@@ -612,6 +668,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 질문,답변 / 교수 답변 수정
 		else if (action.equals("/qnaprofessor/update.do")) {
+			PrintWriter pw = response.getWriter();
 		    BufferedReader reader = request.getReader();
 		    Gson gson = new Gson();
 		    ReplyProfessorVo vo = gson.fromJson(reader, ReplyProfessorVo.class);
@@ -625,6 +682,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 질문,답변 / 교수 답변 추가 삭제
 		else if (action.equals("/qnaprofessor/delete.do")) {
+			PrintWriter pw = response.getWriter();
 		    BufferedReader reader = request.getReader();
 		    JsonObject obj = JsonParser.parseReader(reader).getAsJsonObject();
 		    int qnaId = obj.get("qnaId").getAsInt();

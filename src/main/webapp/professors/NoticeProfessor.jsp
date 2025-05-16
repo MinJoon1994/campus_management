@@ -133,10 +133,14 @@
 		}
 		// 행 클릭 시 해당 공지사항 상세 보기
 		function openNoticeDetails(noticeId) {
-			console.log("contextPath:", contextPath);
-		    console.log("Received noticeId:", noticeId);  // Received noticeId: 9
-		    const url = `${contextPath}/professor/noticedetail?noticeId=${noticeId}`;
-		    console.log("Generated URL:", url);  // Generated URL: /campus_management/professor/noticedetail?noticeId=
+		    const contextPath = "${contextPath}";
+		    console.log("typeof noticeId:", typeof noticeId);
+		    console.log("contextPath:", contextPath);
+		    console.log("Received noticeId:", noticeId);
+		
+		    const url = contextPath + "/professor/noticedetail?noticeId=" + noticeId;
+		    console.log("Generated URL:", url);
+		
 		    window.open(url, '공지사항 확인', 'width=800,height=600');
 		}
 	</script>
@@ -160,9 +164,9 @@
                 </thead>
                 <tbody>
                     <c:forEach var="notice" items="${noticeVo}" varStatus="status">
-                        <tr onclick="openNoticeDetails(${notice.noticeId})">
+                        <tr onclick='openNoticeDetails("${notice.noticeId}")'>
                         	<td>
-                        		<input type="checkbox" name="noticeIds" value="${notice.noticeId}"/>
+                        		<input type="checkbox" name="noticeIds" value="${notice.noticeId}" onclick="event.stopPropagation();"/>
                         	</td>
                             <td>${status.count}</td>
                             <td>${notice.title}</td>
@@ -184,7 +188,7 @@
 	<!-- 글쓰기 폼 -->
 	<div id="noticeWriteForm" style="display:none; padding: 20px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-top: 20px;">
 	    <h3>📝 공지사항 등록</h3>
-	    <form action="${contextPath}/professor/noticeinsert.do" method="post" enctype="multipart/form-data">
+	    <form action="${contextPath}/professor/noticeinsertorupdate.do" method="post" enctype="multipart/form-data">
 	        <div style="margin-bottom: 10px;">
 	            <label>제목</label><br>
 	            <input type="text" name="title" style="width: 100%; padding: 8px;" required>
