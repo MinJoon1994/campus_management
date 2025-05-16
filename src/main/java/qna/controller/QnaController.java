@@ -37,7 +37,7 @@ public class QnaController extends HttpServlet{
         	List<QnaVO> list  = qnaService.getQnaList(req);
         	
         	//질문글 목록 VIEW쪽에 전달
-        	req.setAttribute("qnalist", list);
+        	req.setAttribute("list", list);
         	
         	req.setAttribute("center", "qnas/qnalist.jsp");
         	
@@ -56,8 +56,31 @@ public class QnaController extends HttpServlet{
         	
         	nextPage="/main.jsp";
         
+        }else if(action.equals("/qnaform")) { //질문글 작성 폼 요청
+			
+			//질문글 작성 폼 VIEW쪽에 전달
+			req.setAttribute("center", "qnas/qnaform.jsp");
+			
+			nextPage="/main.jsp";
+        	
+        }else if(action.equals("/qnaclass")) { 
+        	
+        	qnaService.insertClassQuestion(req);
+        	out.print("<script>");
+        	out.print("alert('질문글이 등록 되었습니다.');");
+        	out.print("location.href='"+req.getContextPath()+"/qna/list';");
+        	out.print("</script>");
+        	return;
+        	
+        }else if(action.equals("/qnacampus")) {
+        	
+        	qnaService.insertCampusQuestion(req);
+			out.print("<script>");
+			out.print("alert('질문글이 등록 되었습니다.');");
+			out.print("location.href='"+req.getContextPath()+"/qna/list';");
+			out.print("</script>");
+			return;
         }
-        
         
 		if(nextPage != null) {
 			req.getRequestDispatcher(nextPage).forward(req, resp);

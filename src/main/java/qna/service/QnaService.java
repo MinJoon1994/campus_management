@@ -14,5 +14,9 @@ public interface QnaService {
 	
 	//특정 질문글 조회 요청
 	QnaVO getQnaDetail(HttpServletRequest req);
+	
+	
+    void insertClassQuestion(HttpServletRequest req);
+    void insertCampusQuestion(HttpServletRequest req);
 
 }
