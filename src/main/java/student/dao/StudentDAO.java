@@ -2,14 +2,68 @@ package student.dao;
 
 import java.sql.*;
 import java.util.*;
+
+import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.SubjectGradeVO;
 import main.DbcpBean;   
 import member.vo.StudentVO;
 
 public class StudentDAO {
+	
+	// student.dao.StudentDAO
 
-    // 1. 학기별 성적 리스트 조회
+	// 수강신청 (등록)
+	public int enroll(int studentId, String subjectCode) throws Exception {
+	    String sql = "INSERT INTO Enrollment (student_id, subject_code) VALUES (?, ?)";
+	    try (Connection conn = DbcpBean.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, studentId);
+	        ps.setString(2, subjectCode);
+	        return ps.executeUpdate();
+	    }
+	}
+
+	// 수강신청 목록 조회
+	public List<student.vo.LectureVO> getEnrolledLectures(int studentId) throws Exception {
+	    List<student.vo.LectureVO> list = new ArrayList<>();
+	    String sql = "SELECT e.enrollment_id, s.subject_code, s.subject_name, s.professor_name, s.credit, s.open_grade " +
+	                 "FROM Enrollment e " +
+	                 "JOIN Subject s ON e.subject_code = s.subject_code " +
+	                 "WHERE e.student_id = ? " +
+	                 "ORDER BY s.open_grade DESC, s.subject_name";
+	    try (Connection conn = DbcpBean.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, studentId);
+	        try (ResultSet rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                student.vo.LectureVO vo = new student.vo.LectureVO();
+	                vo.setEnrollmentId(rs.getInt("enrollment_id"));
+	                vo.setSubjectCode(rs.getString("subject_code"));
+	                vo.setSubjectName(rs.getString("subject_name"));
+	                vo.setProfessorName(rs.getString("professor_name"));
+	                vo.setCredit(rs.getInt("credit"));
+	                vo.setOpenGrade(rs.getString("open_grade"));
+	                list.add(vo);
+	            }
+	        }
+	    }
+	    return list;
+	}
+
+	// 수강신청 취소
+	public int deleteEnrollment(int studentId, int enrollmentId) throws Exception {
+	    String sql = "DELETE FROM Enrollment WHERE enrollment_id = ? AND student_id = ?";
+	    try (Connection conn = DbcpBean.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, enrollmentId);
+	        ps.setInt(2, studentId);
+	        return ps.executeUpdate();
+	    }
+	}
+
+
+    // 학기별 성적 리스트 조회
     public List<SemesterGradeVO> getSemesterGrades(int studentId) throws Exception {
         String sql = 
             "SELECT s.open_grade AS semester, " +
@@ -40,7 +94,7 @@ public class StudentDAO {
         return list;
     }
 
-    // 2. 특정 학기 과목별 성적 상세 조회
+    // 특정 학기 과목별 성적 상세 조회
     public List<SubjectGradeVO> getGradesBySemester(int studentId, String semester) throws Exception {
         String sql =
             "SELECT s.subject_name, s.professor_name, s.credit, g.score, g.grade " +
@@ -136,5 +190,30 @@ public class StudentDAO {
             }
         }
         return semesterList;
+    }
+    
+ // 학생이 신청 안 한(수강 안 한) 과목 목록
+    public List<LectureVO> getAvailableLectures(int studentId) throws Exception {
+        List<LectureVO> list = new ArrayList<>();
+        String sql = "SELECT s.subject_code, s.subject_name, s.professor_name, s.credit, s.open_grade " +
+                     "FROM Subject s " +
+                     "WHERE s.subject_code NOT IN (SELECT e.subject_code FROM Enrollment e WHERE e.student_id = ?) " +
+                     "ORDER BY s.open_grade DESC, s.subject_name";
+        try (Connection conn = DbcpBean.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, studentId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    LectureVO vo = new LectureVO();
+                    vo.setSubjectCode(rs.getString("subject_code"));
+                    vo.setSubjectName(rs.getString("subject_name"));
+                    vo.setProfessorName(rs.getString("professor_name"));
+                    vo.setCredit(rs.getInt("credit"));
+                    vo.setOpenGrade(rs.getString("open_grade"));
+                    list.add(vo);
+                }
+            }
+        }
+        return list;
     }
 }

@@ -19,17 +19,46 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void enroll(HttpServletRequest req) {
         // TODO: 수강신청 구현
+    	try {
+			Integer studentId = (Integer)req.getSession().getAttribute("studentId");
+			String subjectCode = req.getParameter("subjectCode");
+			if(studentId != null && subjectCode != null) {
+				studentDAO.enroll(studentId, subjectCode);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @Override
     public List<LectureVO> getLectureList(HttpServletRequest req) {
         // TODO: 수강목록 조회 구현
-        return null;
+    	List<LectureVO> list = new ArrayList<>();
+    	try {
+			Integer studentId = (Integer)req.getSession().getAttribute("studentId");
+			if(studentId != null) {
+				list = studentDAO.getEnrolledLectures(studentId);
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+        return list;
     }
 
     @Override
     public void enrollDelete(HttpServletRequest req) {
         // TODO: 수강신청 취소 구현
+    	try {
+			Integer studentId = (Integer)req.getSession().getAttribute("studentId");
+			int enrollmentId = Integer.parseInt(req.getParameter("enrollmentId"));
+			if(studentId != null) {
+				studentDAO.deleteEnrollment(studentId, enrollmentId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     // 전체 학기 성적 조회
