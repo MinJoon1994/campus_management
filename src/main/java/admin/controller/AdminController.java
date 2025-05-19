@@ -141,7 +141,7 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
         	
         	return;
         		
-        }else if(action.equals("/grades")) {//공지사항 삭제 요청
+        }else if(action.equals("/noticedelete")) {//공지사항 삭제 요청
         	
         	//공지사항 삭제 요청
         	adminService.deleteNotice(req);

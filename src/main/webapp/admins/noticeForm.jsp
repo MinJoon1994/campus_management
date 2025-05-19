@@ -51,27 +51,32 @@
 	resize: vertical;
 }
 
-.form-buttons {
-	text-align: center;
-	padding-top: 20px;
+.submit_btn{
+    background-color: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
-.form-buttons input[type="submit"],
-.form-buttons input[type="reset"] {
-	padding: 10px 30px;
-	font-size: 16px;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	margin: 0 10px;
-	background-color: #2c3e50;
-	color: white;
-	transition: background-color 0.3s;
+.submit_btn:hover {
+    background-color: #34495e;
 }
 
-.form-buttons input[type="submit"]:hover,
-.form-buttons input[type="reset"]:hover {
-	background-color: #3e556f;
+.cancel_btn{
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.cancel_btn:hover {
+    background-color: #c0392b;
 }
 
 </style>
@@ -92,8 +97,8 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="submit" value="등록">
-                        <input type="reset" value="취소">
+                        <input class="submit_btn" type="submit" value="등록">
+                        <input class="cancel_btn" type="reset" value="취소">
                     </td>
                 </tr>
             </table>

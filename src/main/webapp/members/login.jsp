@@ -64,7 +64,7 @@ body {
     width: 100%;
     padding: 12px;
     margin-top: 25px;
-    background-color: #007bff;
+    background-color:rgb(44, 62, 80);
     color: white;
     border: none;
     border-radius: 8px;
@@ -75,7 +75,7 @@ body {
 }
 
 .container button:hover {
-    background-color: #0056b3;
+    background-color:rgba(44, 62, 80,0.5);
 }
 
 /* 회원가입 링크 */
@@ -88,7 +88,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 8px;
     font-weight: bold;
-    color: #007bff;
+    color:rgb(44, 62, 80);
     background-color: white;
     text-decoration: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 아주 얇은 그림자 */
@@ -96,9 +96,9 @@ body {
 }
 
 .container a:hover {
-    background-color: #f0f8ff;
-    border-color: #007bff;
-    color: #0056b3;
+    background-color: rgba(44, 62, 80,0.5);
+    border-color: 1px rgb(44, 62, 80);
+    color: white;
 }
 </style>
 </head>
@@ -112,10 +112,10 @@ body {
             <label for="password">비밀번호</label>
             <input type="password" id="password" name="password">
             <br>
-            <button type="submit">로그인</button>
+            <button class="login_btn" type="submit">로그인</button>
         </form>
         
-        <a class="btn btn-" href="${contextPath}/member/register">회원가입</a>
+        <a class="memberform_btn" href="${contextPath}/member/register">회원가입</a>
 	</div>
 	<script>
 		document.addEventListener("DOMContentLoaded", function() {

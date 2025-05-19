@@ -63,7 +63,10 @@
 			<div class="col-md-5">
 				<!-- 공지사항 박스 -->
 				<div class="notice-box p-3 bg-light border rounded">
-					<h4><a class="notice_title" href="${contextPath}/notice/list">공지사항</a></h4>
+					<div class="d-flex justify-content-between align-items-center">
+						<h4><a class="notice_title" href="${contextPath}/notice/list">공지사항</a></h4>
+						<h6><a class="notice_title" href="${contextPath}/notice/list">더보기</a></h6>
+					</div>
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -82,8 +85,10 @@
 				</div>
 				<!-- QNA 박스 -->
 				<div class="qna-box p-3 bg-light border rounded mt-2">
-					<h4><a class="notice_title" href="${contextPath}/qna/list">질문게시판</a></h4>
-					
+					<div class="d-flex justify-content-between align-items-center">
+						<h4><a class="notice_title" href="${contextPath}/qna/list">질문게시판</a></h4>
+						<h6><a class="notice_title" href="${contextPath}/qna/list">더보기</a></h6>
+					</div>
 					<table class="table table-bordered">
 						<thead>
 							<tr>

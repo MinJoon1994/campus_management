@@ -92,6 +92,10 @@ public class MemberController extends HttpServlet{
 					session.setAttribute("professor_id", vo.getProfessorVO().getProfessor_id());
 				}
 				
+				if(vo.getRole().equals("STUDENT")) {
+					session.setAttribute("student_id", vo.getStudentVO().getStudent_id());
+				}
+				
 				session.setAttribute("vo", vo);
 				System.out.println(vo);
 				
