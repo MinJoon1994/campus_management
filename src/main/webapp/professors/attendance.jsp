@@ -11,10 +11,13 @@
 	// SUBJ001	     과목1	       전공	         2	         A	       3  	   16	         홍교수	         월 1-2교시	0	               30	     1
     Vector<LectureListVo> subjectList = (Vector<LectureListVo>) request.getAttribute("subjectList");
     // 옵션에서 선택한 과목코드와 날자
-	
-    Vector<AttendanceViewVo> studentList = (Vector<AttendanceViewVo>) request.getAttribute("studentList");
+    
     String subjectCode = request.getParameter("subject_code");
     String selectedDate = request.getParameter("date");
+    System.out.println("subjectCode: " + subjectCode); // 로그로 확인
+    System.out.println("selectedDate: " + selectedDate); // 로그로 확인
+    
+    Vector<AttendanceViewVo> studentList = (Vector<AttendanceViewVo>) request.getAttribute("studentList");
 %>
 
 <!DOCTYPE html>
@@ -22,11 +25,13 @@
 <head>
     <meta charset="UTF-8">
     <title>출결 관리</title>
-
+    
     <!-- ✅ flatpickr 캘린더 라이브러리 CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    	<!-- flatpickr 한국어 로케일 추가 -->
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+	
     <style>
         body { margin: 0; padding: 0; font-family: Arial, sans-serif; margin: 20px; }
         .container {width: 90%; margin: 0 auto; padding-top: 20px;}
@@ -89,12 +94,16 @@
 	    if (studentList != null && !studentList.isEmpty()) {
 	        int total = studentList.size();
 	        int present = 0, late = 0, absent = 0;
-	
 	        for (AttendanceViewVo vo : studentList) {
-	            if ("PRESENT".equals(vo.getStatus())) present++;
-	            else if ("LATE".equals(vo.getStatus())) late++;
-	            else if ("ABSENT".equals(vo.getStatus())) absent++;
+	        	if(vo.getStatus() == null) {
+	        		present++;
+	        	} else {
+		            if ("PRESENT".equals(vo.getStatus())) present++;
+		            else if ("LATE".equals(vo.getStatus())) late++;
+		            else if ("ABSENT".equals(vo.getStatus())) absent++;
+	        	}
 	        }
+	        
 	%>
 	
 	<!-- ✅ 출결 통계 박스 -->

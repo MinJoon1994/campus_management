@@ -103,8 +103,8 @@ public class ProfessorService {
 		return professorDao.deleteStudentQna(qnaIds);
 	}
 	// 과목과 날짜가 선택된 경우에만 출결 목록 조회
-	public Vector<AttendanceViewVo> getAttendanceListBySubjectAndDate(String subjectCode, String date) {
-		return professorDao.getAttendanceListBySubjectAndDate(subjectCode, date);
+	public Vector<AttendanceViewVo> getAttendanceListBySubjectAndDate(String subjectCode) {
+		return professorDao.getAttendanceListBySubjectCode(subjectCode);
 	}
 
 	public void saveOrUpdateAttendance(int enrollmentId, String date, String status, int professorId) {
@@ -115,8 +115,13 @@ public class ProfessorService {
 		return professorDao.getAllNoticeProfessorList(professor_id);
 	}
 	// 교수 공지사항 등록
-	public void insertOrUpdateNoticeProfessor(NoticeProfessorVo vo) {
-		professorDao.insertOrUpdateNoticeProfessor(vo);
+	public void insertNoticeProfessor(NoticeProfessorVo vo) {
+		professorDao.insertNoticeProfessor(vo);
+		
+	}
+	// 교수 공지사항 수정
+	public boolean updateNoticeProfessor(NoticeProfessorVo vo) {
+		return professorDao.updateNoticeProfessor(vo);
 		
 	}
 	// 교수 공지사항 삭제

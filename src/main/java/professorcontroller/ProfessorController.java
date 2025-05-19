@@ -301,6 +301,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 수강생 출석관리 / 출석관리 화면
 		else if(action.equals("/attendancemanage")) {
+			System.out.println("출석조회시작...");
 			String professor_id = (String)session.getAttribute("id");
 			int professordId  = Integer.parseInt(professor_id);
 			
@@ -313,7 +314,7 @@ public class ProfessorController extends HttpServlet {
 	        String date = request.getParameter("date");			
 	        
 	        if (subjectCode != null && date != null) {
-	            Vector<AttendanceViewVo> studentList = professorService.getAttendanceListBySubjectAndDate(subjectCode, date);
+	            Vector<AttendanceViewVo> studentList = professorService.getAttendanceListBySubjectAndDate(subjectCode);
 	            request.setAttribute("studentList", studentList);
 	        }
 	        
@@ -467,7 +468,7 @@ public class ProfessorController extends HttpServlet {
 			nextPage = "/professors/ProfessorMain.jsp";
 		}
 		// ✅ 공지사항 / 교수 공지사항 등록
-		else if(action.equals("/noticeinsertorupdate.do")) {
+		else if(action.equals("/noticeinsert.do")) {
 			 PrintWriter pw = response.getWriter();
 			 File currentDirPath = new File("c:\\file_repo");
 			 DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -527,7 +528,7 @@ public class ProfessorController extends HttpServlet {
 	            vo.setFilePath(currentDirPath + "/" + fileName); // DB에는 상대 경로 저장 추천
 	            vo.setFileSize(fileSize);
 	            
-	            professorService.insertOrUpdateNoticeProfessor(vo);
+	            professorService.insertNoticeProfessor(vo);
 	            
 	            response.sendRedirect(request.getContextPath() + "/professor/noticeprofessor");
 	            return;
@@ -536,6 +537,86 @@ public class ProfessorController extends HttpServlet {
 				 pw.println("<script>alert('등록 실패');history.back();</script>");
 				 
 			 }
+		}
+		// ✅ 공지사항 / 교수 공지사항 수정
+		else if(action.equals("/noticeupdate.do")) {
+			 PrintWriter pw = response.getWriter();
+			 File currentDirPath = new File("c:\\file_repo");
+			 DiskFileItemFactory factory = new DiskFileItemFactory();
+			 factory.setSizeThreshold(1024*1024);
+			 factory.setRepository(currentDirPath);
+			 
+			 ServletFileUpload upload = new ServletFileUpload(factory);
+		        
+			 int noticeId = 0;
+			 String title = null;
+		     String content = null;
+	         String fileName = null;
+	         String filePath = null;
+	         long fileSize = 0;
+	         
+			 try {
+				 List<FileItem> items = upload.parseRequest(request);  
+				 for (FileItem item : items) {
+					// 일반 입력 필드인지 확인 (true: text, textarea 등 / false: 파일)
+			        if (item.isFormField()) {
+			            // 일반 입력 필드 (title, content 등)
+			            String fieldName = item.getFieldName(); // name 속성 (예: title, content)
+			            String value = item.getString("UTF-8"); // 사용자가 입력한 값 (한글 깨짐 방지)
+
+			            // 각각의 name에 따라 변수에 저장
+			            if ("notice_id".equals(fieldName)) noticeId = Integer.parseInt(value);
+			            if ("title".equals(fieldName)) title = value;
+			            if ("content".equals(fieldName)) content = value;
+
+			        } else {
+			            // 파일명이 비어있지 않은지 확인 (파일이 실제로 업로드 되었는지 확인)
+			            if (!item.getName().isEmpty()) {
+
+			                // 업로드된 파일 이름만 추출 (경로 없이 순수 파일명만)
+			                fileName = new File(item.getName()).getName(); 
+			                // 예: 사용자가 "C:\Users\홍길동\sample.pdf" 업로드 → "sample.pdf"
+
+			                // 서버에 저장할 전체 경로 구성 (예: C:/프로젝트경로/upload/sample.pdf)
+			                filePath = currentDirPath + File.separator + fileName;
+
+			                // 파일 크기 (byte) 저장
+			                fileSize = item.getSize(); 
+			                // 예: 153256 (바이트 단위)
+
+			                // 파일을 실제 서버에 저장 (하드디스크에 write)
+			                item.write(new File(filePath));
+
+			            }
+			        }
+				 }
+	            NoticeProfessorVo vo = new NoticeProfessorVo();
+	            vo.setNoticeId(noticeId);
+	            vo.setTitle(title);
+	            vo.setContent(content);
+	            vo.setFileName(fileName);
+	            vo.setFilePath(currentDirPath + "/" + fileName); // DB에는 상대 경로 저장 추천
+	            vo.setFileSize(fileSize);
+	            
+	            boolean result = professorService.updateNoticeProfessor(vo);
+	            
+				if (result) {
+		            pw.println("<script>");
+		            pw.println("alert('수정이 완료되었습니다.');");
+		            pw.println("window.opener.location.reload();"); // 부모 창 새로고침
+		            pw.println("window.close();");                 // 현재 창(팝업) 닫기
+		            pw.println("</script>");
+				} else {
+		            pw.println("<script>");
+		            pw.println("alert('수정이 실패했습니다.');");
+		            pw.println("window.close();");                 // 현재 창(팝업) 닫기
+		            pw.println("</script>");
+				}
+			 } catch (Exception e) {
+				 e.printStackTrace();
+				 pw.println("<script>alert('예기치 못한 오류가 발생했습니다.');window.close();</script>");
+			 }
+			 return;
 		}
 		// ✅ 공지사항 / 교수 공지사항 삭제
 		else if(action.equals("/deletenotice.do")) {

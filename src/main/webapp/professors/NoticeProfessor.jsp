@@ -188,7 +188,7 @@
 	<!-- 글쓰기 폼 -->
 	<div id="noticeWriteForm" style="display:none; padding: 20px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin-top: 20px;">
 	    <h3>📝 공지사항 등록</h3>
-	    <form action="${contextPath}/professor/noticeinsertorupdate.do" method="post" enctype="multipart/form-data">
+	    <form action="${contextPath}/professor/noticeinsert.do" method="post" enctype="multipart/form-data">
 	        <div style="margin-bottom: 10px;">
 	            <label>제목</label><br>
 	            <input type="text" name="title" style="width: 100%; padding: 8px;" required>

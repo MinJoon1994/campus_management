@@ -388,22 +388,20 @@ public class ProfessorDao {
 	// 성적 입력을 위한 => 성적 조회(점수가 null)
 	public Vector<GradeVo> getInsertGrade(String professor_id) {
 	    Vector<GradeVo> list = new Vector<>();
-
 	    String sql = 
-	    	    "SELECT " +
-	    	    "    s.subject_code, s.subject_name, " +
-	    	    "    stu.user_id AS student_id, stu.name AS student_name, " +
-	    	    "    st.student_number, st.department, " +
-	    	    "    e.enrollment_id, s.open_grade, " +
-	    	    "    g.score, g.grade " +
-	    	    "FROM Professor p " +
-	    	    "JOIN Subject s ON p.user_id = s.professor_id " +
-	    	    "JOIN Enrollment e ON s.subject_code = e.subject_code " +
-	    	    "JOIN Student st ON e.student_id = st.user_id " +
-	    	    "JOIN User stu ON st.user_id = stu.user_id " +
-	    	    "LEFT JOIN Grade g ON e.enrollment_id = g.enrollment_id " +
-	    	    "WHERE p.user_id = ? AND g.enrollment_id IS NULL";
-
+	        "SELECT " +
+	        "    s.subject_code, s.subject_name, " +
+	        "    stu.user_id AS student_id, stu.name AS student_name, " +
+	        "    st.student_number, st.department, " +
+	        "    e.enrollment_id, s.open_grade, " +
+	        "    g.score, g.grade " +
+	        "FROM Professor p " +
+	        "JOIN Subject s ON p.user_id = s.professor_id " +
+	        "JOIN Enrollment e ON s.subject_code = e.subject_code " +
+	        "JOIN Student st ON e.student_id = st.user_id " +
+	        "JOIN User stu ON st.user_id = stu.user_id " +
+	        "LEFT JOIN Grade g ON e.enrollment_id = g.enrollment_id " +
+	        "WHERE p.user_id = ? AND g.enrollment_id IS NULL";  // 성적이 NULL인 경우만 조회
 
 	    try {
 	        conn = DbcpBean.getConnection();
@@ -411,6 +409,7 @@ public class ProfessorDao {
 	        pstmt.setInt(1, Integer.parseInt(professor_id));
 
 	        rs = pstmt.executeQuery();
+
 	        while (rs.next()) {
 	            GradeVo vo = new GradeVo(
 	                rs.getString("subject_code"),
@@ -426,15 +425,17 @@ public class ProfessorDao {
 	            );
 	            list.add(vo);
 	        }
-		} catch (Exception e) {
-			System.out.println("교수 아이디에 해당하는 성적조회 중 오류 발생");
+
+	    } catch (Exception e) {
+	        System.out.println("교수 아이디에 해당하는 성적조회 중 오류 발생");
 	        e.printStackTrace();
-		} finally {
-			DbcpBean.close(conn, pstmt, rs); 
-		}
+	    } finally {
+	        DbcpBean.close(conn, pstmt, rs); 
+	    }
 
 	    return list;
 	}
+
 	// 성적 입력을 위한 => 성적 조회(점수가 not null)
 	public Vector<GradeVo> getUpdatetGrade(String professor_id) {
 	    Vector<GradeVo> list = new Vector<>();
@@ -740,36 +741,36 @@ public class ProfessorDao {
     }
     
 
-    // ✅ 1. 과목코드 + 날짜 기준 출결 데이터 조회
-    public Vector<AttendanceViewVo> getAttendanceListBySubjectAndDate(String subjectCode, String date) {
+ // ✅ 1. 과목코드 기준 수강생의 enrollment_id와 name 조회
+    public Vector<AttendanceViewVo> getAttendanceListBySubjectCode(String subjectCode) {
         Vector<AttendanceViewVo> list = new Vector<>();
         String sql = 
-        	    "SELECT e.enrollment_id, u.name, a.status " +
-        	    "FROM Enrollment e " +
-        	    "JOIN Student s ON e.student_id = s.user_id " +
-        	    "JOIN User u ON s.user_id = u.user_id " +
-        	    "LEFT JOIN Attendance a ON e.enrollment_id = a.enrollment_id AND a.date = ? " +
-        	    "WHERE e.subject_code = ? " +
-        	    "ORDER BY u.name ASC";
+            "SELECT e.enrollment_id, u.name " +
+            "FROM Enrollment e " +
+            "JOIN Student s ON e.student_id = s.user_id " +
+            "JOIN User u ON s.user_id = u.user_id " +
+            "WHERE e.subject_code = ? " +
+            "ORDER BY u.name ASC";
 
         try (Connection conn = DbcpBean.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, date);
-            pstmt.setString(2, subjectCode);
+        	System.out.println(sql);
+            pstmt.setString(1, subjectCode);  // subjectCode를 바인딩
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 AttendanceViewVo vo = new AttendanceViewVo();
                 vo.setEnrollmentId(rs.getInt("enrollment_id"));
                 vo.setStudentName(rs.getString("name"));
-                vo.setStatus(rs.getString("status")); // null일 수도 있음
-                list.add(vo);
+                vo.setStatus(null);
+                list.add(vo);  
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        } finally {
+			DbcpBean.close(conn, pstmt, rs);
+		}
 
         return list;
     }
@@ -781,7 +782,7 @@ public class ProfessorDao {
                 "ON DUPLICATE KEY UPDATE " +
                 "status = VALUES(status), " +
                 "checked_by = VALUES(checked_by)";
-
+    	System.out.println("\n\n\n\n결과 : " + enrollmentId +"," + date +","+ status +","+ professorId);
         try (Connection conn = DbcpBean.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -789,10 +790,13 @@ public class ProfessorDao {
             pstmt.setString(2, date);
             pstmt.setString(3, status);
             pstmt.setInt(4, professorId);
-            pstmt.executeUpdate();
+            int result = pstmt.executeUpdate();
+            System.out.println("결과 :"+ result);
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+        	DbcpBean.close(conn, pstmt);
         }
     }
     // 공지사항(교수) 테이블에서 교수 아이디로 모두 조회
@@ -824,17 +828,15 @@ public class ProfessorDao {
 		}
 		return noticeList;
 	}
-	// 공지사항(교수) 테이블에 데이터 추가 or 수정
-	public void insertOrUpdateNoticeProfessor(NoticeProfessorVo vo) {
+	// 공지사항(교수) 테이블에 데이터 추가
+	public void insertNoticeProfessor(NoticeProfessorVo vo) {
 	    String sql = "INSERT INTO NoticeProfessor (notice_id, title, content, user_id, file_name, file_path, file_size) " +
-	                 "VALUES (?, ?, ?, ?, ?, ?, ?) " +
-	                 "ON DUPLICATE KEY UPDATE title = VALUES(title), content = VALUES(content), " +
-	                 "file_name = VALUES(file_name), file_path = VALUES(file_path), file_size = VALUES(file_size)";
+	                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 	    try {
 	        conn = DbcpBean.getConnection();
 	        pstmt = conn.prepareStatement(sql);
 
-	        pstmt.setInt(1, vo.getNoticeId());  // notice_id 값 설정
+	        pstmt.setInt(1, vo.getNoticeId());
 	        pstmt.setString(2, vo.getTitle());
 	        pstmt.setString(3, vo.getContent());
 	        pstmt.setInt(4, vo.getUserId());
@@ -849,6 +851,41 @@ public class ProfessorDao {
 	        DbcpBean.close(conn, pstmt, rs);
 	    }
 	}
+	// 공지사항(교수) 테이블에 데이터 수정
+	public boolean updateNoticeProfessor(NoticeProfessorVo vo) {
+	    String sql = "UPDATE NoticeProfessor SET " +
+	                 "title = ?, content = ?, file_name = ?, file_path = ?, file_size = ? " +
+	                 "WHERE notice_id = ?";
+	    try {
+	        conn = DbcpBean.getConnection();
+	        pstmt = conn.prepareStatement(sql);
+
+	        pstmt.setString(1, vo.getTitle());
+	        pstmt.setString(2, vo.getContent());
+	        pstmt.setString(3, vo.getFileName());
+	        pstmt.setString(4, vo.getFilePath());
+	        pstmt.setLong(5, vo.getFileSize());
+	        pstmt.setInt(6, vo.getNoticeId());  // WHERE 조건
+
+	        //return pstmt.executeUpdate() == 1;
+	        int rows = pstmt.executeUpdate();
+	        
+	        if (rows == 0) {
+	            System.out.println("❗ update 실패: WHERE 조건에 맞는 공지사항이 없습니다.");
+	            System.out.println("  - notice_id: " + vo.getNoticeId());
+	            System.out.println("  - title: " + vo.getTitle());
+	            System.out.println("  - file_name: " + vo.getFileName());
+	        }
+
+	        return rows == 1;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(conn, pstmt, rs);
+	    }
+	    return false;
+	}
+	
 	// 공지사항(교수)에서 선택한 공지사항 삭제
 	public boolean deleteProfessorNotice(String[] noticeIds) {
         try {

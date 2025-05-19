@@ -15,7 +15,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>성적 입력 및 수정</title>
+    <title>성적 입력</title>
     <style>
         body { font-family: Arial; margin: 0; padding: 0; }
         .container { width: 90%; margin: 0 auto; padding: 20px; }
@@ -64,66 +64,90 @@
 	    }
 	
 	    // 성적 리스트에서 필터 조건(과목/학년/이름)에 맞는 학생들을 화면에 렌더링
-	    function searchGrades() {
-	        const subjectCode = document.getElementById("subject_code").value;
-	        const openGrade = document.getElementById("open_grade").value;
-	        const studentName = document.getElementById("student_name").value.trim();
-	        const tbody = document.getElementById("gradeBody");
-	        tbody.innerHTML = "";  // 기존 목록 초기화
+	    function searchGrades(page = 1) {
+    currentPage = page;
+
+    const subjectCode = document.getElementById("subject_code").value;
+    const openGrade = document.getElementById("open_grade").value;
+    const studentName = document.getElementById("student_name").value.trim();
+    const tbody = document.getElementById("gradeBody");
+    const paginationDiv = document.getElementById("pagination");
+
+    tbody.innerHTML = "";           // 기존 목록 초기화
+    paginationDiv.innerHTML = "";  // 페이지네이션 영역 초기화
+
+    // 필터 조건에 맞는 데이터만 필터링
+    const filtered = gradeList.filter(vo => {
+        const matchSubject = !subjectCode || vo.subjectCode === subjectCode;
+        const matchGrade = !openGrade || vo.openGrade == openGrade;
+        const matchName = !studentName || vo.studentName.includes(studentName);
+        return matchSubject && matchGrade && matchName;
+    });
+
+    // 결과 없을 경우 메시지 출력
+    if (filtered.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='13'>검색 결과 없음</td></tr>";
+        return;
+    }
+
+    // 페이징 처리
+    const pageSize = 10;
+    const totalPage = Math.ceil(filtered.length / pageSize);
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const pagedList = filtered.slice(startIndex, endIndex);
+
+    // 출력
+    pagedList.forEach(vo => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>\${vo.subjectCode}</td>
+            <td>\${vo.subjectName}</td>
+            <td>\${vo.openGrade}</td>
+            <td>\${vo.studentNumber}</td>
+            <td>\${vo.studentName}</td>
+            <td>\${vo.department}</td>
+            <td><input type="number" name="attendance" value="0"/></td>
+            <td><input type="number" name="assignment" value="0"/></td>
+            <td><input type="number" name="midterm" value="0"/></td>
+            <td><input type="number" name="finalExam" value="0"/></td>
+            <td class="totalScore">-</td>
+            <td class="grade">-</td>
+            <td><button type="button" onclick="submitUpdate(this)">등록하기</button></td>
+        `;
+        tr.dataset.enrollmentId = vo.enrollmentId;
+        tr.dataset.professorId = "<%= session.getAttribute("id") %>";
+        tbody.appendChild(tr);
+
+        // 실시간 총점/등급 계산
+        tr.querySelectorAll("input[type='number']").forEach(input => {
+            input.addEventListener("input", () => {
+                const att = parseFloat(tr.querySelector("input[name='attendance']").value) || 0;
+                const assign = parseFloat(tr.querySelector("input[name='assignment']").value) || 0;
+                const mid = parseFloat(tr.querySelector("input[name='midterm']").value) || 0;
+                const fin = parseFloat(tr.querySelector("input[name='finalExam']").value) || 0;
+                const total = calculateScore(att, assign, mid, fin);
+                tr.querySelector(".totalScore").innerText = total.toFixed(2);
+                tr.querySelector(".grade").innerText = getGrade(total);
+            });
+        });
+    });
+
+    // 페이지네이션 버튼 생성
+    for (let i = 1; i <= totalPage; i++) {
+        const pageBtn = document.createElement("button");
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => searchGrades(i);
+        if (i === currentPage) {
+            pageBtn.style.fontWeight = "bold";
+            pageBtn.style.backgroundColor = "#ddd";
+        }
+        paginationDiv.appendChild(pageBtn);
+    }
+}
 	
-	        // 필터 조건에 맞는 데이터만 필터링
-	        const filtered = gradeList.filter(vo => {
-	            const matchSubject = !subjectCode || vo.subjectCode === subjectCode;
-	            const matchGrade = !openGrade || vo.openGrade == openGrade;
-	            const matchName = !studentName || vo.studentName.includes(studentName);
-	            return matchSubject && matchGrade && matchName;
-	        });
-	
-	        // 결과 없을 경우 메시지 출력
-	        if (filtered.length === 0) {
-	            tbody.innerHTML = "<tr><td colspan='13'>검색 결과 없음</td></tr>";
-	            return;
-	        }
-	
-	        // 결과를 테이블에 출력
-	        filtered.forEach(vo => {
-	            const tr = document.createElement("tr");
-	            
-	            tr.innerHTML = `
-	                <td>\${vo.subjectCode}</td>
-	                <td>\${vo.subjectName}</td>
-	                <td>\${vo.openGrade}</td>
-	                <td>\${vo.studentNumber}</td>
-	                <td>\${vo.studentName}</td>
-	                <td>\${vo.department}</td>
-	                <td><input type="number" name="attendance" value="0"/></td>
-	                <td><input type="number" name="assignment" value="0"/></td>
-	                <td><input type="number" name="midterm" value="0"/></td>
-	                <td><input type="number" name="finalExam" value="0"/></td>
-	                <td class="totalScore">-</td>
-	                <td class="grade">-</td>
-	                <td><button type="button" onclick="submitUpdate(this)">등록하기</button></td>
-	            `;
-	            tr.dataset.enrollmentId = vo.enrollmentId;
-				tr.dataset.professorId = "<%= session.getAttribute("id") %>";
-	            tbody.appendChild(tr);
-	
-	            // 실시간 입력 변화 감지 및 자동 총점/등급 계산
-	            tr.querySelectorAll("input[type='number']").forEach(input => {
-	                input.addEventListener("input", () => {
-	                	const att = parseFloat(tr.querySelector("input[name='attendance']").value) || 0;
-	                	const assign = parseFloat(tr.querySelector("input[name='assignment']").value) || 0;
-	                	const mid = parseFloat(tr.querySelector("input[name='midterm']").value) || 0;
-	                	const fin = parseFloat(tr.querySelector("input[name='finalExam']").value) || 0;
-	                    const total = calculateScore(att, assign, mid, fin);
-	                    tr.querySelector(".totalScore").innerText = total.toFixed(2); // 정수 처리
-	                    tr.querySelector(".grade").innerText = getGrade(total);
-	                });
-	            });
-	        });
-	    }
-	
-	    // '수정하기' 버튼 클릭 시 해당 행의 총점과 등급을 서버로 fetch로 전송
+	    // '등록하기' 버튼 클릭 시 해당 행의 총점과 등급을 서버로 fetch로 전송
 		function submitUpdate(button) {
 		    const tr = button.closest("tr");
 		
@@ -218,6 +242,7 @@
             <tr><td colspan="13" style="text-align:center;">검색 결과 없음</td></tr>
         </tbody>
     </table>
+    <div id="pagination" style="text-align:center; margin-top: 20px;"></div>
 </div>
 </body>
 </html>

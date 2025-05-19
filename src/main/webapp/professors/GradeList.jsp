@@ -1,3 +1,4 @@
+<%@page import="java.util.List"%>
 <%@page import="com.google.gson.Gson"%>
 <%@page import="professorvo.GradeVo"%>
 <%@page import="professorvo.LectureListVo"%>
@@ -19,28 +20,20 @@
 	
 	<script>
 	    const gradeList = <%= gradeJson %>;
-	    console.log(gradeList);
-		/*
-			{
-			    "subjectCode": "SUBJ002",
-			    "subjectName": "과목2",
-			    "studentId": 1001,
-			    "studentName": "학생1001",
-			    "studentNumber": "S1001",
-			    "department": "컴퓨터공학과",
-			    "enrollmentId": 2001,
-			    "openGrade": 2,
-			    "score": 95.12,
-			    "grade": "A+"
-			}
-		*/
-	    function searchGrades() {
+	    let currentPage = 1;
+	    const pageSize = 10;
+	
+	    function searchGrades(page = 1) {
+	        currentPage = page;
+	
 	        const subjectCode = document.getElementById("subject_code").value;
 	        const openGrade = document.getElementById("open_grade").value;
 	        const studentName = document.getElementById("student_name").value.trim();
 	
 	        const tbody = document.getElementById("gradeBody");
-	        tbody.innerHTML = ""; // 초기화
+	        const paginationDiv = document.getElementById("pagination");
+	        tbody.innerHTML = "";
+	        paginationDiv.innerHTML = "";
 	
 	        const filtered = gradeList.filter(vo => {
 	            const matchSubject = !subjectCode || vo.subjectCode === subjectCode;
@@ -54,27 +47,43 @@
 	            return;
 	        }
 	
-	        filtered.forEach(vo => {
-	        	const tr = document.createElement("tr");
-	        	const row = `
-	        	    <tr>
-	        	        <td>\${vo.subjectCode}</td>
-	        	        <td>\${vo.subjectName}</td>
-	        	        <td>\${vo.openGrade}</td>
-	        	        <td>\${vo.studentNumber}</td>
-	        	        <td>\${vo.studentName}</td>
-	        	        <td>\${vo.department}</td>
-	        	        <td>\${vo.score != null ? vo.score : '-'}</td>
-	        	        <td>\${vo.grade != null ? vo.grade : '-'}</td>
-	        	    </tr>
-	        	`;
+	        const totalPage = Math.ceil(filtered.length / pageSize);
+	        const startIndex = (page - 1) * pageSize;
+	        const endIndex = startIndex + pageSize;
+	        const pagedList = filtered.slice(startIndex, endIndex);
 	
-	        	tr.innerHTML = row;
-	        	tbody.appendChild(tr);
+	        pagedList.forEach(vo => {
+	            const tr = document.createElement("tr");
+	            tr.innerHTML = `
+	                <td>\${vo.subjectCode}</td>
+	                <td>\${vo.subjectName}</td>
+	                <td>\${vo.openGrade}</td>
+	                <td>\${vo.studentNumber}</td>
+	                <td>\${vo.studentName}</td>
+	                <td>\${vo.department}</td>
+	                <td>\${vo.score != null ? vo.score : '-'}</td>
+	                <td>\${vo.grade != null ? vo.grade : '-'}</td>
+	            `;
+	            tbody.appendChild(tr);
 	        });
-	    }
-	</script>
 	
+	        // 페이지네이션 버튼 생성
+	        for (let i = 1; i <= totalPage; i++) {
+	            const pageBtn = document.createElement("button");
+	            pageBtn.textContent = i;
+	            pageBtn.onclick = () => searchGrades(i);
+	            if (i === currentPage) {
+	                pageBtn.style.fontWeight = "bold";
+	                pageBtn.style.backgroundColor = "#ddd";
+	            }
+	            paginationDiv.appendChild(pageBtn);
+	        }
+	    }
+	
+	    window.onload = function () {
+	        searchGrades();
+	    };
+	</script>
 	<style>
 	    body {
 	        margin: 0;  /* 화면을 꽉 차게 하기위한 기본설정 */
@@ -139,6 +148,7 @@
 		            <tr><td colspan="10" style="text-align:center;">검색 결과 없음</td></tr>
 		        </tbody>
 		    </table>
+		    <div id="pagination" class="pagination" style="text-align:center; margin-top:20px;"></div>
 		</div>
 	</div>
 </body>

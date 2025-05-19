@@ -86,8 +86,8 @@
 
 <div class="container">
     <h2>📄 공지사항 수정</h2>
-    <form action="${contextPath}/professor/noticeinsertorupdate.do" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="noticeId" value="<%= noticeId %>" />
+    <form action="${contextPath}/professor/noticeupdate.do" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="notice_id" value="<%= noticeId %>" />
 
         <div class="form-group">
             <label for="title">제목:</label>
