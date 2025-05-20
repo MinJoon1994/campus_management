@@ -1,3 +1,6 @@
+<%@page import="professorvo.SubjectVo"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Vector"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -31,6 +34,15 @@
             background-color: #2c3e50;
             color: white;
         }
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+        }
+
+        .pagination strong {
+            margin: 0 5px;
+            font-weight: bold;
+        }
 
     </style>
 </head>
@@ -41,6 +53,23 @@
 
     <!-- subjectList가 requestScope에 있는지 확인하고 출력 -->
     <c:if test="${not empty requestScope.subjectList}">
+    
+        <%
+            Vector<SubjectVo> subjectList = (Vector<SubjectVo>) request.getAttribute("subjectList");
+
+            int pageSize = 10; // 한 페이지에 출력할 강의 수
+            int pageNum = 1;   // 기본 페이지
+            if (request.getParameter("pageNum") != null) {
+                pageNum = Integer.parseInt(request.getParameter("pageNum"));
+            }
+
+            int startRow = (pageNum - 1) * pageSize;
+            // 1페이지: (1 - 1) * 10 = 0 → 인덱스 0부터 시작
+			// 2페이지: (2 - 1) * 10 = 10 → 인덱스 10부터 시작
+            int endRow = Math.min(startRow + pageSize, subjectList != null ? subjectList.size() : 0);
+            List<SubjectVo> pageList = (subjectList != null) ? subjectList.subList(startRow, endRow) : new Vector<SubjectVo>();
+            request.setAttribute("pageList", pageList);
+        %>
         <table>
             <thead>
                 <tr>
@@ -57,7 +86,7 @@
             </thead>
             <tbody>
                 <!-- subjectList 반복 출력 -->
-                <c:forEach var="subject" items="${requestScope.subjectList}">
+                <c:forEach var="subject" items="${requestScope.pageList}">
                     <tr>
                         <td>${subject.subjectCode}</td>  <!-- VO 기준으로 subjectCode 출력 -->
                         <td>${subject.subjectName}</td>
@@ -83,6 +112,52 @@
                 </c:forEach>
             </tbody>
         </table>
+       	<div class="pagination" style="text-align:center; margin-top:20px;">
+			<%
+			    // list가 null이 아니고 비어있지 않은 경우에만 페이지네이션 처리
+			    if (subjectList != null && !subjectList.isEmpty()) {
+			        // 전체 페이지 수 계산 (list.size()는 전체 데이터 수)
+			        int totalPage = (int)Math.ceil((double)subjectList.size() / pageSize); 
+			        int pageBlock = 5; // 한 번에 보여줄 페이지 수
+			        // 현재 페이지 번호를 기준으로 시작 페이지 계산
+			        int startPage = ((pageNum - 1) / pageBlock) * pageBlock + 1;
+			        // 끝 페이지 계산 (현재 페이지가 마지막 페이지가 아닐 경우에만 해당)
+			        int endPage = startPage + pageBlock - 1;
+			        // 만약 endPage가 전체 페이지 수를 초과하면 endPage는 totalPage로 설정
+			        if (endPage > totalPage) endPage = totalPage;
+			
+			        // 시작 페이지가 1보다 클 경우, 이전 페이지로 이동하는 버튼 생성
+			        if (startPage > 1) {
+			%>
+			            <!-- 이전 페이지로 이동하는 버튼 -->
+			            <a href="?pageNum=<%=startPage - 1%>">&#9664;</a>
+			<%
+			        }
+			        // startPage부터 endPage까지의 페이지 번호를 출력
+			        for (int i = startPage; i <= endPage; i++) {
+			            // 현재 페이지가 선택된 페이지인 경우 강조 표시
+			            if (i == pageNum) {
+			%>
+			                <!-- 현재 페이지 번호는 강조 처리 -->
+			                <strong><%=i%></strong>
+			<%
+			            } else {
+			%>
+			                <!-- 현재 페이지가 아닌 경우 링크로 출력 -->
+			                <a href="?pageNum=<%=i%>"><%=i%></a>
+			<%
+			            }
+			        }
+			        // endPage가 totalPage보다 작을 경우, 다음 페이지로 이동하는 버튼 생성
+			        if (endPage < totalPage) {
+			%>
+			            <!-- 다음 페이지로 이동하는 버튼 -->
+			            <a href="?pageNum=<%=endPage + 1%>">&#9654;</a>
+			<%
+			        }
+			    }
+			%>
+		</div>
     </c:if>
 
     <!-- subjectList가 비어 있거나 null일 경우 -->

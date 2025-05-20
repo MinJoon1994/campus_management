@@ -10,6 +10,7 @@
 <%
 	request.setCharacterEncoding("UTF-8"); // 한글 처리
 	String contextPath = request.getContextPath();
+	// 나의 강의목록(승인된)
 	Vector<LectureListVo> list = (Vector<LectureListVo>) request.getAttribute("v");
 	Gson gson = new Gson();
 
@@ -27,39 +28,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>강의 목록</title>
-<style>
-    body {
-        margin: 0;  /* 화면을 꽉 차게 하기위한 기본설정 */
-        padding: 0;
-        font-family: Arial, sans-serif;
-    }
-    .container {
-        width: 90%;         /* 전체 폭의 70% 사용 (양쪽 15% 여백) */
-        margin: 0 auto;     /* 중앙 정렬 */
-        padding-top: 20px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse; /* 셀 테투리와 셀 간 간격을 없애고 테두리들을 깔끔하게 붙임 */
-    }
-    th, td {
-        text-align: center;
-    }
-    th {
-        background-color: #2c3e50;
-        color: white;
-    }
-    .pagination a {
-        margin: 0 5px;
-        text-decoration: none;
-    }
-    .pagination strong {
-        margin: 0 5px;
-        font-weight: bold;
-    }
-</style>
+	<meta charset="UTF-8">
+	<title>강의 목록</title>
+	
+	<style>
+	    body {
+	        margin: 0;  /* 화면을 꽉 차게 하기위한 기본설정 */
+	        padding: 0;
+	        font-family: Arial, sans-serif;
+	    }
+	    .container {
+	        width: 90%;         /* 전체 폭의 70% 사용 (양쪽 15% 여백) */
+	        margin: 0 auto;     /* 중앙 정렬 */
+	        padding-top: 20px;
+	    }
+	    table {
+	        width: 100%;
+	        border-collapse: collapse; /* 셀 테투리와 셀 간 간격을 없애고 테두리들을 깔끔하게 붙임 */
+	    }
+	    th, td {
+	        text-align: center;
+	    }
+	    th {
+	        background-color: #2c3e50;
+	        color: white;
+	    }
+	    .pagination a {
+	        margin: 0 5px;
+	        text-decoration: none;
+	    }
+	    .pagination strong {
+	        margin: 0 5px;
+	        font-weight: bold;
+	    }
+	</style>
 </head>
 <body>
 <div class="container">
@@ -88,9 +90,6 @@
 				String encodeJson = URLEncoder.encode(json, "utf-8"); // JSON 문자열 -> URL 안전한 문자열
 				System.out.println("encodeJson :  " + encodeJson);
 				
-				Boolean tempBoolean = true;
-				if(vo.getisAvailable() == false) tempBoolean = false;
-				if(vo.getisAvailable() == true) {
 		%>
 				<tr>
 					<td><%=vo.getSubjectCode()%></td> 
@@ -109,17 +108,9 @@
 						</button>
 					</td>
 				</tr>
-		<%
-				}
-				if(tempBoolean = false) {
-		%>
-					<tr>
-						<td colspan="11" style="text-align:center;">조회된 강의가 없습니다.</td>
-					</tr>
-		<%
-				}
+		<% 
 			}
-		} else {
+		}else {
 		%>
 			<tr>
 				<td colspan="11" style="text-align:center;">조회된 강의가 없습니다.</td>
