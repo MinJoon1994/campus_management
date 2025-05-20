@@ -11,7 +11,7 @@ import student.vo.LectureVO;
 public interface StudentService {
     
     // 학생 수강신청 요청
-    void enroll(HttpServletRequest req);
+    int enroll(HttpServletRequest req);
     
     // 학생 수강목록 확인
     List<LectureVO> getLectureList(HttpServletRequest req);
@@ -45,4 +45,7 @@ public interface StudentService {
 
     // 학생이 수강한 학기 목록 조회
     List<String> getSemesterList(HttpServletRequest req);
+    
+    // 학생이 수강신청 가능한 목록 조회
+	List<LectureVO> getList(HttpServletRequest req);
 }

@@ -81,7 +81,6 @@ public class MemberController extends HttpServlet{
 			 *  = session.setAttribute("professor_id", 4);
 			 */
 			
-		
 			//로그인 처리
 			UserVO vo = memberService.login(email, password);
 			
@@ -89,18 +88,22 @@ public class MemberController extends HttpServlet{
 				
 				//교수 로그인시 교수 아이디 세션에 저장
 				if(vo.getRole().equals("PROFESSOR")) {
-					session.setAttribute("professor_id", vo.getProfessorVO().getProfessor_id());
+					
+					System.out.println("교수 로그인 성공: "+vo.getId());
+					
+					session.setAttribute("professor_id", vo.getId());
 				}
 				
 				if(vo.getRole().equals("STUDENT")) {
-					session.setAttribute("student_id", vo.getStudentVO().getStudent_id());
+					
+					System.out.println("학생 로그인 성공: "+vo.getId());
+					
+					session.setAttribute("student_id", vo.getId());
 				}
 				
 				session.setAttribute("vo", vo);
 				System.out.println(vo);
-				
-				
-				
+					
 				out.println("<script>");
 				out.println("alert('로그인 성공');");
 				out.println("location.href='"+req.getContextPath()+"/campus/main';");

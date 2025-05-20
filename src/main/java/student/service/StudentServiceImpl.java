@@ -16,131 +16,85 @@ public class StudentServiceImpl implements StudentService {
 
     private StudentDAO studentDAO = new StudentDAO();
 
+    //학생이 수강신청 가능한 목록 조회
     @Override
-    public void enroll(HttpServletRequest req) {
-        // TODO: 수강신청 구현
-    	try {
-			Integer studentId = (Integer)req.getSession().getAttribute("studentId");
-			String subjectCode = req.getParameter("subjectCode");
-			if(studentId != null && subjectCode != null) {
-				studentDAO.enroll(studentId, subjectCode);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    public List<LectureVO> getList(HttpServletRequest req) {
+    
+    	return studentDAO.getList(req);
     }
+    
+    //학생 수강 신청 요청
+    @Override
+    public int enroll(HttpServletRequest req) {
+    	
+    	//수강 신청할 과목의 정원보다 현재 인원이 적은지 확인
+    	int result = studentDAO.checkCapacity(req);
+    	
+    	if(result == 1) {
+        	String subject_code = req.getParameter("subject_code");
+        	
+        	//학생 아이디
+        	Integer student_id = (Integer)req.getSession().getAttribute("student_id");
+        	
+        	studentDAO.enroll(subject_code,student_id);
+    	}
+    	
+    	return result;
 
+    }
+    
     @Override
     public List<LectureVO> getLectureList(HttpServletRequest req) {
-        // TODO: 수강목록 조회 구현
-    	List<LectureVO> list = new ArrayList<>();
-    	try {
-			Integer studentId = (Integer)req.getSession().getAttribute("studentId");
-			if(studentId != null) {
-				list = studentDAO.getEnrolledLectures(studentId);
-				
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        
+    	// 학생이 수강신청 가능한 목록 조회
+    	Integer student_id = (Integer)req.getSession().getAttribute("student_id");
     	
-        return list;
+        return studentDAO.getLectureList(student_id);
     }
 
     @Override
     public void enrollDelete(HttpServletRequest req) {
-        // TODO: 수강신청 취소 구현
-    	try {
-			Integer studentId = (Integer)req.getSession().getAttribute("studentId");
-			int enrollmentId = Integer.parseInt(req.getParameter("enrollmentId"));
-			if(studentId != null) {
-				studentDAO.deleteEnrollment(studentId, enrollmentId);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
     }
 
     // 전체 학기 성적 조회
     @Override
     public List<SemesterGradeVO> getGrades(HttpServletRequest req) {
-        List<SemesterGradeVO> gradeList = new ArrayList<>();
-        try {
-            Integer studentId = (Integer) req.getSession().getAttribute("studentId");
-            if (studentId != null) {
-                gradeList = studentDAO.getSemesterGrades(studentId);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return gradeList;
+    	return null;
     }
 
     // 특정 학기 성적 상세 조회
     @Override
     public List<SubjectGradeVO> getGradesDetail(HttpServletRequest req) {
-        List<SubjectGradeVO> subjectGradeList = new ArrayList<>();
-        try {
-            Integer studentId = (Integer) req.getSession().getAttribute("studentId");
-            String semester = req.getParameter("semester");
-            if (studentId != null && semester != null) {
-                subjectGradeList = studentDAO.getGradesBySemester(studentId, semester);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return subjectGradeList;
+
+        return null;
     }
 
     @Override
     public List getTimeTable(HttpServletRequest req) {
-        // TODO: 시간표 조회 구현
+
         return null;
     }
 
     // 학생 정보 (학번, 학년, 전공, 학적상태 등)
     @Override
     public StudentVO getStudent(HttpServletRequest req) {
-        StudentVO studentVO = null;
-        try {
-            Integer studentId = (Integer) req.getSession().getAttribute("studentId");
-            if (studentId != null) {
-                studentVO = studentDAO.getStudentInfo(studentId);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return studentVO;
+
+        return null;
     }
 
     // 학생 전체정보 (이름 + 학번 + 전공 + 학년 + 학적상태 등)
     @Override
     public Map<String, Object> getStudentFullInfo(HttpServletRequest req) {
-        Map<String, Object> result = null;
-        try {
-            Integer studentId = (Integer) req.getSession().getAttribute("studentId");
-            if (studentId != null) {
-                result = studentDAO.getStudentFullInfo(studentId);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+
+        return null;
     }
 
     // 학생이 수강한 학기 목록 조회
     @Override
     public List<String> getSemesterList(HttpServletRequest req) {
-        List<String> semesterList = new ArrayList<>();
-        try {
-            Integer studentId = (Integer) req.getSession().getAttribute("studentId");
-            if (studentId != null) {
-                semesterList = studentDAO.getSemesterList(studentId);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return semesterList;
+
+        return null;
     }
 
     @Override

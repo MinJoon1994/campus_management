@@ -5,7 +5,7 @@
 
 <c:set var="center" value="${requestScope.center}" />
 
-<%-- 처음 클라이언트가 StudentMain.jsp메인화면을 MVC패턴으로 요청했을때 중앙화면은 ProfessorFirstCenter.jsp로 보이게 설정 --%>
+<%-- 처음 클라이언트가 ProfessorMain.jsp메인화면을 MVC패턴으로 요청했을때 중앙화면은 ProfessorFirstCenter.jsp로 보이게 설정 --%>
 <c:if test="${center == null}">
     <c:set var="center" value="StudentFirstCenter.jsp" />
 </c:if>

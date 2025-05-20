@@ -35,24 +35,36 @@ public class StudentController extends HttpServlet{
 		
 		//학생 메인 화면 요청
         if (action.equals("/main")) { //학생 메인 화면 요청
-            
-        	// 학생 정보 조회
-            StudentVO studentVO = studentService.getStudent(req);
-            req.setAttribute("studentVO", studentVO);
-
-            // center로 StudentMain.jsp 지정
-            req.setAttribute("center", "students/StudentMain.jsp");
-            nextPage = "/main.jsp";
+                       
+            nextPage = "/students/StudentMain.jsp";
             
         }else if (action.equals("/enrollForm")) { //학생 수강신청 화면 요청
             
+        	//학생 수강신청 정보 LIST 형태로 받아오기
+        	List<LectureVO> list = studentService.getList(req);
+        	
+        	System.out.println("수강신청 정보 LIST : " + list);
+        	
+        	//뷰쪽에 LIST 형태로 전달
+        	req.setAttribute("list", list);
+        	
             req.setAttribute("center", "students/enrollForm.jsp"); //수강 신청화면 요청
             
             nextPage = "/main.jsp";
             
         }else if(action.equals("/enroll")) { // 학생 수강신청 요청
         	
-        	studentService.enroll(req);
+        	int result = studentService.enroll(req);
+        	
+        	if(result == 0) {
+        		
+				out.println("<script>");
+				out.println("alert('정원이 초과되었습니다.');");
+				out.println("location.href='"+req.getContextPath()+"/student/enrollForm;"); //수강신청 화면으로 이동
+				out.println("</script>");
+				
+				return;
+			}
         	
         	out.println("<script>");
         	out.println("alert('수강신청이 완료되었습니다.');");
@@ -82,7 +94,7 @@ public class StudentController extends HttpServlet{
         	
         	out.println("<script>");
         	out.println("alert('수강신청이 삭제되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/courcelist;");
+        	out.println("location.href='"+req.getContextPath()+"/student/courselist;");
         	out.println("</script>");
         	
         	return;

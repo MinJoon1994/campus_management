@@ -76,38 +76,34 @@
     <div class="nav-item">
       <div class="nav-link">수강관리</div>
       <div class="dropdown">
-        <a href="${pageContext.request.contextPath}/professor/lectureform">강의 개설 요청</a>
-        <a href="${pageContext.request.contextPath}/professor/lecturerequest">나의 요청 강의 확인</a>
-        <a href="${pageContext.request.contextPath}/professor/lectures">나의 강의목록 조회</a>
-        <a href="${pageContext.request.contextPath}/professor/timetable">나의 시간표 조회</a>
+        <a href="${pageContext.request.contextPath}/student/enrollForm">수강 신청</a>
+        <a href="${pageContext.request.contextPath}/student/courselist">수강 목록 확인</a>
       </div>
     </div>
     <div class="nav-item">
       <div class="nav-link">성적 관리</div>
       <div class="dropdown">
-        <a href="${pageContext.request.contextPath}/professor/enrolledstudent">수강신청 학생명단 확인</a>
-        <a href="${pageContext.request.contextPath}/student/profile">학생 정보 조회</a>
+        <a href="${pageContext.request.contextPath}/student/grades">성적 조회</a>
       </div>
     </div>
     <div class="nav-item">
       <div class="nav-link">시간표</div>
       <div class="dropdown">
-        <a href="#">개인 시간표 확인</a>
+        <a href="${pageContext.request.contextPath}/student/timetable">개인 시간표 확인</a>
       </div>
     </div>
         <div class="nav-item">
       <div class="nav-link">개인정보</div>
       <div class="dropdown">
-        <a href="#">학적 변경 요청</a>
-        <a href="#">비밀번호 변경</a>
-        <a href="#">개인정보 수정</a>
+        <a href="${pageContext.request.contextPath}/student/changeStatus">학적 변경 요청</a>
+        <a href="${pageContext.request.contextPath}/student/modifyForm">개인정보 수정</a>
       </div>
     </div>
     <div class="nav-item">
       <div class="nav-link">문의하기</div>
       <div class="dropdown">
-        <a href="#">강의 관련 문의하기</a>
-        <a href="#">학교 관련 문의하기</a>
+        <a href="${pageContext.request.contextPath}/student/qnaLectureList">강의 관련 문의하기</a>
+        <a href="${pageContext.request.contextPath}/student/qnaCampus">학교 관련 문의하기</a>
       </div>
     </div>
   </div>

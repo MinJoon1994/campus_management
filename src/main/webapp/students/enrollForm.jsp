@@ -59,10 +59,13 @@
   <h2>수강신청 가능한 과목 목록</h2>
   <table class="enrolltbl">
     <tr>
+      <th>과목코드</th>
       <th>과목명</th>
-      <th>교수명</th>
+      <th>유형</th>
+      <th>분반</th>
       <th>학점</th>
-      <th>학기</th>
+      <th>교수명</th>
+      <th>시간</th>
       <th>신청</th>
     </tr>
     <c:choose>
@@ -72,10 +75,13 @@
       <c:otherwise>
         <c:forEach var="item" items="${list}">
           <tr>
+            <td>${item.subjectCode}</td>
             <td>${item.subjectName}</td>
-            <td>${item.professorName}</td>
+            <td>${item.subjectType}</td>
+            <td>${item.division}</td>
             <td>${item.credit}</td>
-            <td>${item.openGrade}</td>
+            <td>${item.professorName}</td>
+            <td>${item.schedule}</td>
             <td>
               <form method="post" action="${pageContext.request.contextPath}/student/enroll" style="margin:0;">
                 <input type="hidden" name="subjectCode" value="${item.subjectCode}" />
