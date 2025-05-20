@@ -30,7 +30,9 @@ public class ProfessorDao {
 		Vector<LectureListVo> list = new Vector<>();
 
 		String sql = "SELECT subject_code, subject_name, subject_type, open_grade, division, credit, "
-				+ "professor_id, professor_name, schedule, current_enrollment, capacity, is_available " + "FROM subject WHERE professor_id = ?";
+				+ "professor_id, professor_name, schedule, current_enrollment, capacity, is_available " 
+				+ "FROM subject WHERE professor_id = ? "
+				+ "and is_available = 1";
 
 		try {
 			conn = DbcpBean.getConnection();
@@ -742,28 +744,35 @@ public class ProfessorDao {
     
 
  // ✅ 1. 과목코드 기준 수강생의 enrollment_id와 name 조회
-    public Vector<AttendanceViewVo> getAttendanceListBySubjectCode(String subjectCode) {
+    public Vector<AttendanceViewVo> getAttendanceListBySubjectCode(String subjectCode, String date) {
         Vector<AttendanceViewVo> list = new Vector<>();
-        String sql = 
-            "SELECT e.enrollment_id, u.name " +
-            "FROM Enrollment e " +
-            "JOIN Student s ON e.student_id = s.user_id " +
-            "JOIN User u ON s.user_id = u.user_id " +
-            "WHERE e.subject_code = ? " +
-            "ORDER BY u.name ASC";
+        System.out.println("과목코드 db 시험 용 : " + subjectCode);
+        String sql = "SELECT " +
+                "    e.enrollment_id, " +
+                "    u.name, " +
+                "    a.status " +
+                "FROM Enrollment e " +
+                "JOIN Student s ON e.student_id = s.user_id " +
+                "JOIN User u ON s.user_id = u.user_id " +
+                "LEFT JOIN Attendance a " +
+                "    ON e.enrollment_id = a.enrollment_id " +
+                "    AND a.date = ? " +
+                "WHERE e.subject_code = ? " +
+                "ORDER BY u.name ASC";
 
         try (Connection conn = DbcpBean.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
         	System.out.println(sql);
-            pstmt.setString(1, subjectCode);  // subjectCode를 바인딩
+        	pstmt.setString(1, date);
+            pstmt.setString(2, subjectCode); 
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 AttendanceViewVo vo = new AttendanceViewVo();
                 vo.setEnrollmentId(rs.getInt("enrollment_id"));
                 vo.setStudentName(rs.getString("name"));
-                vo.setStatus(null);
-                list.add(vo);  
+                vo.setStatus(rs.getString("status")); 
+                list.add(vo); 
             }
 
         } catch (Exception e) {

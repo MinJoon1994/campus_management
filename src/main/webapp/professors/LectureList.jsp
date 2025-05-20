@@ -10,6 +10,7 @@
 <%
 	request.setCharacterEncoding("UTF-8"); // 한글 처리
 	String contextPath = request.getContextPath();
+	// 나의 강의목록(승인된)
 	Vector<LectureListVo> list = (Vector<LectureListVo>) request.getAttribute("v");
 	Gson gson = new Gson();
 
@@ -89,9 +90,6 @@
 				String encodeJson = URLEncoder.encode(json, "utf-8"); // JSON 문자열 -> URL 안전한 문자열
 				System.out.println("encodeJson :  " + encodeJson);
 				
-				Boolean tempBoolean = true;
-				if(vo.getisAvailable() == false) tempBoolean = false;
-				if(vo.getisAvailable() == true) {
 		%>
 				<tr>
 					<td><%=vo.getSubjectCode()%></td> 
@@ -110,17 +108,9 @@
 						</button>
 					</td>
 				</tr>
-		<%
-				}
-				if(tempBoolean = false) {
-		%>
-					<tr>
-						<td colspan="11" style="text-align:center;">조회된 강의가 없습니다.</td>
-					</tr>
-		<%
-				}
+		<% 
 			}
-		} else {
+		}else {
 		%>
 			<tr>
 				<td colspan="11" style="text-align:center;">조회된 강의가 없습니다.</td>

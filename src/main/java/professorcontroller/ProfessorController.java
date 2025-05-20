@@ -173,10 +173,8 @@ public class ProfessorController extends HttpServlet {
 		else if (action.equals("/lecturerequest")) {
 			String id = (String) session.getAttribute("id");
 			
+			// 나의 강의등록 요청 강의목록
 			Vector<SubjectVo> LectureListV = professorService.getAllSubject(id);
-			for(SubjectVo s : LectureListV) {
-				System.out.println("이값인데 : "+s.getisAvailable()); // false
-			}
 			request.setAttribute("subjectList", LectureListV);
 			request.setAttribute("center", "/professors/RequestSubjectList.jsp");
 			nextPage ="/professors/ProfessorMain.jsp";
@@ -314,7 +312,7 @@ public class ProfessorController extends HttpServlet {
 	        String date = request.getParameter("date");			
 	        
 	        if (subjectCode != null && date != null) {
-	            Vector<AttendanceViewVo> studentList = professorService.getAttendanceListBySubjectAndDate(subjectCode);
+	            Vector<AttendanceViewVo> studentList = professorService.getAttendanceListBySubjectAndDate(subjectCode, date);
 	            request.setAttribute("studentList", studentList);
 	        }
 	        

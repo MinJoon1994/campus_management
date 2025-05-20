@@ -103,8 +103,8 @@ public class ProfessorService {
 		return professorDao.deleteStudentQna(qnaIds);
 	}
 	// 과목과 날짜가 선택된 경우에만 출결 목록 조회
-	public Vector<AttendanceViewVo> getAttendanceListBySubjectAndDate(String subjectCode) {
-		return professorDao.getAttendanceListBySubjectCode(subjectCode);
+	public Vector<AttendanceViewVo> getAttendanceListBySubjectAndDate(String subjectCode, String date) {
+		return professorDao.getAttendanceListBySubjectCode(subjectCode, date);
 	}
 
 	public void saveOrUpdateAttendance(int enrollmentId, String date, String status, int professorId) {
