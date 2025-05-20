@@ -46,36 +46,26 @@
   .student-action-btn:hover {
     background: #004080;
   }
-  .semester-select {
-    padding: 6px 10px;
-    font-size: 1em;
-    border-radius: 4px;
-    border: 1px solid #c6c6c6;
-    margin-right: 8px;
-  }
 </style>
+
+
 
 <div class="student-profile-box">
   <h2>학생 정보</h2>
   <ul class="student-info-ul">
-    <li><b>이름</b>: ${userVO.name}</li>
+    <li><b>이름</b>: ${studentVO.name}</li>
     <li><b>학번</b>: ${studentVO.student_id}</li>
     <li><b>학년</b>: ${studentVO.grade}</li>
     <li><b>전공</b>: ${studentVO.department}</li>
-    <li><b>학적상태</b>: ${studentVO.status}</li>
   </ul>
   <div class="student-btn-group">
     <a class="student-action-btn"
        href="${pageContext.request.contextPath}/student/grades">
       전체 성적 조회
     </a>
-    <form method="get" action="${pageContext.request.contextPath}/student/gradesdetail" style="display:inline;">
-      <select name="semester" class="semester-select" required>
-        <c:forEach var="sem" items="${semesterList}">
-          <option value="${sem}">${sem}</option>
-        </c:forEach>
-      </select>
-      <button type="submit" class="student-action-btn">학기별 성적 조회</button>
-    </form>
+    <a class="student-action-btn"
+       href="${pageContext.request.contextPath}/student/gradesdetail">
+      학기별 성적 조회
+    </a>
   </div>
 </div>

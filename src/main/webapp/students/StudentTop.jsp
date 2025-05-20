@@ -86,7 +86,7 @@
       <div class="nav-link">성적 관리</div>
       <div class="dropdown">
         <a href="${pageContext.request.contextPath}/professor/enrolledstudent">수강신청 학생명단 확인</a>
-        <a href="#">학생 정보 조회</a>
+        <a href="${pageContext.request.contextPath}/student/profile">학생 정보 조회</a>
       </div>
     </div>
     <div class="nav-item">
