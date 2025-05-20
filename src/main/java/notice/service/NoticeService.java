@@ -14,4 +14,6 @@ public interface NoticeService {
 	//특정 공지사항 조회
 	public NoticeVO getNoticeDetail(HttpServletRequest req);
 
+	public int insertNotice(NoticeVO vo); 
+
 }

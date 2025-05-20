@@ -3,6 +3,7 @@ package student.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,15 +33,24 @@ public class StudentController extends HttpServlet{
 		
 		StudentService studentService = new StudentServiceImpl();
 		
-		//============= 학생 수강신청 관련==============
-        if (action.equals("/enrollForm")) { //학생 수강신청 화면 요청
+		//학생 메인 화면 요청
+        if (action.equals("/main")) { //학생 메인 화면 요청
+            
+        	// 학생 정보 조회
+            StudentVO studentVO = studentService.getStudent(req);
+            req.setAttribute("studentVO", studentVO);
+
+            // center로 StudentMain.jsp 지정
+            req.setAttribute("center", "students/StudentMain.jsp");
+            nextPage = "/main.jsp";
+            
+        }else if (action.equals("/enrollForm")) { //학생 수강신청 화면 요청
             
             req.setAttribute("center", "students/enrollForm.jsp"); //수강 신청화면 요청
             
             nextPage = "/main.jsp";
             
         }else if(action.equals("/enroll")) { // 학생 수강신청 요청
-        	
         	
         	studentService.enroll(req);
         	
@@ -76,38 +86,30 @@ public class StudentController extends HttpServlet{
         	out.println("</script>");
         	
         	return;
-        		
-        }
-        //============= 학생 성적관련 ==============
-        else if(action.equals("/grades")) {//학생 전체 학기 성적 조회
         	
-        	//LIST 형태로 전체학기 성적 받아오기
-        	List list = studentService.getGrades(req); 
-        	
-        	//뷰쪽에 LIST 형태로 전달
-			req.setAttribute("list", list);
-			
-			//학생 성적 확인 VIEW
-			req.setAttribute("center", "students/grades.jsp");
-			
-			nextPage = "/main.jsp";
-			
-			return;
-        	
-        }else if(action.equals("/gradesdetail")) {//학생 성적 상세 조회
-			
-			//학생 성적 상세 조회
-			List list = studentService.getGradesDetail(req);
-			
-			//뷰쪽에 LIST 형태로 전달
-			req.setAttribute("list", list);
-			
-			req.setAttribute("center", "students/gradesdetail.jsp");
-			
-			nextPage = "/main.jsp";
-			
-			return;
-        
+        	// ------------- 학생 전체 학기 성적 조회 -------------
+        }else if (action.equals("/grades")) {
+
+            List<student.vo.SemesterGradeVO> list = studentService.getGrades(req);
+            req.setAttribute("list", list);
+
+            // center는 students/grades.jsp
+            req.setAttribute("center", "students/grades.jsp");
+            nextPage = "/main.jsp";
+            
+            return;
+
+        // ------------- 학생 성적 상세 조회 -------------
+        } else if (action.equals("/gradesdetail")) {
+
+            List<student.vo.SubjectGradeVO> list = studentService.getGradesDetail(req);
+            req.setAttribute("list", list);
+
+            // center는 students/gradesdetail.jsp
+            req.setAttribute("center", "students/gradesdetail.jsp");
+            nextPage = "/main.jsp";
+            return;
+
         }
         //============= 학생 시간표 관련 ==============
         else if(action.equals("/timetable")) {//학생 시간표조회
@@ -126,19 +128,16 @@ public class StudentController extends HttpServlet{
         	
         }
         //============= 학생 개인 정보 관련 ==============
-        else if(action.equals("/profile")) {//학생 개인정보 조회
-        	
-        	//학생 개인 정보 조회
-        	StudentVO studentVO = studentService.getStudent(req);
-        	
-        	//뷰쪽에 학생 개인정보 전달
-        	req.setAttribute("studentVO", studentVO);
-        	
-        	req.setAttribute("center", "students/profile.jsp");
-        	
-        	nextPage = "/main.jsp";
-        	
-        	return;
+        else if(action.equals("/profile")) {
+            Map<String, Object> info = studentService.getStudentFullInfo(req);
+            List<String> semesterList = studentService.getSemesterList(req);
+
+            req.setAttribute("userVO", info.get("userVO"));
+            req.setAttribute("studentVO", info.get("studentVO"));
+            req.setAttribute("semesterList", semesterList);
+
+            req.setAttribute("center", "students/StudentProfileCenter.jsp");
+            nextPage = "/StudentMain.jsp";
         	
         }else if(action.equals("/profileupdate")){//학생 개인정보 수정 요청
         	

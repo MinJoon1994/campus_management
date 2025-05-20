@@ -104,6 +104,27 @@ public class AdminServiceImpl implements AdminService {
 		// TODO Auto-generated method stub
 
 	}
+	
+	//학사 일정 추가
+	@Override
+	public boolean addCalendarEvent(HttpServletRequest req) {
+		
+		return adminDAO.addCalendarEvent(req);
+	}
+	
+	//학사 일정 수정
+	@Override
+	public boolean updateCalendarEvent(HttpServletRequest req) {
+		
+		return adminDAO.updateCalendarEvent(req);
+	}
+	
+	//학사 일정 삭제
+	@Override
+	public boolean deleteCalendarEvent(HttpServletRequest req) {
+		
+		return adminDAO.deleteCalendarEvent(req);
+	}
 
 
 

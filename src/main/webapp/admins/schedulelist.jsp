@@ -74,6 +74,7 @@ function closeDetailModal() {
     document.getElementById('eventModal').style.display = 'none';
 }
 
+
 document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
@@ -92,7 +93,49 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('detailDesc').value = currentEvent.extendedProps.description || '';
             document.getElementById('detailTitle').disabled = true;
             document.getElementById('detailDesc').disabled = true;
+                    
+            const today = new Date();
+            today.setHours(0,0,0,0);
 
+            const start = new Date(currentEvent.start);
+            const end = new Date(currentEvent.end || currentEvent.start);
+
+            start.setHours(0,0,0,0);
+            end.setHours(0,0,0,0);
+
+            // ⭐⭐ 상태 계산
+            let statusText = '';
+            if (today < start) {
+                statusText = '예정';
+            } else if (today > end) {
+                statusText = '종료';
+            } else {
+                statusText = '진행중';
+            }
+            document.getElementById('eventStatus').innerText = '상태 : ' + statusText;
+
+         	// ⭐⭐ 기간 표시		
+			const periodStart = currentEvent.start;
+			const periodEnd = currentEvent.end;
+			
+			// ⭐ end -1 day (FullCalendar workaround 보정)
+			// FullCalendar는 종료일을 포함하지 않기 때문에, 종료일을 하루 전으로 설정해서 일정 표시
+			if (periodEnd) {
+			    periodEnd.setDate(periodEnd.getDate() - 1);
+			}
+			
+			const startText = periodStart ? periodStart.toLocaleDateString('ko-KR') : '';
+			const endText = periodEnd ? periodEnd.toLocaleDateString('ko-KR') : '';
+			
+			if (endText === null || endText === '') {
+                document.getElementById('detailPeriod').innerText = startText;
+			}else{
+				document.getElementById('detailPeriod').innerText = startText + ' ~ ' + endText;
+			}
+		    	
+            // ⭐⭐ 모달에 상태 표시 ⭐⭐
+            document.getElementById('eventStatus').innerText = '상태 : ' + statusText;
+            
             document.getElementById('editBtn').style.display = 'inline-block';
             document.getElementById('saveBtn').style.display = 'none';
 
@@ -114,28 +157,31 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         
-        const newEvent = {
-            title: document.getElementById('newTitle').value,
-            description: document.getElementById('newDesc').value,
-            start: document.getElementById('newStart').value,
-            end: document.getElementById('newEnd').value || document.getElementById('newStart').value,
-            color: document.getElementById('newColor').value,
-            admin_id: ${vo.id}
-        };
-        fetch('${contextPath}/campus/addEvent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newEvent)
-        }).then(res => res.json())
-          .then(result => {
-              if (result.success) {
-                  calendar.addEvent(newEvent);
-                  closeAddModal();
-              } else {
-                  alert("등록 실패!");
-              }
-          });
-    });
+        fetch('${contextPath}/admin/addEvent', {
+        	  method: 'POST',
+        	  headers: {
+        	    'Content-Type': 'application/x-www-form-urlencoded'
+        	  },
+        	  body: new URLSearchParams({
+        	    title: document.getElementById('newTitle').value,
+        	    description: document.getElementById('newDesc').value,
+        	    start: document.getElementById('newStart').value,
+        	    end: document.getElementById('newEnd').value || document.getElementById('newStart').value,
+        	    color: document.getElementById('newColor').value,
+        	    admin_id: ${vo.id} // 세션에서 받아온 admin_id (예: ${vo.id})
+        	  })
+        	})
+        	.then(res => res.json())
+        	.then(result => {
+        	  if (result.success) {
+        	    alert("일정이 등록되었습니다.");
+        	    closeAddModal();
+        	    calendar.refetchEvents();
+        	  } else {
+        	    alert("등록 실패!");
+        	  }
+        	});
+});
 
     // 수정 모드 진입
     document.getElementById('editBtn').addEventListener('click', function () {
@@ -146,48 +192,54 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 수정 완료
-    document.getElementById('saveBtn').addEventListener('click', function () {
-        const newTitle = document.getElementById('detailTitle').value;
-        const newDesc = document.getElementById('detailDesc').value;
-
-        fetch('${contextPath}/campus/updateEvent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id: currentEvent.id,
-                title: newTitle,
-                description: newDesc
-            })
-        }).then(res => res.json())
-          .then(result => {
-              if (result.success) {
-                  currentEvent.setProp('title', newTitle);
-                  currentEvent.setExtendedProp('description', newDesc);
-                  closeDetailModal();
-              } else {
-                  alert("수정 실패!");
-              }
-          });
-    });
+	document.getElementById('saveBtn').addEventListener('click', function () {
+	    const newTitle = document.getElementById('detailTitle').value;
+	    const newDesc = document.getElementById('detailDesc').value;
+	
+	    fetch('${contextPath}/admin/updateEvent', {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded'
+	        },
+	        body: new URLSearchParams({
+	            id: currentEvent.id,
+	            title: newTitle,
+	            description: newDesc
+	        })
+	    }).then(res => res.json())
+	      .then(result => {
+	          if (result.success) {
+	              currentEvent.setProp('title', newTitle);
+	              currentEvent.setExtendedProp('description', newDesc);
+	              closeDetailModal();
+	          } else {
+	              alert("수정 실패!");
+	          }
+	      });
+	});
 
     // 삭제
-    document.getElementById('deleteBtn').addEventListener('click', function () {
-        if (confirm("정말 삭제할까요?")) {
-            fetch('${contextPath}/campus/deleteEvent', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: currentEvent.id })
-            }).then(res => res.json())
-              .then(result => {
-                  if (result.success) {
-                      currentEvent.remove();
-                      closeDetailModal();
-                  } else {
-                      alert("삭제 실패!");
-                  }
-              });
-        }
-    });
+	document.getElementById('deleteBtn').addEventListener('click', function () {
+	    if (confirm("정말 삭제할까요?")) {
+	        fetch('${contextPath}/admin/deleteEvent', {
+	            method: 'POST',
+	            headers: {
+	                'Content-Type': 'application/x-www-form-urlencoded'
+	            },
+	            body: new URLSearchParams({
+	                id: currentEvent.id
+	            })
+	        }).then(res => res.json())
+	          .then(result => {
+	              if (result.success) {
+	                  currentEvent.remove();
+	                  closeDetailModal();
+	              } else {
+	                  alert("삭제 실패!");
+	              }
+	          });
+	    }
+	});
 });
 </script>
 
@@ -223,11 +275,19 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="modal" id="eventModal">
   <div class="modal-content">
     <h4>일정 상세보기</h4>
+    
+    <label>기간</label>
+    <div id="detailPeriod" style="border: 1px solid #ccc; padding: 5px; border-radius: 5px;"></div>
+
+    
     <label>제목</label>
     <input type="text" id="detailTitle" class="form-control mb-2" disabled>
     
     <label>내용</label>
     <textarea id="detailDesc" class="form-control mb-2" rows="3" disabled></textarea>
+    
+    <!-- ⭐⭐ 상태 표시 ⭐⭐ -->
+    <div id="eventStatus" class="mb-2"></div>
 
     <div class="d-flex justify-content-end gap-2 mt-3">
       <button id="editBtn" class="btn btn-warning">수정</button>

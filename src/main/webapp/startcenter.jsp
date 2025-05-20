@@ -63,7 +63,10 @@
 			<div class="col-md-5">
 				<!-- 공지사항 박스 -->
 				<div class="notice-box p-3 bg-light border rounded">
-					<h4><a class="notice_title" href="${contextPath}/notice/list">공지사항</a></h4>
+					<div class="d-flex justify-content-between align-items-center">
+						<h4><a class="notice_title" href="${contextPath}/notice/list">공지사항</a></h4>
+						<h6><a class="notice_title" href="${contextPath}/notice/list">더보기</a></h6>
+					</div>
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -82,8 +85,10 @@
 				</div>
 				<!-- QNA 박스 -->
 				<div class="qna-box p-3 bg-light border rounded mt-2">
-					<h4><a class="notice_title" href="${contextPath}/qna/list">질문게시판</a></h4>
-					
+					<div class="d-flex justify-content-between align-items-center">
+						<h4><a class="notice_title" href="${contextPath}/qna/list">질문게시판</a></h4>
+						<h6><a class="notice_title" href="${contextPath}/qna/list">더보기</a></h6>
+					</div>
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -138,8 +143,7 @@
 		        },
 		        // (선택) 일정 클릭했을 때 팝업
 		        eventClick: function(info) {
-		            alert('제목: ' + info.event.title + '\n내용: ' + (info.event.extendedProps.description || ''));
-		        }
+		        	window.location.href = '${contextPath}/campus/calendarDetail?calendarId=' + info.event.id;		        }
 			});
 			calendar.render();
 		});
@@ -159,12 +163,12 @@
 		            list.forEach(function(notice, index) {
 		                html += "<tr>";
 		                html += "<td>" + notice.noticeId + "</td>";
-		                html += "<td><a class='notice_title' href='${pageContext}/notice/detail?noticeId="+notice.noticeId+"'>" + notice.title + "</a></td>";
+		                html += "<td><a class='notice_title' href='${contextPath}/notice/detail?noticeID="+notice.noticeId+"'>" + truncateTitle(notice.title,18) + "</a></td>";
 		                html += "<td>관리자</td>"; // 작성자
 		                html += "<td>" + notice.createdAt + "</td>";
 		                html += "</tr>";
 		            });
-		            
+
 		            $("#noticeTableBody").html(html);
 
 		            // 2. 페이징 버튼
@@ -203,6 +207,12 @@
 		    });
 		}
 		
+		function truncateTitle(title, maxLength) {
+		    if (title.length > maxLength) {
+		        return title.substring(0, maxLength) + "...";
+		    }
+		    return title;
+		}
 		
 		function loadQnaPage(page){
 			$.ajax({
@@ -218,7 +228,7 @@
                     list.forEach(function(qna, index) {
                         html += "<tr>";
                         html += "<td>" + qna.qnaId + "</td>";
-                        html += "<td><a class='notice_title' href='${pageContext}/notice/detail?qnaId="+qna.qnaId+"'>" + qna.title + "</a></td>";
+                        html += "<td><a class='notice_title' href='${contextPath}/qna/detail?qnaId="+qna.qnaId+"'>" + truncateTitle(qna.title,18) + "</a></td>";
                         html += "<td>" + qna.questioner+ "</td>"; // 작성자
                         html += "<td>" + qna.questiontime + "</td>";
                         html += "</tr>";

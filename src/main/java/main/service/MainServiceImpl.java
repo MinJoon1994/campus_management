@@ -45,6 +45,13 @@ public class MainServiceImpl implements MainService {
 		
 		return mainDAO.getQnaCount();
 	}
+	
+	//학사일정 자세히 보기
+	@Override
+	public AcademicCalendarVO getCalendarById(int calendarId) {
+		
+		return mainDAO.getCalendarById(calendarId);
+	}
 
 
 
