@@ -86,31 +86,23 @@
       <div class="nav-link">수강생 관리</div>
       <div class="dropdown">
         <a href="${pageContext.request.contextPath}/professor/enrolledstudent">수강신청 학생명단 확인</a>
-        <a href="#">학생 정보 조회</a>
+        <a href="${pageContext.request.contextPath}/professor/attendancemanage">수강생 출석관리</a>
       </div>
     </div>
+    
     <div class="nav-item">
       <div class="nav-link">성적 관리</div>
       <div class="dropdown">
-        <a href="#">성적 입력</a>
-        <a href="#">성적 기준 설정</a>
-        <a href="#">성적 확정 및 제출</a>
-        <a href="#">이의신청 처리</a>
+        <a href="${pageContext.request.contextPath}/professor/gradeslist">수강생 성적조회</a>
+        <a href="${pageContext.request.contextPath}/professor/gradesedit">수강생 성적입력/수정</a>
       </div>
     </div>
-    <div class="nav-item">
-      <div class="nav-link">출석 관리</div>
-      <div class="dropdown">
-        <a href="#">수동 출석 체크</a>
-        <a href="#">출석 현황 확인</a>
-        <a href="#">출석 통계 확인</a>
-      </div>
-    </div>
+    
     <div class="nav-item">
       <div class="nav-link">커뮤니케이션</div>
       <div class="dropdown">
-        <a href="#">공지사항 작성</a>
-        <a href="#">피드백 등록</a>
+      	<a href="${pageContext.request.contextPath}/professor/noticeprofessor">공지사항</a>
+ 	     <a href="${pageContext.request.contextPath}/professor/qnalist">질문/답변</a>
       </div>
     </div>
   </div>
