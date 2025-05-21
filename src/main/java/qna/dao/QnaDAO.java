@@ -100,14 +100,4 @@ public class QnaDAO {
 	        return null;
 	}
 
-
-
-
-	
-
-	
-	
-
-
-
 }
