@@ -79,7 +79,6 @@ public class ProfessorController extends HttpServlet {
 		
 		// 로그인 중인 교수 id(교수 이메일) 를 얻기 위해
 		HttpSession session = request.getSession(false); // false는 세션이 없으면 새로운 세션을 만들지 않음
-		session.setAttribute("id", "16");
 
 		// 메인화면 요청 처리
 		if (action.equals("/main")) {
@@ -95,7 +94,8 @@ public class ProfessorController extends HttpServlet {
 		
 		// ✅ 강의 개설 요청 / 강의 개설 폼 요청
 		else if (action.equals("/lectureform")) {
-			String id = (String) session.getAttribute("id");
+			String id = String.valueOf(session.getAttribute("id"));
+			System.out.println("세션 교수 아이디 : " + id);
 			System.out.println("강의 개설 폼 요청...");
 			
 			request.setAttribute("professor_id" , id);
@@ -171,7 +171,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 나의 요청 강의 확인 / 요청한 강의 확인
 		else if (action.equals("/lecturerequest")) {
-			String id = (String) session.getAttribute("id");
+			String id = String.valueOf(session.getAttribute("id"));
 			
 			// 나의 강의등록 요청 강의목록
 			Vector<SubjectVo> LectureListV = professorService.getAllSubject(id);
@@ -182,7 +182,7 @@ public class ProfessorController extends HttpServlet {
 		
 		// ✅ 나의 강의목록 조회 / 본인이 맡은 강의목록 조회
 		else if (action.equals("/lectures")) {
-			String id = (String) session.getAttribute("id");
+			String id = String.valueOf(session.getAttribute("id"));
 			
 			Vector<LectureListVo> LectureListV = professorService.getAllLectureList(id);
 			request.setAttribute("v", LectureListV);
@@ -273,7 +273,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 나의 시간표 조회 / 교수 강의 시간표 조회
 		else if (action.equals("/timetable")) {
-			String id = (String)session.getAttribute("id");
+			String id = String.valueOf(session.getAttribute("id"));
 			System.out.println("교수 강의 시간표 조회... : " + id);
 			// 강의 테이블 조회
 			Vector<SubjectVo> subjectVo = professorService.getAllSubject(id);
@@ -291,7 +291,7 @@ public class ProfessorController extends HttpServlet {
 		
 		// ✅ 수강신청 학생명단 확인 / 수강신청 학생명단 조회
 		else if(action.equals("/enrolledstudent")) {
-			String professor_id = (String)session.getAttribute("id");
+			String professor_id = String.valueOf(session.getAttribute("id"));
 			System.out.println("수강신청 학생명단 확인");
 			
 			Vector<EnrolledStudentVo> enrolledStudentVo = professorService.getAllEnrolledStudentList(professor_id);
@@ -302,7 +302,7 @@ public class ProfessorController extends HttpServlet {
 		// ✅ 수강생 출석관리 / 출석관리 화면
 		else if(action.equals("/attendancemanage")) {
 			System.out.println("출석조회시작...");
-			String professor_id = (String)session.getAttribute("id");
+			String professor_id = String.valueOf(session.getAttribute("id"));
 			int professordId  = Integer.parseInt(professor_id);
 			
 			// 교수 담당 과목 조회
@@ -324,7 +324,7 @@ public class ProfessorController extends HttpServlet {
 		// ✅ 수강생 출석관리 / 출결 편집
 		else if(action.equals("/attendanceedit")) {
 		    PrintWriter pwriter  = response.getWriter();
-		    String professor_id = (String)session.getAttribute("id");
+		    String professor_id = String.valueOf(session.getAttribute("id"));
 		    int professorId = Integer.parseInt(professor_id);
 
 		    String subjectCode = request.getParameter("subject_code");
@@ -366,7 +366,7 @@ public class ProfessorController extends HttpServlet {
 		
 		// ✅ 수강생 성적조회 / 강의목록에서 수강생 성적조회
 		else if(action.equals("/gradeslist")) {
-			String professor_id = (String)session.getAttribute("id");
+			String professor_id = String.valueOf(session.getAttribute("id"));
 			System.out.println("성적 조회...\n");
 			
 			// 성적조회
@@ -387,7 +387,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 수강생 성적 입력,수정 / 수강생 성적 입력 화면
 		else if(action.equals("/gradesinsert")) {
-			String professor_id = (String)session.getAttribute("id");
+			String professor_id = String.valueOf(session.getAttribute("id"));
 			System.out.println("성적 조회...\n");
 			
 			// 성적조회
@@ -403,7 +403,7 @@ public class ProfessorController extends HttpServlet {
 		}
 		// ✅ 수강생 성적 입력,수정 / 수강생 성적 수정 화면
 		else if(action.equals("/gradesupdate")) {
-			String professor_id = (String)session.getAttribute("id");
+			String professor_id = String.valueOf(session.getAttribute("id"));
 			System.out.println("성적 조회...\n");
 			
 			// 성적조회
@@ -459,7 +459,7 @@ public class ProfessorController extends HttpServlet {
 		 */
 		// ✅ 공지사항 / 교수 공지사항 화면 요청(공지사항 조회)
 		else if(action.equals("/noticeprofessor")) {
-			String professor_id = (String)session.getAttribute("id");
+			String professor_id = String.valueOf(session.getAttribute("id"));
 			
 			Vector<NoticeProfessorVo> noticeVo = professorService.getAllNoticeProfessorList(professor_id);
 			request.setAttribute("noticeVo", noticeVo);
@@ -482,7 +482,7 @@ public class ProfessorController extends HttpServlet {
 	         String fileName = null;
 	         String filePath = null;
 	         long fileSize = 0;
-	         String professor_id = (String)session.getAttribute("id");
+	         String professor_id = String.valueOf(session.getAttribute("id"));
 	         int professorId = Integer.parseInt(professor_id);
 	         
 			 try {
@@ -690,7 +690,7 @@ public class ProfessorController extends HttpServlet {
 
 		// ✅ 질문,답변 / 강의 관련 질문 모아보기
 		else if(action.equals("/qnalist")) {
-			String professor_id = (String)session.getAttribute("id");
+			String professor_id = String.valueOf(session.getAttribute("id"));
 			Vector<QnaStduentProfessorVo> qspvo = professorService.getAllQna(professor_id);
 			Vector<LectureListVo> subjectVo = professorService.getAllLectureList2(professor_id);
 			
@@ -738,7 +738,7 @@ public class ProfessorController extends HttpServlet {
 		    Gson gson = new Gson();
 		    ReplyProfessorVo vo = gson.fromJson(reader, ReplyProfessorVo.class);
 
-		    String professor_id = (String)session.getAttribute("id");
+		    String professor_id = String.valueOf(session.getAttribute("id"));
 		    
 		    boolean result = professorService.insertReply(vo, professor_id);
 
