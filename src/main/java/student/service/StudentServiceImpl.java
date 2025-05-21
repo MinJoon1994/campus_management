@@ -10,6 +10,7 @@ import member.vo.StudentVO;
 import student.dao.StudentDAO;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
+import student.vo.StudentGradeVO;
 import student.vo.SubjectGradeVO;
 
 public class StudentServiceImpl implements StudentService {
@@ -59,9 +60,9 @@ public class StudentServiceImpl implements StudentService {
 
     // 전체 학기 성적 조회
     @Override
-    public List<SemesterGradeVO> getGrades(HttpServletRequest req) {
-    	return null;
-    }
+	public List<StudentGradeVO> getGrades(HttpServletRequest req) {
+		return studentDAO.getGrades(req);
+	}  
 
     // 특정 학기 성적 상세 조회
     @Override
@@ -70,7 +71,8 @@ public class StudentServiceImpl implements StudentService {
         return null;
     }
 
-    @Override
+
+	@Override
     public List getTimeTable(HttpServletRequest req) {
 
         return null;

@@ -18,6 +18,7 @@ import member.vo.UserVO;
 import student.service.StudentService;
 import student.service.StudentServiceImpl;
 import student.vo.LectureVO;
+import student.vo.StudentGradeVO;
 
 @WebServlet("/student/*")
 public class StudentController extends HttpServlet{
@@ -30,7 +31,7 @@ public class StudentController extends HttpServlet{
 		String action = req.getPathInfo();
 		String nextPage = null;
 		PrintWriter out = resp.getWriter();
-		
+		HttpSession session = req.getSession();
 		StudentService studentService = new StudentServiceImpl();
 		
 		//학생 메인 화면 요청
@@ -89,7 +90,6 @@ public class StudentController extends HttpServlet{
 			return;
         	
         }else if(action.equals("/enrolldelete")) { //학생 수강신청 취소요청
-        	
         	studentService.enrollDelete(req);
         	
         	out.println("<script>");
@@ -99,17 +99,12 @@ public class StudentController extends HttpServlet{
         	
         	return;
         	
-        	// ------------- 학생 전체 학기 성적 조회 -------------
+        // ------------- 학생 전체 학기 성적 조회 -------------
         }else if (action.equals("/grades")) {
-
-            List<student.vo.SemesterGradeVO> list = studentService.getGrades(req);
+            List<StudentGradeVO> list = studentService.getGrades(req);
             req.setAttribute("list", list);
-
-            // center는 students/grades.jsp
-            req.setAttribute("center", "students/grades.jsp");
-            nextPage = "/main.jsp";
-            
-            return;
+            req.setAttribute("center", "/students/grades.jsp"); 
+            nextPage = "/students/StudentMain.jsp"; 
 
         // ------------- 학생 성적 상세 조회 -------------
         } else if (action.equals("/gradesdetail")) {

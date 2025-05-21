@@ -75,11 +75,6 @@ public class MemberController extends HttpServlet{
 			
 			HttpSession session = req.getSession();
 			
-			/*
-			 *  황도균 : 임시로 추가 ( 이메일 대신 교수 아이디를 사용하기 위해서)
-			 *  추가한 부분
-			 *  = session.setAttribute("professor_id", 4);
-			 */
 			
 			//로그인 처리
 			UserVO vo = memberService.login(email, password);

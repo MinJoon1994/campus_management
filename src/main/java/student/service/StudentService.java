@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import member.vo.StudentVO;
 import student.vo.LectureVO;
+import student.vo.StudentGradeVO;
 
 public interface StudentService {
     

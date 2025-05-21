@@ -4,9 +4,11 @@ import java.sql.*;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
+import student.vo.StudentGradeVO;
 import student.vo.SubjectGradeVO;
 import main.DbcpBean;   
 import member.vo.StudentVO;
@@ -167,5 +169,50 @@ public class StudentDAO {
 		
 		return result;
 		
+	}
+	// 특정 학생의 성적 조회
+	public List<StudentGradeVO> getGrades(HttpServletRequest req) {
+	    HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("student_id");
+	    System.out.println("dao에서 sessio 확인 : " + studentId);
+	    List<StudentGradeVO> list = new ArrayList<>();
+	    
+	    String sql = "SELECT " +
+		    	     "    u.user_id AS student_id, " +
+		    	     "    u.name AS student_name, " +
+		    	     "    s.subject_code, " +
+		    	     "    s.subject_name, " +
+		    	     "    g.score, " +
+		    	     "    g.grade " +
+		    	     "FROM Grade g " +
+		    	     "JOIN Enrollment e ON g.enrollment_id = e.enrollment_id " +
+		    	     "JOIN Subject s ON e.subject_code = s.subject_code " +
+		    	     "JOIN Student st ON e.student_id = st.user_id " +
+		    	     "JOIN User u ON st.user_id = u.user_id " +
+		    	     "WHERE u.user_id = ?";
+
+	    try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, studentId);
+			rs = pstmt.executeQuery();
+			
+	        while (rs.next()) {
+	            StudentGradeVO vo = new StudentGradeVO();
+	            vo.setStudentId(rs.getInt("student_id"));        // 학생 ID
+	            vo.setStudentName(rs.getString("student_name")); // 학생 이름
+	            vo.setSubjectCode(rs.getString("subject_code")); // 과목 코드
+	            vo.setSubjectName(rs.getString("subject_name")); // 과목명
+	            vo.setScore(rs.getDouble("score"));              // 점수
+	            vo.setGrade(rs.getString("grade"));              // 학점
+
+	            list.add(vo);
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+	    return list;
 	}
 }
