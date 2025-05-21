@@ -2,7 +2,6 @@ package qna.vo;
 
 public class QnaVO {
 	
-	
 	private int qna_level;
     private int qnaID;
     private String title;

@@ -27,7 +27,7 @@
 	// 쉽게 말해, 여러 게시글 정보를 리스트 형태로 받는다고 생각하면 됩니다.
 	ArrayList<HashMap<String, Object>> list = (ArrayList<HashMap<String, Object>>)request.getAttribute("qnalist");
 
-	out.println("list : " + list.size());
+	//out.println("list : " + list.size());
 	
 	// 로그인한 사용자 Email를 세션에서 가져옵니다.
 	// 로그인 후에 저장된 사용자 정보 중 'email'를 꺼내는 것이라 로그인 상태인지 확인할 때 사용합니다.
@@ -157,7 +157,7 @@
 					// 리스트에서 i번째 데이터 가져오기
 					// Map 형태로 community와 member라는 객체가 저장되어 있음
 					qnavo = (QnaVO)list.get(i).get("vo"); // 게시글 객체
-					//UserVO member = (UserVO)list.get(i).get("member");             // 작성자 정보 객체
+					UserVO member = (UserVO)list.get(i).get("member");             // 작성자 정보 객체
 			%>			
 					<!-- 실제 게시글 한 줄(row) 출력 -->
 					<tr align="center">
@@ -202,7 +202,7 @@
 				%>
 					<!-- '<' 버튼: 이전 블록으로 이동하는 링크입니다. -->
 					<!-- 클릭하면 이전 블록의 첫 번째 페이지로 이동합니다. -->
-					<a href="<%= contextPath %>/qna/listadmin?nowBlock=<%= nowBlock - 1 %>&nowPage=<%= (nowBlock - 1) * pagePerBlock %>">
+					<a href="<%= contextPath %>/qna/list?nowBlock=<%= nowBlock - 1 %>&nowPage=<%= (nowBlock - 1) * pagePerBlock %>">
 						< <!-- 브라우저에 '<' 기호로 보이게 됨 -->
 					</a>
 				<%
@@ -217,7 +217,7 @@
 						if ((nowBlock * pagePerBlock) + i == totalPage) break;
 				%>
 						<!-- 각각의 페이지 번호에 해당하는 링크 생성 -->
-						<a href="<%= contextPath %>/qna/listadmin?nowBlock=<%= nowBlock %>&nowPage=<%= (nowBlock * pagePerBlock) + i %>">
+						<a href="<%= contextPath %>/qna/list?nowBlock=<%= nowBlock %>&nowPage=<%= (nowBlock * pagePerBlock) + i %>">
 							<%= (nowBlock * pagePerBlock) + i + 1 %>
 							<!-- 실제 화면에 보이는 숫자: 페이지 번호는 0부터 시작하므로 +1 -->
 						</a>
@@ -230,7 +230,7 @@
 				%>
 					<!-- '>' 버튼: 다음 블록으로 이동하는 링크입니다. -->
 					<!-- 클릭 시 다음 블록의 첫 번째 페이지로 이동 -->
-					<a href="<%= contextPath %>/qna/listadmin?nowBlock=<%= nowBlock + 1 %>&nowPage=<%= (nowBlock + 1) * pagePerBlock %>">
+					<a href="<%= contextPath %>/qna/list?nowBlock=<%= nowBlock + 1 %>&nowPage=<%= (nowBlock + 1) * pagePerBlock %>">
 						> <!-- 브라우저에 '>' 기호로 보이게 됨 -->
 					</a>
 				<%
