@@ -58,134 +58,56 @@
 <title>과목 등록</title>
 	<style>
 	    body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
-	    .main-wrapper {
-	        display: flex;
-	        justify-content: center;
-	        align-items: flex-start;
-	        gap: 10px;
-	        width: 90%;
-	        margin: 0 auto;
-	        padding-top: 10px;
+	
+	    .main-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 10px;
+	                    width: 90%; margin: 0 auto; margin-top: 20px; padding-top: 10px; }
+	
+	    .left-box, .right-box { max-width: 700px; }
+	
+	    .left-box { flex: 6; max-width: 700px; }
+	
+	    .right-box { margin-top: 100px; flex: 4; max-width: 700px; }
+	
+	    .left-box table { margin: 0; width: 100%; border-collapse: collapse; background-color: #f9f9f9; }
+	
+	    .right-box table { margin: 0; width: 80%; border-collapse: collapse; background-color: #f9f9f9; }
+	
+	    th, td { padding: 12px; border: 1px solid #ddd; }
+	
+	    th { background-color: #2c3e50; color: white; text-align: center; }
+	
+	    input[type="text"], input[type="number"], select {
+	        padding: 8px; margin-top: 5px; width: 95%;
 	    }
-	    .left-box, .right-box {
-	        max-width: 700px;
+	
+	    .day-time-row { display: flex; align-items: center; margin-bottom: 8px; }
+	
+	    .day-time-row select { margin-right: 10px; padding: 5px; width: 150px; }
+	
+	    .day-time-row button { margin-left: 10px; padding: 8px 16px; height: 40px;
+	                           cursor: pointer; background-color: #e74c3c; color: white;
+	                           border: none; border-radius: 4px; }
+	
+	    .add-button { margin-top: 10px; padding: 8px 16px; background-color: #3498db;
+	                  color: white; border: none; border-radius: 4px; cursor: pointer; }
+	
+	    input[type="submit"] { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
+	
+	    .input-with-button { display: flex; align-items: center; }
+	
+	    .input-with-button input { flex: 1; }
+	
+	    .input-with-button button { margin-left: 10px; padding: 8px 16px; cursor: pointer; }
+	
+	    .timetable-container { width: 90%; margin: 40px auto; padding-top: 20px; }
+	
+	    .timetable-container table { width: 80%; border-collapse: collapse; }
+	
+	    .timetable-container th, .timetable-container td {
+	        width: 100px; height: 50px; text-align: center; border: 1px solid #ccc;
 	    }
-	    .left-box {
-		    flex: 6;           /* 전체 중 60% 차지 */
-		    max-width: 700px;
-		}
-		
-		.right-box {
-			margin-top: 100px;
-		    flex: 4;           /* 전체 중 40% 차지 */
-		    max-width: 700px;
-		}
-	    
-	    .left-box table {
-	    	margin: 0;
-	        width: 100%;
-	        border-collapse: collapse;
-	        background-color: #f9f9f9;
-	    }
-		.right-box table {
-			margin: 0;
-			width: 80%;
-	        border-collapse: collapse;
-	        background-color: #f9f9f9;
-		}
-		th, td {
-			padding: 12px;
-			border: 1px solid #ddd;
-		}
-		
-		th {
-			background-color: #2c3e50;
-			color: white;
-			text-align: center;
-		}
-		
-		input[type="text"], input[type="number"], select {
-			padding: 8px;
-			margin-top: 5px;
-			width: 95%;
-		}
-		
-		.day-time-row {
-			display: flex;
-			align-items: center;
-			margin-bottom: 8px;
-		}
-		
-		.day-time-row select {
-			margin-right: 10px;
-			padding: 5px;
-			width: 150px;
-		}
-		
-		.day-time-row button {
-			margin-left: 10px;
-			padding: 8px 16px;
-			height: 40px;
-			cursor: pointer;
-			background-color: #e74c3c;
-			color: white;
-			border: none;
-			border-radius: 4px;
-		}
-		
-		.add-button {
-			margin-top: 10px;
-			padding: 8px 16px;
-			background-color: #3498db;
-			color: white;
-			border: none;
-			border-radius: 4px;
-			cursor: pointer;
-		}
-		
-		input[type="submit"] {
-			padding: 10px 20px;
-			margin-top: 20px;
-			cursor: pointer;
-		}
-		
-		.input-with-button {
-		    display: flex;
-		    align-items: center;
-		}
-		
-		.input-with-button input {
-		    flex: 1; /* input은 남은 영역 모두 차지 */
-		}
-		
-		.input-with-button button {
-		    margin-left: 10px; /* 버튼과 input 사이 약간의 간격 */
-		    padding: 8px 16px;
-		    cursor: pointer;
-		}
-		.timetable-container {
-		    width: 90%;
-		    margin: 40px auto;
-		    padding-top: 20px;
-		}
-		
-		.timetable-container table {
-		    width: 80%;
-		    border-collapse: collapse;
-		}
-		
-		.timetable-container th, .timetable-container td {
-		    width: 100px;
-		    height: 50px;
-		    text-align: center;
-		    border: 1px solid #ccc;
-		}
-		.full-fill-img {
-		    height: 100px;       /* 원하는 고정 높이 */
-		    width: 100%;         /* 부모 요소의 너비를 모두 채움 */
-		    object-fit: cover;   /* 이미지 비율을 유지하면서 공간을 꽉 채움 (잘릴 수 있음) */
-		    display: block;      /* 인라인 공간 제거 */
-		}
+	
+	    .full-fill-img { height: 100px; width: 100%; object-fit: cover; display: block; }
 	</style>
 	<script>
         let isSubjectCodeChecked = false;
@@ -371,7 +293,6 @@
 </head>
 
 <body>
-<h2 style="text-align: center; padding-top: 20px;">과목 등록</h2>
 <form id="lectureForm" action="<%=contextPath%>/professor/lecturecreate" method="post"
 			onsubmit="return false;">
 <div class="main-wrapper">

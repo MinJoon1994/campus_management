@@ -122,7 +122,7 @@
         .container {
             width: 90%;         /* 전체 폭의 70% 사용 (양쪽 15% 여백) */
             margin: 0 auto;     /* 중앙 정렬 */
-            padding-top: 20px;
+            padding-top: 10px;
         }
         .pagination a {
             margin: 0 5px;

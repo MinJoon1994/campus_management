@@ -19,7 +19,7 @@
         .container {
             width: 90%;
             margin: 0 auto;
-            padding-top: 20px;
+            padding-top: 10px;
         }
         table {
             width: 100%;

@@ -248,7 +248,7 @@ public class ProfessorController extends HttpServlet {
 		    if (result) {
 		    	pw.println("<script>alert('수정 성공');history.back();</script>");
 		    } else {
-		        pw.println("<script>alert('수정 실패');history.back();</script>");
+		        pw.println("<script>alert('등록을 먼저 해야합니다.');history.back();</script>");
 		        return;
 		    }
 		}
@@ -261,11 +261,13 @@ public class ProfessorController extends HttpServlet {
 			
 			boolean result = professorService.deleteLecturePlan(subjectCode);
 			if (result) {
-				pw.println("<script>alert('삭제 성공');</script>");
-				response.sendRedirect(request.getContextPath() + "/professor/lectures/lectureplan");
+				pw.println("<script>");
+				pw.println("alert('삭제 성공');");
+				pw.println("window.close();");
+				pw.println("</script>");
 				return;
 		    } else {
-		        pw.println("<script>alert('삭제 실패');history.back();</script>");
+		        pw.println("<script>alert('등록이 되지 않았습니다.');history.back();</script>");
 		        return;
 		    }
 		}
