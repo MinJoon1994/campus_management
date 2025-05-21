@@ -32,35 +32,13 @@
 	<title>강의 목록</title>
 	
 	<style>
-	    body {
-	        margin: 0;  /* 화면을 꽉 차게 하기위한 기본설정 */
-	        padding: 0;
-	        font-family: Arial, sans-serif;
-	    }
-	    .container {
-	        width: 90%;         /* 전체 폭의 70% 사용 (양쪽 15% 여백) */
-	        margin: 0 auto;     /* 중앙 정렬 */
-	        padding-top: 20px;
-	    }
-	    table {
-	        width: 100%;
-	        border-collapse: collapse; /* 셀 테투리와 셀 간 간격을 없애고 테두리들을 깔끔하게 붙임 */
-	    }
-	    th, td {
-	        text-align: center;
-	    }
-	    th {
-	        background-color: #2c3e50;
-	        color: white;
-	    }
-	    .pagination a {
-	        margin: 0 5px;
-	        text-decoration: none;
-	    }
-	    .pagination strong {
-	        margin: 0 5px;
-	        font-weight: bold;
-	    }
+	    body {margin: 0; padding: 0; font-family: Arial, sans-serif;}
+	    .container {width: 90%; margin: 0 auto; padding-top: 10px;}
+	    table {width: 100%;border-collapse: collapse; }
+	    th, td {text-align: center;}
+	    th {background-color: #2c3e50;color: white;}
+	    .pagination a {margin: 0 5px;text-decoration: none;}
+	    .pagination strong {margin: 0 5px;font-weight: bold;}
 	</style>
 </head>
 <body>

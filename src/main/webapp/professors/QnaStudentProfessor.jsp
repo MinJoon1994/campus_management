@@ -36,7 +36,7 @@
         }
         .container {
             width: 90%;
-            margin: 30px auto;
+            margin: 10px auto;
         }
         h2 {
             text-align: center;

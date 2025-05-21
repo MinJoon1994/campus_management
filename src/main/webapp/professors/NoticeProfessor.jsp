@@ -13,33 +13,12 @@
     <meta charset="UTF-8">
     <title>교수 공지사항 목록</title>
     <style>
-		body {
-		    margin: 0;
-		    padding: 0;
-		    font-family: Arial, sans-serif;
-		    background-color: #f0f2f5; 
-		}
-		
-		.container {
-		    width: 90%;
-		    margin: 30px auto;
-		    border-radius: 12px;
-		}
-		
-		h2 {
-			margin-top: 40px;
-		    background-color: #2c3e50;
-		    color: white;
-		    padding: 16px;
-		    text-align: center;
-		    border-radius: 8px;
-		    margin-top: 0;
-		    margin-bottom: 30px;
-		}
-		
+		body {margin: 0;padding: 0;font-family: Arial, sans-serif;background-color: #f0f2f5;}
+		.container {width: 90%;margin: 20px auto;border-radius: 12px;}		
+		h2 {background-color: #2c3e50;color: white;padding: 16px;
+		    text-align: center;border-radius: 8px;margin-top: 0;margin-bottom: 30px;}
 		#table_notice {
 		    width: 100%;
-		    height: 500px;
 		    border-collapse: collapse;
 		    background-color: #fafafa;
 		    border-radius: 8px;
@@ -50,7 +29,7 @@
 		    color: white;
 		}
 		th, td {
-		    text-align: center;
+			text-align: center;
 		    padding: 12px;
 		    border-bottom: 1px solid #ddd;
 		}
@@ -60,7 +39,7 @@
 		}
 		
 		.no-data {
-		    height: 600px;
+		    height: 400px;
 		    display: flex;
 		    align-items: center;
 		    justify-content: center;
