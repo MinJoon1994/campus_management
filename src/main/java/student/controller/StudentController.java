@@ -68,7 +68,7 @@ public class StudentController extends HttpServlet{
         	
         	out.println("<script>");
         	out.println("alert('수강신청이 완료되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/courcelist;");
+        	out.println("location.href='"+req.getContextPath()+"/student/enrollForm;");
         	out.println("</script>");
         	
         	return;

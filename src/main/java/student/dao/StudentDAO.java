@@ -27,12 +27,19 @@ public class StudentDAO {
 		System.out.println("학생 아이디 :"+student_id);
 		
 		//학생 아이디를 이용해 학생 학년에 맞는 수강 신청 가능한 과목 조회
-		String sql = "SELECT sub.* "
-				+ "FROM student s "
-				+ "JOIN subject sub ON sub.open_grade = s.grade "
-				+ "JOIN professor p ON sub.professor_id = p.user_id "
-				+ "WHERE s.user_id = ? "
-				+ "  AND p.department = s.department;";
+		String sql = 
+			    "SELECT sub.* " +
+			    "FROM student s " +
+			    "JOIN subject sub ON sub.open_grade = s.grade " +
+			    "JOIN professor p ON sub.professor_id = p.user_id " +
+			    "WHERE s.user_id = ? " +
+			    "  AND p.department = s.department " +
+			    "  AND NOT EXISTS ( " +
+			    "      SELECT 1 " +
+			    "      FROM enrollment e " +
+			    "      WHERE e.student_id = s.user_id " +
+			    "        AND e.subject_code = sub.subject_code " +
+			    "  );";
 		
 		List<LectureVO> list = new ArrayList<>();
 		

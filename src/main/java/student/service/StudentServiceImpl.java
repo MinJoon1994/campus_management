@@ -31,7 +31,7 @@ public class StudentServiceImpl implements StudentService {
     	int result = studentDAO.checkCapacity(req);
     	
     	if(result == 1) {
-        	String subject_code = req.getParameter("subject_code");
+        	String subject_code = req.getParameter("subjectCode");
         	
         	//학생 아이디
         	Integer student_id = (Integer)req.getSession().getAttribute("student_id");
