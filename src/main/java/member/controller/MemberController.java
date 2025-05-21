@@ -91,7 +91,7 @@ public class MemberController extends HttpServlet{
 					
 					System.out.println("교수 로그인 성공: "+vo.getId());
 					
-					session.setAttribute("professor_id", vo.getId());
+					session.setAttribute("id", vo.getId());
 				}
 				
 				if(vo.getRole().equals("STUDENT")) {
