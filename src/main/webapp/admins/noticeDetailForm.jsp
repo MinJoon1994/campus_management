@@ -190,39 +190,51 @@
 <body>
 <div class="container my-5">
 	<h2 class="mb-4 text-center">게시글 보기</h2>
-	<form name="frmNotice" method="post" action="${contextPath}" enctype="multipart/form-data">
-		<%-- 폼 내용 --%>
-        <div class="card">
-			<div class="card-body">
-				<div class="mb-3 row"> <label class="col-sm-2 col-form-label text-sm-end">번호</label> <div class="col-sm-10"> <input type="text" readonly class="form-control-plaintext" value="${noticevo.noticeID}"> <input type="hidden" name="noticeID" value="${noticevo.noticeID}"> </div> </div>
-				<div class="mb-3 row"> <label class="col-sm-2 col-form-label text-sm-end">작성자</label> <div class="col-sm-10"> <input type="text" readonly class="form-control-plaintext" value="${noticevo.adminName}" name="writer"> </div> </div>
-				<div class="mb-3 row"> <label for="i_title" class="col-sm-2 col-form-label text-sm-end">제목</label> <div class="col-sm-10"> <input type="text" class="form-control" value="${noticevo.title}" name="title" id="i_title" disabled> </div> </div>
-				<div class="mb-3 row"> <label for="i_content" class="col-sm-2 col-form-label text-sm-end">내용</label> <div class="col-sm-10"> <textarea rows="10" class="form-control" name="content" id="i_content" disabled>${noticevo.content}</textarea> </div> </div>
-				<div class="mb-3 row"> <label class="col-sm-2 col-form-label text-sm-end">등록일자</label> <div class="col-sm-10"> <input type="text" readonly class="form-control-plaintext" value="<fmt:formatDate value='${noticevo.createdAt}' pattern='yyyy-MM-dd HH:mm:ss'/>"> </div> </div>
-			</div>
-		</div>
-		<%-- 버튼 그룹 --%>
-        <div class="button-group-wrapper">
-           <c:choose>
-        		<c:when test="${vo.role=='ADMIN'}">
-        		    <div id="tr_btn" style="display: flex; justify-content: center;">
-        		    
-        		        <button type="button" class="btn btn-primary me-2"
-						        onclick="location.href='${contextPath}/admin/noticeDetailForm?noticeID=${noticevo.noticeID}'">수정</button>
-						
-						<button type="button" class="btn btn-danger me-2"
-						        onclick="location.href='${contextPath}/admin/noticedelete?noticeID=${noticevo.noticeID}'">삭제</button>
+	<form name="frmNotice" method="post" action="${contextPath}/admin/updateNotice">
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-sm-end">번호</label>
+                <div class="col-sm-10">
+                    <input type="text" name="noticeID" class="form-control" value="${noticevo.noticeID}" readonly>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-sm-end">작성자</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="adminName" value="${noticevo.adminName}" readonly>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="i_title" class="col-sm-2 col-form-label text-sm-end">제목</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="title" id="i_title" value="${noticevo.title}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="i_content" class="col-sm-2 col-form-label text-sm-end">내용</label>
+                <div class="col-sm-10">
+                    <textarea rows="10" class="form-control" name="content" id="i_content">${noticevo.content}</textarea>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-sm-end">등록일자</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" readonly
+                        value="<fmt:formatDate value='${noticevo.createdAt}' pattern='yyyy-MM-dd HH:mm:ss'/>">
+                </div>
+            </div>
+        </div>
+    </div>
 
-        		        <button type="button" class="btn btn-warning me-2" onclick="backToList(this)">목록</button>
-	            </c:when>
-        		<c:otherwise>
-	            	    <div id="tr_btn" style="display: flex; justify-content: center;">
-            		        <button type="button" class="btn btn-warning me-2" onclick="backToList(this)">목록</button>
-            		    </div>
-	            </c:otherwise>
-            </c:choose>
-		</div>
-	</form>
+    <div class="button-group-wrapper">
+        <div style="display: flex; justify-content: center;">
+            <button type="submit" class="btn btn-success me-2">수정완료</button>
+            <button type="button" class="btn btn-warning me-2" onclick="backToList(this)">목록</button>
+        </div>
+    </div>
+</form>
+
 
 	<%-- Include the chatbot module --%>
 <%-- 	<jsp:include page="./chatbot.jsp" /> --%>

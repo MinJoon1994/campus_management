@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import admin.dao.AdminDAO;
 import admin.vo.Admin_StudentVO;
+import main.vo.NoticeVO;
 import admin.vo.Admin_LectureVO;
 import qna.vo.QnaVO;
 import student.vo.LectureVO;
@@ -61,13 +62,15 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public void updateNotice(HttpServletRequest req) {
-		// TODO Auto-generated method stub
+		
+		adminDAO.updateNotice(req);
 
 	}
 
 	@Override
 	public void deleteNotice(HttpServletRequest req) {
-		// TODO Auto-generated method stub
+
+		adminDAO.deleteNotice(req);
 
 	}
 
@@ -125,6 +128,8 @@ public class AdminServiceImpl implements AdminService {
 		
 		return adminDAO.deleteCalendarEvent(req);
 	}
+	
+
 
 
 

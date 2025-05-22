@@ -34,7 +34,108 @@
 	<title>관리자에게 문의하는 내용 읽기</title>
 	
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>	
-	<link rel="stylesheet" href="<%=contextPath%>/css/qna/qnadetail.css">
+	<style>
+	@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#qna-container {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+#qna-header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #003366;
+}
+
+.qna_p1 {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #003366;
+}
+
+.qna_p2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+#qna-body table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#qna-body td {
+  padding: 12px;
+}
+
+.qna_no,
+.qna_title,
+.qna_wtitername,
+.qna_contents,
+.qna_date {
+  padding: 12px 10px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 16px;
+}
+
+.qna_title {
+  font-weight: bold;
+  font-size: 20px;
+  color: #003366;
+}
+
+.qna_contents {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.qna_date {
+  font-size: 14px;
+  color: #888;
+}
+
+.qna-button-area {
+  margin-top: 20px;
+}
+
+.qna-button-area input {
+  background-color: #003366;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  color: white;
+  font-size: 15px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.qna-button-area input:hover {
+  background-color: #00509e;
+}
+	
+	</style>
 </head>
 
 <body>

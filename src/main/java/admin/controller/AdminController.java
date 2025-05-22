@@ -17,9 +17,10 @@ import org.json.simple.JSONObject;
 import admin.service.AdminService;
 import admin.service.AdminServiceImpl;
 import admin.vo.Admin_StudentVO;
+import notice.service.NoticeService;
+import notice.service.NoticeServiceImpl;
 import admin.vo.Admin_LectureVO;
 import qna.vo.QnaVO;
-import student.vo.LectureVO;
 
 @WebServlet("/admin/*")
 public class AdminController extends HttpServlet{
@@ -131,7 +132,21 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
         	return;
         	
         	
-        }else if(action.equals("/noticeupdate")) { //공지사항 수정 요청
+        }
+        else if(action.equals("/noticeDetailForm")){
+        	
+        	NoticeService noticeService = new NoticeServiceImpl();
+        	
+        	notice.vo.NoticeVO noticeVO = noticeService.getNoticeDetail(req);
+        	
+        	req.setAttribute("noticevo", noticeVO);
+        	
+        	req.setAttribute("center", "admins/noticeDetailForm.jsp");
+        	
+        	nextPage = "/main.jsp";
+        	
+        }
+        else if(action.equals("/updateNotice")) { //공지사항 수정 요청
         	
         	//공지사항  수정 요청
         	adminService.updateNotice(req);
