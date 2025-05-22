@@ -95,7 +95,6 @@
         <div class="nav-item">
       <div class="nav-link">개인정보</div>
       <div class="dropdown">
-        <a href="${pageContext.request.contextPath}/student/changeStatus">학적 변경 요청</a>
         <a href="${pageContext.request.contextPath}/student/modifyForm">개인정보 수정</a>
       </div>
     </div>

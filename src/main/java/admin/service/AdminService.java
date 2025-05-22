@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import admin.vo.Admin_LectureVO;
+import main.vo.NoticeVO;
 import qna.vo.QnaVO;
 import student.vo.LectureVO;
 
@@ -63,9 +64,7 @@ public interface AdminService {
 	
 	//학사 일정 삭제
 	public boolean deleteCalendarEvent(HttpServletRequest req);
-
-
-
 	
+
 
 }

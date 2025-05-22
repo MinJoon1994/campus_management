@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import member.vo.StudentVO;
+import member.vo.UserVO;
 import student.dao.StudentDAO;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
@@ -93,9 +94,15 @@ public class StudentServiceImpl implements StudentService {
 
     // 학생 정보 (학번, 학년, 전공, 학적상태 등)
     @Override
-    public StudentVO getStudent(HttpServletRequest req) {
-
-        return null;
+    public UserVO getStudent(HttpServletRequest req) {
+    	
+    	// 세션에서 학생 아이디를 가져옴
+    	Integer student_id = (Integer)req.getSession().getAttribute("id");
+    	
+    	// 학생 정보를 가져옴
+    	
+    	// 학생 아이디를 이용하여 학생 정보를 조회
+        return studentDAO.getStudent(student_id);
     }
 
     // 학생 전체정보 (이름 + 학번 + 전공 + 학년 + 학적상태 등)
@@ -114,7 +121,28 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void updateStudent(HttpServletRequest req) {
-        // TODO: 개인정보 수정 구현
+        
+
+		Integer student_id = (Integer)req.getSession().getAttribute("id");
+		
+		// 학생 정보를 가져옴
+		UserVO userVO = studentDAO.getStudent(student_id);
+		
+		// 수정된 정보를 가져옴
+		if(req.getParameter("email") != null) {
+			userVO.setEmail(req.getParameter("email"));
+		}
+		
+		if(req.getParameter("password") != null) {
+			userVO.setPassword(req.getParameter("password"));
+		}
+		
+		if(req.getParameter("status") != null) {
+			userVO.getStudentVO().setStatus(req.getParameter("status"));
+		}
+		
+		// 학생 정보를 업데이트
+		studentDAO.updateStudent(userVO);
     }
 
     @Override

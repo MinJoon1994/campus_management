@@ -18,66 +18,109 @@ String contextPath = request.getContextPath();
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 			rel="stylesheet">
 		<style>
-		/* 필요한 경우 추가적인 사용자 정의 스타일 */
-		.article-title a {
-			text-decoration: none;
-			color: inherit; /* 링크 색상 기본값 사용 */
-		}
-		
-		.article-title a:hover {
-			text-decoration: underline;
-		}
-		
-		.reply-indent {
-			display: inline-block; /* 인라인 블록으로 너비 적용 */
-			width: 1.5rem; /* 들여쓰기 너비 */
-		}
-		/* 페이지네이션 가운데 정렬 */
-		.pagination-wrapper {
-			display: flex;
-			justify-content: center;
-			margin-top: 2rem;
-		}
-		
-		#board-container {
-			max-width: 1000px;
-			margin: 40px auto;
-			background: white;
-			padding: 30px;
-			border-radius: 12px;
-			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-		}
-		
-		#board-title {
-			font-size: 32px;
-			color: #4a90e2;
-			text-align: center;
-			margin-bottom: 30px;
-		}
-		
-		#board-table {
-			width: 100%;
-			border-collapse: collapse;
-		}
-		
-		#board-table th, #board-table td {
-			border: 1px solid #ccc;
-			padding: 12px;
-			text-align: center;
-		}
-		
-		#board-table th {
-			background-color: #4a90e2;
-			color: white;
-		}
-		
-		#board-table tr:nth-child(even) {
-			background-color: #f9f9f9;
-		}
-		
-		#board-table tr:hover {
-			background-color: #f1f1f1;
-		}
+	/* 공통 */
+	body {
+		background-color: #f2f4f8;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		color: #333;
+	}
+
+	#board-container {
+		max-width: 1000px;
+		margin: 40px auto;
+		background: #ffffff;
+		padding: 40px 30px;
+		border-radius: 10px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	#board-title {
+		font-size: 30px;
+		font-weight: bold;
+		color: #003366;
+		text-align: center;
+		margin-bottom: 30px;
+		border-bottom: 2px solid #003366;
+		padding-bottom: 10px;
+	}
+
+	/* 테이블 */
+	#board-table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	#board-table th, #board-table td {
+		border: 1px solid #d9d9d9;
+		padding: 14px;
+		text-align: center;
+		font-size: 15px;
+	}
+
+	#board-table th {
+		background-color: #003366;
+		color: #ffffff;
+		font-weight: 600;
+	}
+
+	#board-table tr:nth-child(even) {
+		background-color: #f8f9fa;
+	}
+
+	#board-table tr:hover {
+		background-color: #e2ecf5;
+	}
+
+	.article-title a {
+		text-decoration: none;
+		color: #003366;
+		font-weight: 500;
+	}
+
+	.article-title a:hover {
+		text-decoration: underline;
+		color: #00509e;
+	}
+
+	.reply-indent {
+		display: inline-block;
+		width: 1.5rem;
+	}
+
+	/* 페이지네이션 */
+	.pagination-wrapper {
+		display: flex;
+		justify-content: center;
+		margin-top: 30px;
+	}
+
+	.pagination .page-link {
+		color: #003366;
+		border: 1px solid #003366;
+	}
+
+	.pagination .page-item.active .page-link {
+		background-color: #003366;
+		border-color: #003366;
+		color: #fff;
+	}
+
+	.pagination .page-link:hover {
+		background-color: #00509e;
+		color: white;
+	}
+
+	/* 버튼 */
+	.btn-primary {
+		background-color: #003366;
+		border: none;
+		padding: 10px 30px;
+		font-size: 16px;
+	}
+
+	.btn-primary:hover {
+		background-color: #00509e;
+	}
 		</style>
 	</head>
 	<body>

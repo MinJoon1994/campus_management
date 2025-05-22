@@ -99,7 +99,143 @@
 <title>관리자 문의 사항 게시판</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<%=contextPath%>/css/qna/qnalist.css">
+<style>
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
+}
+
+a:link, a:visited, a:hover, a:active {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 전체 레이아웃 */
+#qna-container {
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+/* 헤더 영역 */
+#qna-header {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 30px;
+}
+
+.qna_p1 {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #003366;
+}
+
+.qna_p2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* 테이블 설정 */
+.table-list {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  background-color: white;
+}
+
+.table-list tr {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-list td {
+  padding: 14px 12px;
+  font-size: 15px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table-list tr:first-child {
+  background-color: #003366;
+  color: white;
+  font-weight: 600;
+}
+
+/* 검색, 버튼 영역 */
+.qna-table-bottom {
+  position: relative;
+  margin-top: 30px;
+}
+
+.qna-search-area input {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  color: #495057;
+  width: 250px;
+  outline: none;
+}
+
+.select-button select {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 1rem;
+  background-color: #f8f9fa;
+  color: #333;
+  cursor: pointer;
+}
+
+.qna-search-button input,
+.qna-write-button input {
+  background-color: #003366;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.qna-search-button input:hover,
+.qna-write-button input:hover {
+  background-color: #00509e;
+}
+
+.qna-write-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/* 페이지네이션 */
+.page_number > td {
+  padding: 20px 0;
+}
+
+.page_number > td > a {
+  padding: 8px 14px;
+  margin: 0 3px;
+  font-size: 15px;
+  color: #003366;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.page_number > td > a:hover {
+  background-color: #003366;
+  color: white;
+  border-color: #003366;
+}
+</style>
 
 
 </head>

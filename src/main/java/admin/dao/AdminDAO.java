@@ -12,6 +12,7 @@ import admin.vo.Admin_LectureVO;
 import admin.vo.Admin_ProfessorVO;
 import admin.vo.Admin_StudentVO;
 import main.DbcpBean;
+import main.vo.NoticeVO;
 
 public class AdminDAO {
 	
@@ -423,5 +424,55 @@ public class AdminDAO {
 		
 		return result;
 	}
+	
+	//공지사항 수정
+	public void updateNotice(HttpServletRequest req) {
+		
+		int noticeId = Integer.parseInt(req.getParameter("noticeID"));
+        String title = req.getParameter("title");
+        String content = req.getParameter("content");
+		
+        try {
+        	
+        	
+        	String sql = "update notice set title=? , content=? where notice_id= ?";
+        	
+        	con = DbcpBean.getConnection();
+        	pstmt = con.prepareStatement(sql);
+        	pstmt.setString(1, title);
+        	pstmt.setString(2, content);
+        	pstmt.setInt(3, noticeId);
+        	
+        	pstmt.executeUpdate();
 
+        }catch(Exception e) {
+        	e.printStackTrace();
+        }finally {
+        	DbcpBean.close(con,pstmt);
+        }
+		
+	}
+	
+	//공지사항 삭제
+	public void deleteNotice(HttpServletRequest req) {
+		
+		int noticeId = Integer.parseInt(req.getParameter("noticeID"));
+		
+		try {
+			
+			String sql = "delete from notice where notice_id= ?";
+			
+			con=DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, noticeId);
+			
+			pstmt.executeUpdate();
+					
+					
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DbcpBean.close(con,pstmt);
+		}
+	}
 }

@@ -228,7 +228,7 @@
                     list.forEach(function(qna, index) {
                         html += "<tr>";
                         html += "<td>" + qna.qnaId + "</td>";
-                        html += "<td><a class='notice_title' href='${contextPath}/qna/detail?qnaId="+qna.qnaId+"'>" + truncateTitle(qna.title,18) + "</a></td>";
+                        html += "<td><a class='notice_title' href='${contextPath}/qna/detail?qnaID="+qna.qnaId+"'>" + truncateTitle(qna.title,18) + "</a></td>";
                         html += "<td>" + qna.questioner+ "</td>"; // 작성자
                         html += "<td>" + qna.questiontime + "</td>";
                         html += "</tr>";

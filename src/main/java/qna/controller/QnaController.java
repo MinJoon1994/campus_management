@@ -75,8 +75,8 @@ public class QnaController extends HttpServlet{
         	HashMap<String, Object> detail = qnaAdminService.getQnaAdminDetail(qnaID);
 
         	QnaVO vo = (QnaVO) detail.get("vo");
- 	
-        	
+
+  	
         	request.setAttribute("nowBlock", request.getParameter("nowBlock"));
     		request.setAttribute("nowPage", request.getParameter("nowPage"));        	
         	//특정 질문글 정보 VIEW 쪽에 전달
@@ -85,9 +85,6 @@ public class QnaController extends HttpServlet{
         	request.setAttribute("center", "qnas/qnadetail.jsp");
         	
         	nextPage="/main.jsp";
-        	
-        	return;
-        
         }
         
         

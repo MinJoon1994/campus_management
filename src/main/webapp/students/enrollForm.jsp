@@ -3,7 +3,7 @@
 
 <style>
 .enroll-list-box {
-  max-width: 880px;
+  max-width: 1000px;
   margin: 40px auto 0 auto;
   padding: 34px 38px;
   background: #f5f7fa;
@@ -66,11 +66,13 @@
       <th>학점</th>
       <th>교수명</th>
       <th>시간</th>
+      <th>현재인원</th>
+      <th>정원</th>
       <th>신청</th>
     </tr>
     <c:choose>
       <c:when test="${empty list}">
-        <tr><td colspan="8" style="color:#666;padding:38px 0;">수강신청 가능한 과목이 없습니다.</td></tr>
+        <tr><td colspan="10" style="color:#666;padding:38px 0;">수강신청 가능한 과목이 없습니다.</td></tr>
       </c:when>
       <c:otherwise>
         <c:forEach var="item" items="${list}">
@@ -82,6 +84,8 @@
             <td>${item.credit}</td>
             <td>${item.professorName}</td>
             <td>${item.schedule}</td>
+            <td>${item.currentEnrollment}</td>
+            <td>${item.capacity}</td>
             <td>
               <form method="post" action="${pageContext.request.contextPath}/student/enroll" style="margin:0;">
                 <input type="hidden" name="subjectCode" value="${item.subjectCode}" />
