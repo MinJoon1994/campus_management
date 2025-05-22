@@ -19,6 +19,7 @@ import student.service.StudentService;
 import student.service.StudentServiceImpl;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentTimetableVO;
 
 @WebServlet("/student/*")
 public class StudentController extends HttpServlet{
@@ -104,6 +105,7 @@ public class StudentController extends HttpServlet{
             List<StudentGradeVO> list = studentService.getGrades(req);
             req.setAttribute("list", list);
             req.setAttribute("center", "/students/grades.jsp"); 
+            
             nextPage = "/students/StudentMain.jsp"; 
 
         // ------------- 학생 성적 상세 조회 -------------
@@ -120,18 +122,11 @@ public class StudentController extends HttpServlet{
         }
         //============= 학생 시간표 관련 ==============
         else if(action.equals("/timetable")) {//학생 시간표조회
-        	
-        	//학생 시간표 LIST 형태로 받아오기
-        	List list = studentService.getTimeTable(req);
-        	
-        	//뷰쪽에 LIST 형태로 전달
+        	List<StudentTimetableVO> list = studentService.getTimeTable(req);
         	req.setAttribute("list", list);
+        	req.setAttribute("center", "/students/StudentTimetable.jsp");
         	
-        	req.setAttribute("center", "students/timetable.jsp");
-        	
-        	nextPage = "/main.jsp";
-        	
-        	return;
+        	nextPage = "/students/StudentMain.jsp"; 
         	
         }
         //============= 학생 개인 정보 관련 ==============

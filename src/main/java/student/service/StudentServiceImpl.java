@@ -11,6 +11,7 @@ import student.dao.StudentDAO;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 
 public class StudentServiceImpl implements StudentService {
@@ -73,9 +74,8 @@ public class StudentServiceImpl implements StudentService {
 
 
 	@Override
-    public List getTimeTable(HttpServletRequest req) {
-
-        return null;
+    public List<StudentTimetableVO> getTimeTable(HttpServletRequest req) {
+        return studentDAO.getTimeTable(req);
     }
 
     // 학생 정보 (학번, 학년, 전공, 학적상태 등)

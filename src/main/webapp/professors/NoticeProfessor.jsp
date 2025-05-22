@@ -178,7 +178,7 @@
                     </c:forEach>
                 </tbody>
             </table>
-                   	<div class="pagination" style="text-align:center; margin-top:20px;">
+            <div class="pagination" style="text-align:center; margin-top:20px;">
 			<%
 			    // list가 null이 아니고 비어있지 않은 경우에만 페이지네이션 처리
 			    if (noticeVo != null && !noticeVo.isEmpty()) {
@@ -223,7 +223,7 @@
 			        }
 			    }
 			%>
-		</div>
+			</div>
         </c:when>
         <c:otherwise>
             <div class="no-data">등록된 공지사항이 없습니다.</div>

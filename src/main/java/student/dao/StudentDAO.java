@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 import main.DbcpBean;   
 import member.vo.StudentVO;
@@ -174,7 +175,6 @@ public class StudentDAO {
 	public List<StudentGradeVO> getGrades(HttpServletRequest req) {
 	    HttpSession session = req.getSession();
 	    int studentId = (int) session.getAttribute("student_id");
-	    System.out.println("dao에서 sessio 확인 : " + studentId);
 	    List<StudentGradeVO> list = new ArrayList<>();
 	    
 	    String sql = "SELECT " +
@@ -214,5 +214,48 @@ public class StudentDAO {
 			DbcpBean.close(con, pstmt, rs);
 		}
 	    return list;
+	}
+	// 특정 학생이 수강중인 과목 조회
+	public List<StudentTimetableVO> getTimeTable(HttpServletRequest req) {
+	    HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("student_id");
+	    List<StudentTimetableVO> list = new ArrayList<>();
+		
+	    String sql = "SELECT " +
+		    	     "    s.subject_code, " +
+		    	     "    s.subject_name, " +
+		    	     "    s.subject_type, " +
+		    	     "    s.open_grade, " +
+		    	     "    s.division, " +
+		    	     "    s.credit, " +
+		    	     "    s.schedule, " +
+		    	     "    s.professor_name " +
+		    	     "FROM Enrollment e " +
+		    	     "JOIN Subject s ON e.subject_code = s.subject_code " +
+		    	     "WHERE e.student_id = ?";
+	    
+	    try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, studentId);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				StudentTimetableVO vo = new StudentTimetableVO();
+	            vo.setSubjectCode(rs.getString("subject_code"));
+	            vo.setSubjectName(rs.getString("subject_name"));
+	            vo.setSubjectType(rs.getString("subject_type"));
+	            vo.setOpenGrade(rs.getInt("open_grade"));
+	            vo.setDivision(rs.getString("division"));
+	            vo.setCredit(rs.getInt("credit"));
+	            vo.setSchedule(rs.getString("schedule"));
+	            vo.setProfessorName(rs.getString("professor_name"));
+	            list.add(vo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		return list;
 	}
 }

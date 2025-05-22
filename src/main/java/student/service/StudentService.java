@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import member.vo.StudentVO;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentTimetableVO;
 
 public interface StudentService {
     
@@ -27,7 +28,7 @@ public interface StudentService {
     List getGradesDetail(HttpServletRequest req);
 
     // 학생 시간표 조회
-    List getTimeTable(HttpServletRequest req);
+    List<StudentTimetableVO> getTimeTable(HttpServletRequest req);
 
     // 학생 개인정보 조회 (StudentVO)
     StudentVO getStudent(HttpServletRequest req);
