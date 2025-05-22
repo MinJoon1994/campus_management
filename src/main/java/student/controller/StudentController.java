@@ -2,6 +2,7 @@ package student.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +16,15 @@ import javax.servlet.http.HttpSession;
 import member.service.MemberService;
 import member.vo.StudentVO;
 import member.vo.UserVO;
+import professorvo.QnaWithReplyVo;
+import student.dao.StudentDAO;
 import student.service.StudentService;
 import student.service.StudentServiceImpl;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentQnaListVO;
+import student.vo.StudentQnaWithRelpyVO;
+import student.vo.StudentQusetionVO;
 import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 
@@ -51,9 +57,9 @@ public class StudentController extends HttpServlet{
         	//뷰쪽에 LIST 형태로 전달
         	req.setAttribute("list", list);
         	
-            req.setAttribute("center", "students/enrollForm.jsp"); //수강 신청화면 요청
+            req.setAttribute("center", "/students/enrollForm.jsp"); //수강 신청화면 요청
             
-            nextPage = "/main.jsp";
+            nextPage = "/students/StudentMain.jsp";
             
         }else if(action.equals("/enroll")) { // 학생 수강신청 요청
         	
@@ -63,7 +69,7 @@ public class StudentController extends HttpServlet{
         		
 				out.println("<script>");
 				out.println("alert('정원이 초과되었습니다.');");
-				out.println("location.href='"+req.getContextPath()+"/student/enrollForm;"); //수강신청 화면으로 이동
+				out.println("location.href='"+req.getContextPath()+"/student/enrollForm';"); //수강신청 화면으로 이동
 				out.println("</script>");
 				
 				return;
@@ -71,12 +77,12 @@ public class StudentController extends HttpServlet{
         	
         	out.println("<script>");
         	out.println("alert('수강신청이 완료되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/courcelist;");
+        	out.println("location.href='"+req.getContextPath()+"/student/enrollForm';");
         	out.println("</script>");
         	
         	return;
         
-        }else if(action.equals("/courcelist")) { //학생 수강목록 확인
+        }else if(action.equals("/courselist")) { //학생 수강목록 확인
 			
         	//학생 수강목록 LIST 로 받아오기
             List<LectureVO> list = studentService.getLectureList(req);
@@ -85,18 +91,17 @@ public class StudentController extends HttpServlet{
             req.setAttribute("list", list);
             
             //학생 수강목록 확인 VIEW
-            req.setAttribute("center", "students/courcelist.jsp");
+            req.setAttribute("center", "/students/courselist.jsp");
             
-            nextPage = "/main.jsp";
+            nextPage = "/students/StudentMain.jsp";
 			
-			return;
         	
         }else if(action.equals("/enrolldelete")) { //학생 수강신청 취소요청
         	studentService.enrollDelete(req);
         	
         	out.println("<script>");
         	out.println("alert('수강신청이 삭제되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/courselist;");
+        	out.println("location.href='"+req.getContextPath()+"/student/courselist';");
         	out.println("</script>");
         	
         	return;
@@ -158,19 +163,70 @@ public class StudentController extends HttpServlet{
         //============= 학생 질문글 관련 ==============
         // 학생 -> 교수 질문 화면 요청
         else if(action.equals("/qnaLectureList")) {//학생 질문글 관련 등록
-        	List<StudentSubjectVO> list = studentService.getStudentSubject(req);
-			req.setAttribute("center", "students/qnaform.jsp");
-			nextPage = "/main.jsp";
-			
-			return;
+        	// 학생이 수강한 과목 목록 리스트
+        	List<StudentSubjectVO> subjectList = studentService.getStudentSubject(req);
+        	req.setAttribute("subjectList", subjectList);
+        	
+        	// 교수,학생 질문 테이블 조회하기(학생이 수강한 과목에 대해)
+        	List<StudentQnaListVO> qnaList = studentService.getStudentQna(req);
+        	req.setAttribute("qnaList", qnaList);
+        	
+        	req.setAttribute("center", "/students/StudentQnaMain.jsp");
+			nextPage = "/students/StudentMain.jsp";
 			
         }
-        else if(action.equals("/qnaform")) {//학생 질문글 관련 등록
+        // select option 과목에 따라
+        else if(action.equals("/qnalistbySubject")) {
+        	String subjectCode = req.getParameter("subjectCode");
+        	req.setAttribute("subjectCode", subjectCode);
         	
-        	//학생 질문글 작성 화면 요청
-			req.setAttribute("center", "students/qnaform.jsp");
+        	List<StudentQnaListVO> qnaList;
+        	
+        	if (subjectCode == null || subjectCode.isEmpty()) {
+        	    qnaList = studentService.getStudentQna(req);
+        	} else {
+        	    qnaList = studentService.getQnaBySubject(subjectCode);
+        	}
+        	req.setAttribute("qnaList", qnaList);
+        	
+        	// 학생이 수강한 과목 목록 리스트
+        	List<StudentSubjectVO> subjectList = studentService.getStudentSubject(req);
+        	req.setAttribute("subjectList", subjectList);
+        	
+        	req.setAttribute("center", "/students/StudentQnaMain.jsp");
+			nextPage = "/students/StudentMain.jsp";
+        }
+        // 질문 상세 조회
+        else if(action.equals("/qnaStudentDetail")) {
+        	String qnaId = req.getParameter("qnaId");
+        	StudentQnaWithRelpyVO vo = studentService.getQnaWithReply(qnaId);
 			
-			nextPage = "/main.jsp";
+			req.setAttribute("qnavo", vo);
+			
+			nextPage = "/students/StudentQnaCheck.jsp";
+        }
+        //학생 질문글 관련 등록
+        else if(action.equals("/insertStudentQ")) {
+            String subjectCode = req.getParameter("subject_code");
+            String title = req.getParameter("title");
+            System.out.println("이거제목"+title);
+            String content = req.getParameter("content");
+
+            StudentQusetionVO vo = new StudentQusetionVO();
+            vo.setSubjectCode(subjectCode);
+            vo.setQuestionerTitle(title);
+            vo.setQuestion(content);
+
+            int result = studentService.insertStudentQna(req, vo);
+
+            out.println("<script>");
+            if (result > 0) {
+                out.println("alert('질문이 등록되었습니다.');");
+            } else {
+                out.println("alert('등록에 실패했습니다.');");
+            }
+            out.println("location.href='" + req.getContextPath() + "/student/qnaLectureList';");
+            out.println("</script>");
 			
 			return;
 			

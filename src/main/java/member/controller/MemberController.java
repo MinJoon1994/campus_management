@@ -93,7 +93,7 @@ public class MemberController extends HttpServlet{
 					
 					System.out.println("학생 로그인 성공: "+vo.getId());
 					
-					session.setAttribute("student_id", vo.getId());
+					session.setAttribute("id", vo.getId());
 				}
 				
 				session.setAttribute("vo", vo);

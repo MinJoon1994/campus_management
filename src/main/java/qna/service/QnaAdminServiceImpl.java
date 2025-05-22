@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import qna.dao.QnaDAO;
 import qna.vo.QnaVO;
 
-public class QnaServiceImpl implements QnaService{
+public class QnaAdminServiceImpl implements QnaAdminService{
 
 	private QnaDAO qnadao = new QnaDAO();
 	

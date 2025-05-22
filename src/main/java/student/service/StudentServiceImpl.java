@@ -11,6 +11,9 @@ import student.dao.StudentDAO;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentQnaListVO;
+import student.vo.StudentQnaWithRelpyVO;
+import student.vo.StudentQusetionVO;
 import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
@@ -34,12 +37,15 @@ public class StudentServiceImpl implements StudentService {
     	int result = studentDAO.checkCapacity(req);
     	
     	if(result == 1) {
-        	String subject_code = req.getParameter("subject_code");
+        	String subject_code = req.getParameter("subjectCode");
         	
         	//학생 아이디
-        	Integer student_id = (Integer)req.getSession().getAttribute("student_id");
+        	Integer student_id = (Integer)req.getSession().getAttribute("id");
         	
         	studentDAO.enroll(subject_code,student_id);
+        	
+        	//수강신청후 수강현재인원수 변경
+        	studentDAO.updateCurrentEnrollment(subject_code);
     	}
     	
     	return result;
@@ -50,14 +56,20 @@ public class StudentServiceImpl implements StudentService {
     public List<LectureVO> getLectureList(HttpServletRequest req) {
         
     	// 학생이 수강신청 가능한 목록 조회
-    	Integer student_id = (Integer)req.getSession().getAttribute("student_id");
+    	Integer student_id = (Integer)req.getSession().getAttribute("id");
     	
         return studentDAO.getLectureList(student_id);
     }
 
     @Override
     public void enrollDelete(HttpServletRequest req) {
-
+    	
+    	int enrollment_id = Integer.parseInt(req.getParameter("enrollmentId"));
+    	String subject_code = req.getParameter("subjectCode");
+    	int id = (Integer)req.getSession().getAttribute("id");
+    	
+    	studentDAO.enrollDelete(req,subject_code,id,enrollment_id);
+    	
     }
 
     // 전체 학기 성적 조회
@@ -119,6 +131,26 @@ public class StudentServiceImpl implements StudentService {
 	public List<StudentSubjectVO> getStudentSubject(HttpServletRequest req) {
 		return studentDAO.getStudentSubject(req);
 	}
-    
-    
+	// 교수, 학생 질문 테이블 조회
+	@Override
+	public List<StudentQnaListVO> getStudentQna(HttpServletRequest req) {
+		return studentDAO.getStudentQna(req);
+	}
+	// 특정 과목에 대한 질문 테이블 조회 (select option 용)
+	@Override
+	public List<StudentQnaListVO> getQnaBySubject(String subjectCode) {
+		return studentDAO.getQnaBySubject(subjectCode);
+	}
+    // 특정 질문 조회
+	@Override
+	public StudentQnaWithRelpyVO getQnaWithReply(String qnaId) {
+		return studentDAO.getQnaWithReply(qnaId);
+	}
+	// 학생 질문 등록
+
+	@Override
+	public int insertStudentQna(HttpServletRequest req, StudentQusetionVO vo) {
+		return studentDAO.insertStudentQna(req, vo);
+	}
+	
 }
