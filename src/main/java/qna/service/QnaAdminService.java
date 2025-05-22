@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import qna.vo.QnaVO;
 
-public interface QnaService {
+public interface QnaAdminService {
 	
 
 	//관리자 질문글 목록 요청

@@ -70,7 +70,7 @@
     </tr>
     <c:choose>
       <c:when test="${empty list}">
-        <tr><td colspan="5" style="color:#666;padding:38px 0;">수강신청 가능한 과목이 없습니다.</td></tr>
+        <tr><td colspan="8" style="color:#666;padding:38px 0;">수강신청 가능한 과목이 없습니다.</td></tr>
       </c:when>
       <c:otherwise>
         <c:forEach var="item" items="${list}">

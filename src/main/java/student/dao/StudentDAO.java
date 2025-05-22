@@ -30,12 +30,19 @@ public class StudentDAO {
 		System.out.println("학생 아이디 :"+student_id);
 		
 		//학생 아이디를 이용해 학생 학년에 맞는 수강 신청 가능한 과목 조회
-		String sql = "SELECT sub.* "
-				+ "FROM student s "
-				+ "JOIN subject sub ON sub.open_grade = s.grade "
-				+ "JOIN professor p ON sub.professor_id = p.user_id "
-				+ "WHERE s.user_id = ? "
-				+ "  AND p.department = s.department;";
+		String sql = 
+			    "SELECT sub.* " +
+			    "FROM student s " +
+			    "JOIN subject sub ON sub.open_grade = s.grade " +
+			    "JOIN professor p ON sub.professor_id = p.user_id " +
+			    "WHERE s.user_id = ? " +
+			    "  AND p.department = s.department " +
+			    "  AND NOT EXISTS ( " +
+			    "      SELECT 1 " +
+			    "      FROM enrollment e " +
+			    "      WHERE e.student_id = s.user_id " +
+			    "        AND e.subject_code = sub.subject_code " +
+			    "  );";
 		
 		List<LectureVO> list = new ArrayList<>();
 		
@@ -101,7 +108,7 @@ public class StudentDAO {
 		
 		List<LectureVO> list = new ArrayList<>();
 		
-		String sql = "SELECT sub.* "
+		String sql = "SELECT e.enrollment_id, sub.* "
 				+ "FROM enrollment e "
 				+ "JOIN subject sub ON e.subject_code = sub.subject_code "
 				+ "WHERE e.student_id = ? ";
@@ -116,7 +123,17 @@ public class StudentDAO {
 			while(rs.next()) {
 				
 				LectureVO vo = new LectureVO();
+				vo.setEnrollmentId(rs.getString("enrollment_id"));
 				vo.setSubjectCode(rs.getString("subject_code"));
+				vo.setSubjectName(rs.getString("subject_name"));
+				vo.setSubjectType(rs.getString("subject_type"));
+				vo.setOpenGrade(rs.getInt("open_grade"));
+				vo.setDivision(rs.getString("division"));
+				vo.setCredit(rs.getInt("credit"));
+				vo.setProfessorName(rs.getString("professor_name"));
+				vo.setSchedule(rs.getString("schedule"));
+				vo.setCurrentEnrollment(rs.getInt("current_enrollment"));
+				vo.setCapacity(rs.getInt("capacity"));
 				
 				list.add(vo);
 			}
@@ -171,6 +188,7 @@ public class StudentDAO {
 		return result;
 		
 	}
+
 	// 특정 학생의 성적 조회
 	public List<StudentGradeVO> getGrades(HttpServletRequest req) {
 	    HttpSession session = req.getSession();
@@ -258,4 +276,58 @@ public class StudentDAO {
 		}
 		return list;
 	}
+
+	
+	//수강신청후 수강 현재인원수 +1
+	public void updateCurrentEnrollment(String subject_code) {
+		
+		try {
+			con = DbcpBean.getConnection();
+			String sql = "UPDATE subject SET current_enrollment = current_enrollment + 1 WHERE subject_code = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, subject_code);
+			pstmt.executeUpdate();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			DbcpBean.close(con, pstmt);
+		}
+	}
+	
+	//학생수강신청 취소
+	public void enrollDelete(HttpServletRequest req, String subject_code, int student_id, int enrollment_id) {
+	    try {
+	        con = DbcpBean.getConnection();
+
+	        // 🔹 1단계: grade 테이블에서 해당 enrollment_id 먼저 삭제
+	        String sql = "DELETE FROM grade WHERE enrollment_id = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, enrollment_id);
+	        pstmt.executeUpdate();
+	        pstmt.close();
+
+	        // 🔹 2단계: enrollment 삭제
+	        sql = "DELETE FROM enrollment WHERE subject_code = ? AND student_id = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, subject_code);
+	        pstmt.setInt(2, student_id);
+	        pstmt.executeUpdate();
+	        pstmt.close();
+
+	        // 🔹 3단계: subject 인원 -1
+	        sql = "UPDATE subject SET current_enrollment = current_enrollment - 1 WHERE subject_code = ?";
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, subject_code);
+	        pstmt.executeUpdate();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        DbcpBean.close(con, pstmt);
+	    }
+	}
+
+
 }

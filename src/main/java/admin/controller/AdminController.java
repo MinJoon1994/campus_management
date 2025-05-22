@@ -32,6 +32,8 @@ protected void doHandle(HttpServletRequest req, HttpServletResponse resp) throws
 		String nextPage = null;
 		PrintWriter out = resp.getWriter();
 		
+		System.out.println("수정테스트");
+		
 		AdminService adminService = new AdminServiceImpl();
 		
 		//============= 교내 구성원 관련 ==============
