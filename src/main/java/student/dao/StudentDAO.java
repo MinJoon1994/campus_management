@@ -26,7 +26,7 @@ public class StudentDAO {
 		
 		//학생이 수강신청 가능한 목록 조회
 		//학생 아이디
-		Integer student_id = (Integer)req.getSession().getAttribute("student_id");
+		Integer student_id = (Integer)req.getSession().getAttribute("id");
 		
 		System.out.println("학생 아이디 :"+student_id);
 		
