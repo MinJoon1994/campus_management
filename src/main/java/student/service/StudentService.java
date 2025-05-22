@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import member.vo.StudentVO;
+import member.vo.UserVO;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
 import student.vo.StudentTimetableVO;
@@ -31,7 +32,7 @@ public interface StudentService {
     List<StudentTimetableVO> getTimeTable(HttpServletRequest req);
 
     // 학생 개인정보 조회 (StudentVO)
-    StudentVO getStudent(HttpServletRequest req);
+    UserVO getStudent(HttpServletRequest req);
 
     // 학생 개인정보 수정 요청
     void updateStudent(HttpServletRequest req);

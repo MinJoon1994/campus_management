@@ -13,6 +13,7 @@ import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 import main.DbcpBean;   
 import member.vo.StudentVO;
+import member.vo.UserVO;
 
 public class StudentDAO {
 	
@@ -328,6 +329,83 @@ public class StudentDAO {
 	        DbcpBean.close(con, pstmt);
 	    }
 	}
+	
+	//학생 개인정보 조회
+	public UserVO getStudent(Integer student_id) {
+		UserVO userVO = new UserVO();
+		StudentVO studentVO = new StudentVO();
+		
+		String sql = "SELECT "
+				+ "    u.user_id AS user_id, "
+				+ "    u.name, "
+				+ "    u.password, "
+				+ "    u.email, "
+				+ "    u.role, "
+				+ "    s.student_number, "
+				+ "    s.department, "
+				+ "    s.grade, "
+				+ "    s.status "
+				+ "FROM user u "
+				+ "JOIN student s ON u.user_id = s.user_id "
+				+ "WHERE u.user_id = ? ";
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, student_id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
 
+				userVO.setId(rs.getInt("user_id"));
+				userVO.setPassword(rs.getString("password"));
+				userVO.setName(rs.getString("name"));
+				userVO.setEmail(rs.getString("email"));
+				userVO.setRole(rs.getString("role"));
+				
+				studentVO.setDepartment(rs.getString("department"));
+				studentVO.setStudent_id(rs.getString("student_number"));
+				studentVO.setGrade(rs.getString("grade"));
+				studentVO.setStatus(rs.getString("status"));
+				
+				userVO.setStudentVO(studentVO);
+							
+			}
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		
+		return userVO;
+	}
+
+	public void updateStudent(UserVO userVO) {
+	
+		try {
+			
+			con = DbcpBean.getConnection();
+			String sql = "UPDATE user SET password = ?, email = ? WHERE user_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, userVO.getPassword());
+			pstmt.setString(2, userVO.getEmail());
+			pstmt.setInt(3, userVO.getId());
+			pstmt.executeUpdate();
+			pstmt.close();
+			
+			sql = "UPDATE student SET status = ? WHERE user_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, userVO.getStudentVO().getStatus());
+			pstmt.setInt(2, userVO.getId());
+			pstmt.executeUpdate();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DbcpBean.close(con, pstmt);
+		}
+		
+	}
 
 }

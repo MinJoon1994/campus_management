@@ -75,6 +75,27 @@ public class StudentController extends HttpServlet{
         	
         	return;
         
+        }else if(action.equals("/modifyForm")) {//학생 개인정보 변경 폼 요청
+        	
+        	//학생 개인정보 가져오기
+        	UserVO userVO = studentService.getStudent(req);
+        	
+        	req.setAttribute("vo", userVO);
+        	
+        	//학생 학적변경 요청 폼으로 이동
+			req.setAttribute("center", "/students/modifyForm.jsp");
+			
+			nextPage = "/students/StudentMain.jsp";
+        	
+        }else if(action.equals("/modify")) {//학생 개인정보 수정
+        	
+        	studentService.updateStudent(req);
+        	
+        	out.println("<script>");
+        	out.println("alert('수정이 완료되었습니다.');");
+        	out.println("location.href='"+req.getContextPath()+"/student/modifyForm';");
+        	out.println("</script>");
+        	
         }else if(action.equals("/courselist")) { //학생 수강목록 확인
 			
         	//학생 수강목록 LIST 로 받아오기
