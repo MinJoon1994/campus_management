@@ -149,31 +149,6 @@ public class StudentController extends HttpServlet{
         	nextPage = "/students/StudentMain.jsp"; 
         	
         }
-        //============= 학생 개인 정보 관련 ==============
-        else if(action.equals("/profile")) {
-            Map<String, Object> info = studentService.getStudentFullInfo(req);
-            List<String> semesterList = studentService.getSemesterList(req);
-
-            req.setAttribute("userVO", info.get("userVO"));
-            req.setAttribute("studentVO", info.get("studentVO"));
-            req.setAttribute("semesterList", semesterList);
-
-            req.setAttribute("center", "students/StudentProfileCenter.jsp");
-            nextPage = "/StudentMain.jsp";
-        	
-        }else if(action.equals("/profileupdate")){//학생 개인정보 수정 요청
-        	
-        	//학생 개인 정보 수정
-        	studentService.updateStudent(req);
-        	
-        	out.println("<script>");
-        	out.println("alert('수정이 완료되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/profile;");
-        	out.println("</script>");
-        	
-        	return;
-        	
-        }
         //============= 학생 질문글 관련 ==============
         else if(action.equals("/qnaform")) {//학생 질문글 관련 등록
         	
