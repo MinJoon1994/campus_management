@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import member.vo.StudentVO;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 
 public interface StudentService {
@@ -50,4 +51,6 @@ public interface StudentService {
     
     // 학생이 수강신청 가능한 목록 조회
 	List<LectureVO> getList(HttpServletRequest req);
+
+	List<StudentSubjectVO> getStudentSubject(HttpServletRequest req);
 }

@@ -19,6 +19,7 @@ import student.service.StudentService;
 import student.service.StudentServiceImpl;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 
 @WebServlet("/student/*")
@@ -155,6 +156,15 @@ public class StudentController extends HttpServlet{
         	
         }
         //============= 학생 질문글 관련 ==============
+        // 학생 -> 교수 질문 화면 요청
+        else if(action.equals("/qnaLectureList")) {//학생 질문글 관련 등록
+        	List<StudentSubjectVO> list = studentService.getStudentSubject(req);
+			req.setAttribute("center", "students/qnaform.jsp");
+			nextPage = "/main.jsp";
+			
+			return;
+			
+        }
         else if(action.equals("/qnaform")) {//학생 질문글 관련 등록
         	
         	//학생 질문글 작성 화면 요청

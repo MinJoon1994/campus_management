@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 import main.DbcpBean;   
@@ -257,5 +258,37 @@ public class StudentDAO {
 			DbcpBean.close(con, pstmt, rs);
 		}
 		return list;
+	}
+
+	public List<StudentSubjectVO> getStudentSubject(HttpServletRequest req) {
+	    HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("student_id");
+		List<StudentSubjectVO> list = new ArrayList<>();
+		
+	    String sql = "SELECT s.subject_code, s.subject_name " +
+		             "FROM Enrollment e " +
+		             "JOIN Subject s ON e.subject_code = s.subject_code " +
+		             "WHERE e.student_id = ?";
+
+        try {
+        	con = DbcpBean.getConnection();
+        	pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, studentId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+            	StudentSubjectVO vo = new StudentSubjectVO();
+                vo.setSubjectCode(rs.getString("subject_code"));  // 과목 코드 설정
+                vo.setSubjectName(rs.getString("subject_name"));  // 과목 이름 설정
+                list.add(vo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외 출력 (개발 중에는 로깅 권장)
+        } finally {
+			DbcpBean.close(con, pstmt, rs);
+		} 
+
+        return list; 
 	}
 }

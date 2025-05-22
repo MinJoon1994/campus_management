@@ -11,6 +11,7 @@ import student.dao.StudentDAO;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 
@@ -113,4 +114,11 @@ public class StudentServiceImpl implements StudentService {
     public void qnaCampus(HttpServletRequest req) {
         // TODO: 학교관련 질문글 등록 구현
     }
+
+	@Override
+	public List<StudentSubjectVO> getStudentSubject(HttpServletRequest req) {
+		return studentDAO.getStudentSubject(req);
+	}
+    
+    
 }
