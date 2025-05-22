@@ -22,7 +22,6 @@ public class LectureVO {
 	}
 
 
-
 	public void setCurrentEnrollment(int currentEnrollment) {
 		this.currentEnrollment = currentEnrollment;
 	}

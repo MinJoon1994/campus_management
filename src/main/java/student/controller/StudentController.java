@@ -48,9 +48,9 @@ public class StudentController extends HttpServlet{
         	//뷰쪽에 LIST 형태로 전달
         	req.setAttribute("list", list);
         	
-            req.setAttribute("center", "students/enrollForm.jsp"); //수강 신청화면 요청
+            req.setAttribute("center", "/students/enrollForm.jsp"); //수강 신청화면 요청
             
-            nextPage = "/main.jsp";
+            nextPage = "/students/StudentMain.jsp";
             
         }else if(action.equals("/enroll")) { // 학생 수강신청 요청
         	
@@ -60,7 +60,7 @@ public class StudentController extends HttpServlet{
         		
 				out.println("<script>");
 				out.println("alert('정원이 초과되었습니다.');");
-				out.println("location.href='"+req.getContextPath()+"/student/enrollForm;"); //수강신청 화면으로 이동
+				out.println("location.href='"+req.getContextPath()+"/student/enrollForm';"); //수강신청 화면으로 이동
 				out.println("</script>");
 				
 				return;
@@ -68,12 +68,12 @@ public class StudentController extends HttpServlet{
         	
         	out.println("<script>");
         	out.println("alert('수강신청이 완료되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/enrollForm;");
+        	out.println("location.href='"+req.getContextPath()+"/student/enrollForm';");
         	out.println("</script>");
         	
         	return;
         
-        }else if(action.equals("/courcelist")) { //학생 수강목록 확인
+        }else if(action.equals("/courselist")) { //학생 수강목록 확인
 			
         	//학생 수강목록 LIST 로 받아오기
             List<LectureVO> list = studentService.getLectureList(req);
@@ -82,11 +82,10 @@ public class StudentController extends HttpServlet{
             req.setAttribute("list", list);
             
             //학생 수강목록 확인 VIEW
-            req.setAttribute("center", "students/courcelist.jsp");
+            req.setAttribute("center", "/students/courselist.jsp");
             
-            nextPage = "/main.jsp";
+            nextPage = "/students/StudentMain.jsp";
 			
-			return;
         	
         }else if(action.equals("/enrolldelete")) { //학생 수강신청 취소요청
         	
@@ -94,7 +93,7 @@ public class StudentController extends HttpServlet{
         	
         	out.println("<script>");
         	out.println("alert('수강신청이 삭제되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/student/courselist;");
+        	out.println("location.href='"+req.getContextPath()+"/student/courselist';");
         	out.println("</script>");
         	
         	return;
