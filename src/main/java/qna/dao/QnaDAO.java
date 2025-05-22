@@ -68,7 +68,7 @@ public class QnaDAO {
 		try {
 			con = DbcpBean.getConnection();
 			sql = "SELECT q.qna_id, q.question_title AS title, q.question, u.name AS writerName, q.question_time, "
-					+ "'사용자 질문' AS category "
+					+ "'사용자→관리자' AS category "
 					+ "FROM Qna_User_Admin q "
 					+ "JOIN User u ON q.questioner_id = u.user_id "
 					+ "WHERE q.qna_id = ?";
