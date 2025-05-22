@@ -18,6 +18,8 @@ import member.vo.UserVO;
 import student.service.StudentService;
 import student.service.StudentServiceImpl;
 import student.vo.LectureVO;
+import student.vo.StudentGradeVO;
+import student.vo.StudentTimetableVO;
 
 @WebServlet("/student/*")
 public class StudentController extends HttpServlet{
@@ -30,7 +32,7 @@ public class StudentController extends HttpServlet{
 		String action = req.getPathInfo();
 		String nextPage = null;
 		PrintWriter out = resp.getWriter();
-		
+		HttpSession session = req.getSession();
 		StudentService studentService = new StudentServiceImpl();
 		
 		//학생 메인 화면 요청
@@ -88,7 +90,6 @@ public class StudentController extends HttpServlet{
 			
         	
         }else if(action.equals("/enrolldelete")) { //학생 수강신청 취소요청
-        	
         	studentService.enrollDelete(req);
         	
         	out.println("<script>");
@@ -98,17 +99,13 @@ public class StudentController extends HttpServlet{
         	
         	return;
         	
-        	// ------------- 학생 전체 학기 성적 조회 -------------
+        // ------------- 학생 전체 학기 성적 조회 -------------
         }else if (action.equals("/grades")) {
-
-            List<student.vo.SemesterGradeVO> list = studentService.getGrades(req);
+            List<StudentGradeVO> list = studentService.getGrades(req);
             req.setAttribute("list", list);
-
-            // center는 students/grades.jsp
-            req.setAttribute("center", "students/grades.jsp");
-            nextPage = "/main.jsp";
+            req.setAttribute("center", "/students/grades.jsp"); 
             
-            return;
+            nextPage = "/students/StudentMain.jsp"; 
 
         // ------------- 학생 성적 상세 조회 -------------
         } else if (action.equals("/gradesdetail")) {
@@ -124,18 +121,11 @@ public class StudentController extends HttpServlet{
         }
         //============= 학생 시간표 관련 ==============
         else if(action.equals("/timetable")) {//학생 시간표조회
-        	
-        	//학생 시간표 LIST 형태로 받아오기
-        	List list = studentService.getTimeTable(req);
-        	
-        	//뷰쪽에 LIST 형태로 전달
+        	List<StudentTimetableVO> list = studentService.getTimeTable(req);
         	req.setAttribute("list", list);
+        	req.setAttribute("center", "/students/StudentTimetable.jsp");
         	
-        	req.setAttribute("center", "students/timetable.jsp");
-        	
-        	nextPage = "/main.jsp";
-        	
-        	return;
+        	nextPage = "/students/StudentMain.jsp"; 
         	
         }
         //============= 학생 개인 정보 관련 ==============

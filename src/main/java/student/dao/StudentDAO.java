@@ -4,9 +4,12 @@ import java.sql.*;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
+import student.vo.StudentGradeVO;
+import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 import main.DbcpBean;   
 import member.vo.StudentVO;
@@ -185,6 +188,95 @@ public class StudentDAO {
 		return result;
 		
 	}
+
+	// 특정 학생의 성적 조회
+	public List<StudentGradeVO> getGrades(HttpServletRequest req) {
+	    HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("student_id");
+	    List<StudentGradeVO> list = new ArrayList<>();
+	    
+	    String sql = "SELECT " +
+		    	     "    u.user_id AS student_id, " +
+		    	     "    u.name AS student_name, " +
+		    	     "    s.subject_code, " +
+		    	     "    s.subject_name, " +
+		    	     "    g.score, " +
+		    	     "    g.grade " +
+		    	     "FROM Grade g " +
+		    	     "JOIN Enrollment e ON g.enrollment_id = e.enrollment_id " +
+		    	     "JOIN Subject s ON e.subject_code = s.subject_code " +
+		    	     "JOIN Student st ON e.student_id = st.user_id " +
+		    	     "JOIN User u ON st.user_id = u.user_id " +
+		    	     "WHERE u.user_id = ?";
+
+	    try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, studentId);
+			rs = pstmt.executeQuery();
+			
+	        while (rs.next()) {
+	            StudentGradeVO vo = new StudentGradeVO();
+	            vo.setStudentId(rs.getInt("student_id"));        // 학생 ID
+	            vo.setStudentName(rs.getString("student_name")); // 학생 이름
+	            vo.setSubjectCode(rs.getString("subject_code")); // 과목 코드
+	            vo.setSubjectName(rs.getString("subject_name")); // 과목명
+	            vo.setScore(rs.getDouble("score"));              // 점수
+	            vo.setGrade(rs.getString("grade"));              // 학점
+
+	            list.add(vo);
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+	    return list;
+	}
+	// 특정 학생이 수강중인 과목 조회
+	public List<StudentTimetableVO> getTimeTable(HttpServletRequest req) {
+	    HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("student_id");
+	    List<StudentTimetableVO> list = new ArrayList<>();
+		
+	    String sql = "SELECT " +
+		    	     "    s.subject_code, " +
+		    	     "    s.subject_name, " +
+		    	     "    s.subject_type, " +
+		    	     "    s.open_grade, " +
+		    	     "    s.division, " +
+		    	     "    s.credit, " +
+		    	     "    s.schedule, " +
+		    	     "    s.professor_name " +
+		    	     "FROM Enrollment e " +
+		    	     "JOIN Subject s ON e.subject_code = s.subject_code " +
+		    	     "WHERE e.student_id = ?";
+	    
+	    try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, studentId);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				StudentTimetableVO vo = new StudentTimetableVO();
+	            vo.setSubjectCode(rs.getString("subject_code"));
+	            vo.setSubjectName(rs.getString("subject_name"));
+	            vo.setSubjectType(rs.getString("subject_type"));
+	            vo.setOpenGrade(rs.getInt("open_grade"));
+	            vo.setDivision(rs.getString("division"));
+	            vo.setCredit(rs.getInt("credit"));
+	            vo.setSchedule(rs.getString("schedule"));
+	            vo.setProfessorName(rs.getString("professor_name"));
+	            list.add(vo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		return list;
+	}
+
 	
 	//수강신청후 수강 현재인원수 +1
 	public void updateCurrentEnrollment(String subject_code) {
@@ -236,5 +328,6 @@ public class StudentDAO {
 	        DbcpBean.close(con, pstmt);
 	    }
 	}
+
 
 }
