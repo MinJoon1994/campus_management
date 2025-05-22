@@ -237,7 +237,7 @@ public class StudentDAO {
 	// 특정 학생이 수강중인 과목 조회
 	public List<StudentTimetableVO> getTimeTable(HttpServletRequest req) {
 	    HttpSession session = req.getSession();
-	    int studentId = (int) session.getAttribute("student_id");
+	    int studentId = (int) session.getAttribute("id");
 	    List<StudentTimetableVO> list = new ArrayList<>();
 		
 	    String sql = "SELECT " +
