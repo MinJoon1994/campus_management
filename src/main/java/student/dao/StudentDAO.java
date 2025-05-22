@@ -193,7 +193,7 @@ public class StudentDAO {
 	// 특정 학생의 성적 조회
 	public List<StudentGradeVO> getGrades(HttpServletRequest req) {
 	    HttpSession session = req.getSession();
-	    int studentId = (int) session.getAttribute("student_id");
+	    int studentId = (int) session.getAttribute("id");
 	    List<StudentGradeVO> list = new ArrayList<>();
 	    
 	    String sql = "SELECT " +
