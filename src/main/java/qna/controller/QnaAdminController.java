@@ -20,7 +20,7 @@ import qna.service.QnaAdminService;
 import qna.service.QnaAdminServiceImpl;
 import qna.vo.QnaVO;
 
-@WebServlet("/qna/*")
+//@WebServlet("/qna/*")
 public class QnaAdminController extends HttpServlet{
 	
 	protected void doHandle(HttpServletRequest request, HttpServletResponse response) 
