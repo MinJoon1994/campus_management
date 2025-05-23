@@ -589,4 +589,19 @@ public class StudentDAO {
 	    }
 	    return result;
 	}
+
+	public void studentDeleteQ(int qnaId) {
+		String sql = "DELETE FROM Qna_Student_Professor WHERE qna_id = ?";
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, qnaId);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt);
+		}
+	}
 }

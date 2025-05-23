@@ -67,4 +67,6 @@ public interface StudentService {
 	StudentQnaWithRelpyVO getQnaWithReply(String qnaId);
 	// 학생 질문 등록
 	int insertStudentQna(HttpServletRequest req, StudentQusetionVO vo);
+
+	void studentDeleteQ(int qnaId);
 }

@@ -114,6 +114,12 @@
 	    <label name="replyContent"><%= qrv.getReplyContent()%></label>
 	<%}%>
 </div>
+<!-- 질문 삭제 버튼 (각 질문 행 안에 넣을 수 있음) -->
+<form action="<%= contextPath %>/student/deleteQna" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+    <input type="hidden" name="qnaId" value="<%= qrv.getQnaId() %>" />
+    <button type="submit">질문삭제</button>
+</form>
+
 
 </body>
 </html>

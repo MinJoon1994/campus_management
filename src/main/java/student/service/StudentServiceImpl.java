@@ -180,5 +180,11 @@ public class StudentServiceImpl implements StudentService {
 	public int insertStudentQna(HttpServletRequest req, StudentQusetionVO vo) {
 		return studentDAO.insertStudentQna(req, vo);
 	}
+
+	@Override
+	public void studentDeleteQ(int qnaId) {
+		studentDAO.studentDeleteQ(qnaId);
+	}
+	
 	
 }

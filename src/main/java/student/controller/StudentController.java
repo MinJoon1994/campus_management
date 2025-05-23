@@ -226,7 +226,19 @@ public class StudentController extends HttpServlet{
 			
 			return;
 			
-        }else if(action.equals("/qnaclass")) {//학생 강의관련 질문글 등록 요청
+        } 
+        else if(action.equals("/deleteQna")) {
+            int qnaId = Integer.parseInt(req.getParameter("qnaId"));
+            studentService.studentDeleteQ(qnaId);
+            out.println("<script>");
+            out.println("alert('질문이 삭제되었습니다.');");
+            out.println("if (window.opener) window.opener.location.reload();"); 
+            out.println("window.close();"); 
+            out.println("</script>");
+            return;
+        }
+        
+        else if(action.equals("/qnaclass")) {//학생 강의관련 질문글 등록 요청
         	
         	studentService.qnaClass(req);
         	
