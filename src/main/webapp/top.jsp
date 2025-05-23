@@ -140,7 +140,7 @@
 	            <ul class="planner_menu">
                     <li><a href="${contextPath}/notice/list">공지사항</a></li>
                     <li><a href="${contextPath}/qna/list">질문게시판</a></li>
-                    <li><a href="${contextPath}/student/qnaform">질문남기기</a></li>
+                    <li><a href="${contextPath}/student/qnaCampusForm">질문남기기</a></li>
 	            </ul>
 	            </c:when>
         		<c:when test="${vo.role=='PROFESSOR'}">
