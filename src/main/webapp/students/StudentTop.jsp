@@ -102,7 +102,7 @@
       <div class="nav-link">문의하기</div>
       <div class="dropdown">
         <a href="${pageContext.request.contextPath}/student/qnaLectureList">강의 관련 문의하기</a>
-        <a href="${pageContext.request.contextPath}/student/qnaCampus">학교 관련 문의하기</a>
+        <a href="${pageContext.request.contextPath}/student/qnaCampusForm">학교 관련 문의하기</a>
       </div>
     </div>
   </div>

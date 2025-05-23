@@ -604,4 +604,29 @@ public class StudentDAO {
 			DbcpBean.close(con, pstmt);
 		}
 	}
+	
+	
+	public void qnaCampus(HttpServletRequest req) {
+		
+		HttpSession session = req.getSession();
+		int studentId = (int) session.getAttribute("id");
+		String questionerTitle = req.getParameter("title");
+		String question = req.getParameter("content");
+		
+		String sql = "INSERT INTO qna_user_admin (questioner_id, question_title, question) VALUES (?, ?, ?)";
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, studentId);
+			pstmt.setString(2, questionerTitle);
+			pstmt.setString(3, question);
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt);
+		}		
+	}
 }

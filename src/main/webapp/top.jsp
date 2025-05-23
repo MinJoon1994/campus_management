@@ -172,8 +172,6 @@
 	            <ul class="planner_menu">
                     <li><a href="${contextPath}/notice/list">공지사항</a></li>
                     <li><a href="${contextPath}/qna/list">질문게시판</a></li>
-                    <li><a href="${contextPath}/admin/qnalist">학교관련질문글</a></li>
-                    <li><a href="${contextPath}/admin/replyform">답변작성폼요청</a></li>
 	            </ul>
 	            </c:when>
             </c:choose>

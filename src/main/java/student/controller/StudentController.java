@@ -161,6 +161,7 @@ public class StudentController extends HttpServlet{
         else if(action.equals("/qnaLectureList")) {//학생 질문글 관련 등록
         	// 학생이 수강한 과목 목록 리스트
         	List<StudentSubjectVO> subjectList = studentService.getStudentSubject(req);
+        	
         	req.setAttribute("subjectList", subjectList);
         	
         	// 교수,학생 질문 테이블 조회하기(학생이 수강한 과목에 대해)
@@ -168,6 +169,7 @@ public class StudentController extends HttpServlet{
         	req.setAttribute("qnaList", qnaList);
         	
         	req.setAttribute("center", "/students/StudentQnaMain.jsp");
+        	
 			nextPage = "/students/StudentMain.jsp";
 			
         }
@@ -237,25 +239,19 @@ public class StudentController extends HttpServlet{
             out.println("</script>");
             return;
         }
-        
-        else if(action.equals("/qnaclass")) {//학생 강의관련 질문글 등록 요청
+        else if(action.equals("/qnaCampusForm")) {
         	
-        	studentService.qnaClass(req);
+        	req.setAttribute("center", "/students/qnaCampusForm.jsp");
         	
-        	out.println("<script>");
-        	out.println("alert('질문등록이 완료되었습니다.');");
-        	out.println("location.href='"+req.getContextPath()+"/qna/list;");
-        	out.println("</script>");
-        	
-        	return;
-        	
-        }else if(action.equals("/qnacampus")) {//학생 학교관련 질문글 등록 요청
+			nextPage = "/students/StudentMain.jsp";
+        }
+        else if(action.equals("/qnaCampus")) {//학생 학교관련 질문글 등록 요청
         	
         	studentService.qnaCampus(req);
 			
 			out.println("<script>");
 			out.println("alert('질문등록이 완료되었습니다.');");
-			out.println("location.href='"+req.getContextPath()+"/qna/list;");
+			out.println("location.href='"+req.getContextPath()+"/qna/list';");
 			out.println("</script>");
 			
 			return;

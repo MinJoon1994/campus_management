@@ -145,14 +145,12 @@ public class StudentServiceImpl implements StudentService {
 		studentDAO.updateStudent(userVO);
     }
 
-    @Override
-    public void qnaClass(HttpServletRequest req) {
-        // TODO: 강의관련 질문글 등록 구현
-    }
 
     @Override
     public void qnaCampus(HttpServletRequest req) {
-        // TODO: 학교관련 질문글 등록 구현
+       
+    	studentDAO.qnaCampus(req);
+    	
     }
 
 	@Override
@@ -185,6 +183,5 @@ public class StudentServiceImpl implements StudentService {
 	public void studentDeleteQ(int qnaId) {
 		studentDAO.studentDeleteQ(qnaId);
 	}
-	
 	
 }

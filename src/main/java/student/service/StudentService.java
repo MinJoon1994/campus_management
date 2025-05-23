@@ -41,9 +41,6 @@ public interface StudentService {
     // 학생 개인정보 수정 요청
     void updateStudent(HttpServletRequest req);
 
-    // 학생 강의관련 질문글 등록 요청
-    void qnaClass(HttpServletRequest req);
-
     // 학생 학교관련 질문글 등록 요청
     void qnaCampus(HttpServletRequest req);
 
