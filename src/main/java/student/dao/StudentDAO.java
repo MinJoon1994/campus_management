@@ -404,6 +404,13 @@ public class StudentDAO {
 	            vo.setQuestionerName(rs.getString("questioner_name"));
 	            list.add(vo);
 	        }
+	    }catch (Exception e) {
+	    	e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+	    return list;
+	}
 	
 	//학생 개인정보 조회
 	public UserVO getStudent(Integer student_id) {
@@ -457,7 +464,7 @@ public class StudentDAO {
 	}
 
 	public void updateStudent(UserVO userVO) {
-	
+		
 		try {
 			
 			con = DbcpBean.getConnection();
@@ -480,16 +487,6 @@ public class StudentDAO {
 		}finally {
 			DbcpBean.close(con, pstmt);
 		}
-		
-	}
-
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        DbcpBean.close(con, pstmt, rs);
-	    }
-
-	    return list;
 	}
 
 	public List<StudentQnaListVO> getQnaBySubject(String subjectCode) {

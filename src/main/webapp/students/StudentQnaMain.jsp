@@ -135,10 +135,12 @@
 		        <td colspan="5">질문이 없습니다.</td>
 		    </tr>
 		<% } else {
-		     int index = qnaList.size() - startRow;
-		     for (StudentQnaListVO vo : pageList) { %>
+		     int index = qnaList.size() - startRow; 
+		     int j = (pageNum - 1) * pageSize + 1;
+		     for (StudentQnaListVO vo : pageList) { 
+		%>
 		    <tr data-subject="<%= vo.getSubjectCode() %>">
-		        <td><%= index-- %></td>
+		        <td><%= j ++ %></td>
 		        <td><a href="#" onclick="openQnaWindow(<%= vo.getQnaId() %>); return false;">
 		            <%= vo.getQuestionerTitle() %></a></td>
 		        <td><%= vo.getQuestionerName() %></td>

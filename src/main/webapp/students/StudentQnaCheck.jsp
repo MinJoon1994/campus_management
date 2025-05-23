@@ -103,19 +103,16 @@
 
 <!-- 답변 영역 -->
 <div class="answer-box">
-    <form action="<%= contextPath %>/professor/qnareply.do" method="post">
-        <input type="hidden" name="qnaId" value="<%= qrv.getQnaId() %>" />
-        <div class="question-meta">
-            <% if (qrv.getReplyTime() != null) { %>
-                답변일시: <%= qrv.getReplyTime() %>
-            <% } else { %>
-                답변이 등록되지 않았습니다..
-            <% } %>
-        </div>
-            <% if (qrv.getReplyTime() != null) { %>
-            <textarea name="replyContent"><%= qrv.getReplyContent()%></textarea>
-    		<%}%>
-    </form>
+	<div class="question-meta">
+	    <% if (qrv.getReplyContent() != null) { %>
+	        답변
+	    <% } else { %>
+	        답변이 등록되지 않았습니다..
+	    <% } %>
+	</div>
+	    <% if (qrv.getReplyContent() != null) { %>
+	    <label name="replyContent"><%= qrv.getReplyContent()%></label>
+	<%}%>
 </div>
 
 </body>
