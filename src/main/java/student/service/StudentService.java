@@ -9,6 +9,10 @@ import member.vo.StudentVO;
 import member.vo.UserVO;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentQnaListVO;
+import student.vo.StudentQnaWithRelpyVO;
+import student.vo.StudentQusetionVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 
 public interface StudentService {
@@ -51,4 +55,18 @@ public interface StudentService {
     
     // 학생이 수강신청 가능한 목록 조회
 	List<LectureVO> getList(HttpServletRequest req);
+	
+	// 학생이 수강중인 과목 목록
+	List<StudentSubjectVO> getStudentSubject(HttpServletRequest req);
+	
+	// 교수, 학생 질문 테이블 조회
+	List<StudentQnaListVO> getStudentQna(HttpServletRequest req);
+	// 특정 과목에 대한 질문 테이블 조회 (select option 용)
+	List<StudentQnaListVO> getQnaBySubject(String subjectCode);
+	// 특정 질문 조회
+	StudentQnaWithRelpyVO getQnaWithReply(String qnaId);
+	// 학생 질문 등록
+	int insertStudentQna(HttpServletRequest req, StudentQusetionVO vo);
+
+	void studentDeleteQ(int qnaId);
 }

@@ -9,6 +9,10 @@ import javax.servlet.http.HttpSession;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentQnaListVO;
+import student.vo.StudentQnaWithRelpyVO;
+import student.vo.StudentQusetionVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 import main.DbcpBean;   
@@ -277,7 +281,38 @@ public class StudentDAO {
 		}
 		return list;
 	}
+	// 학생이 수강중인 과목 목록 조회
+	public List<StudentSubjectVO> getStudentSubject(HttpServletRequest req) {
+		HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("id");
+		List<StudentSubjectVO> list = new ArrayList<>();
+		
+	    String sql = "SELECT s.subject_code, s.subject_name " +
+		             "FROM Enrollment e " +
+		             "JOIN Subject s ON e.subject_code = s.subject_code " +
+		             "Where e.student_id = ?";
 
+        try {
+        	con = DbcpBean.getConnection();
+        	pstmt = con.prepareStatement(sql);
+        	pstmt.setInt(1, studentId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+            	StudentSubjectVO vo = new StudentSubjectVO();
+                vo.setSubjectCode(rs.getString("subject_code"));  // 과목 코드 설정
+                vo.setSubjectName(rs.getString("subject_name"));  // 과목 이름 설정
+                list.add(vo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        } finally {
+			DbcpBean.close(con, pstmt, rs);
+		} 
+
+        return list; 
+	}
 	
 	//수강신청후 수강 현재인원수 +1
 	public void updateCurrentEnrollment(String subject_code) {
@@ -328,6 +363,53 @@ public class StudentDAO {
 	    } finally {
 	        DbcpBean.close(con, pstmt);
 	    }
+	}
+
+	// 교수, 학생 질문 테이블 조회
+	public List<StudentQnaListVO> getStudentQna(HttpServletRequest req) {
+		HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("id");
+		List<StudentQnaListVO> list = new ArrayList<>();
+		
+		String sql = "SELECT " +
+			         "    q.qna_id, " +
+			         "    q.subject_code, " +
+			         "    q.questioner_id, " +
+			         "    q.questioner_title, " +
+			         "    q.question, " +
+			         "    q.question_time, " +
+			         "    u.name AS questioner_name " +
+			         "FROM Qna_Student_Professor q " +
+			         "JOIN Student s ON q.questioner_id = s.user_id " +
+			         "JOIN User u ON s.user_id = u.user_id " +
+			         "WHERE q.subject_code IN ( " +
+			         "    SELECT subject_code " +
+			         "    FROM Enrollment " +
+			         "    WHERE student_id = ?)";
+ 
+	    try {
+	        con = DbcpBean.getConnection();
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setInt(1, studentId);
+	        rs = pstmt.executeQuery();
+
+	        while (rs.next()) {
+	            StudentQnaListVO vo = new StudentQnaListVO();
+	            vo.setQnaId(rs.getInt("qna_id"));                         // 질문 ID
+	            vo.setSubjectCode(rs.getString("subject_code"));          // 과목 코드
+	            vo.setQuestionerId(rs.getInt("questioner_id"));           // 질문자 ID
+	            vo.setQuestionerTitle(rs.getString("questioner_title"));  // 질문 제목
+	            vo.setQuestion(rs.getString("question"));                 // 질문 내용
+	            vo.setQuestionTime(rs.getTimestamp("question_time"));     // 질문 시간
+	            vo.setQuestionerName(rs.getString("questioner_name"));
+	            list.add(vo);
+	        }
+	    }catch (Exception e) {
+	    	e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+	    return list;
 	}
 	
 	//학생 개인정보 조회
@@ -382,7 +464,7 @@ public class StudentDAO {
 	}
 
 	public void updateStudent(UserVO userVO) {
-	
+		
 		try {
 			
 			con = DbcpBean.getConnection();
@@ -405,7 +487,121 @@ public class StudentDAO {
 		}finally {
 			DbcpBean.close(con, pstmt);
 		}
-		
 	}
 
+	public List<StudentQnaListVO> getQnaBySubject(String subjectCode) {
+		List<StudentQnaListVO> list = new ArrayList<>();
+
+	    String sql = 
+	        "SELECT " +
+	        "    q.qna_id, " +
+	        "    q.subject_code, " +
+	        "    q.questioner_id, " +
+	        "    q.questioner_title, " +
+	        "    q.question, " +
+	        "    q.question_time, " +
+	        "    u.name AS questioner_name " +
+	        "FROM Qna_Student_Professor q " +
+	        "JOIN Student s ON q.questioner_id = s.user_id " +
+	        "JOIN User u ON s.user_id = u.user_id " +
+	        "WHERE q.subject_code = ?";
+	    
+	    try {
+	        con = DbcpBean.getConnection();
+	        pstmt = con.prepareStatement(sql);
+	        pstmt.setString(1, subjectCode);
+	        rs = pstmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            StudentQnaListVO vo = new StudentQnaListVO();
+	            vo.setQnaId(rs.getInt("qna_id"));
+	            vo.setSubjectCode(rs.getString("subject_code"));
+	            vo.setQuestionerId(rs.getInt("questioner_id"));
+	            vo.setQuestionerTitle(rs.getString("questioner_title"));
+	            vo.setQuestion(rs.getString("question"));
+	            vo.setQuestionTime(rs.getTimestamp("question_time"));
+	            vo.setQuestionerName(rs.getString("questioner_name"));
+	            list.add(vo);
+	        }
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    } finally {
+	    	DbcpBean.close(con, pstmt, rs);
+	    }
+		
+		return list;
+	}
+
+	public StudentQnaWithRelpyVO getQnaWithReply(String qnaId) {
+		StudentQnaWithRelpyVO vo = new StudentQnaWithRelpyVO();
+		String sql = 
+			    "SELECT " +
+			    "  q.qna_id, q.questioner_title, q.question, q.question_time, " +
+			    "  r.reply_content, r.reply_time " +
+			    "FROM Qna_Student_Professor q " +
+			    "LEFT JOIN Reply_Qna_Professor r ON q.qna_id = r.qna_id " +
+			    "WHERE q.qna_id = ?";
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(qnaId));
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+		        vo.setQnaId(rs.getInt("qna_id"));
+		        vo.setQuestionerTitle(rs.getString("questioner_title"));
+		        vo.setQuestion(rs.getString("question"));
+		        vo.setQuestionTime(rs.getTimestamp("question_time"));
+		        vo.setReplyContent(rs.getString("reply_content"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt, rs);
+		}
+		return vo;
+	}
+
+	public int insertStudentQna(HttpServletRequest req, StudentQusetionVO vo) {
+		HttpSession session = req.getSession();
+	    int studentId = (int) session.getAttribute("id");
+		int result = 0;
+	    String sql = "INSERT INTO Qna_Student_Professor (subject_code, questioner_id, questioner_title, question) " +
+	                 "VALUES (?, ?, ?, ?)";
+
+	    try {
+	    	con = DbcpBean.getConnection();
+	    	pstmt = con.prepareStatement(sql);
+
+	        pstmt.setString(1, vo.getSubjectCode());
+	        pstmt.setInt(2, studentId);
+	        pstmt.setString(3, vo.getQuestionerTitle());
+	        pstmt.setString(4, vo.getQuestion());
+
+	        result = pstmt.executeUpdate();
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	    	DbcpBean.close(con, pstmt, rs);
+	    }
+	    return result;
+	}
+
+	public void studentDeleteQ(int qnaId) {
+		String sql = "DELETE FROM Qna_Student_Professor WHERE qna_id = ?";
+		
+		try {
+			con = DbcpBean.getConnection();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, qnaId);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbcpBean.close(con, pstmt);
+		}
+	}
 }

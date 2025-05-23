@@ -2,6 +2,7 @@ package student.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +16,16 @@ import javax.servlet.http.HttpSession;
 import member.service.MemberService;
 import member.vo.StudentVO;
 import member.vo.UserVO;
+import professorvo.QnaWithReplyVo;
+import student.dao.StudentDAO;
 import student.service.StudentService;
 import student.service.StudentServiceImpl;
 import student.vo.LectureVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentQnaListVO;
+import student.vo.StudentQnaWithRelpyVO;
+import student.vo.StudentQusetionVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 
 @WebServlet("/student/*")
@@ -150,16 +157,88 @@ public class StudentController extends HttpServlet{
         	
         }
         //============= 학생 질문글 관련 ==============
-        else if(action.equals("/qnaform")) {//학생 질문글 관련 등록
+        // 학생 -> 교수 질문 화면 요청
+        else if(action.equals("/qnaLectureList")) {//학생 질문글 관련 등록
+        	// 학생이 수강한 과목 목록 리스트
+        	List<StudentSubjectVO> subjectList = studentService.getStudentSubject(req);
+        	req.setAttribute("subjectList", subjectList);
         	
-        	//학생 질문글 작성 화면 요청
-			req.setAttribute("center", "students/qnaform.jsp");
+        	// 교수,학생 질문 테이블 조회하기(학생이 수강한 과목에 대해)
+        	List<StudentQnaListVO> qnaList = studentService.getStudentQna(req);
+        	req.setAttribute("qnaList", qnaList);
+        	
+        	req.setAttribute("center", "/students/StudentQnaMain.jsp");
+			nextPage = "/students/StudentMain.jsp";
 			
-			nextPage = "/main.jsp";
+        }
+        // select option 과목에 따라
+        else if(action.equals("/qnalistbySubject")) {
+        	String subjectCode = req.getParameter("subjectCode");
+        	req.setAttribute("subjectCode", subjectCode);
+        	
+        	List<StudentQnaListVO> qnaList;
+        	
+        	if (subjectCode == null || subjectCode.isEmpty()) {
+        	    qnaList = studentService.getStudentQna(req);
+        	} else {
+        	    qnaList = studentService.getQnaBySubject(subjectCode);
+        	}
+        	req.setAttribute("qnaList", qnaList);
+        	
+        	// 학생이 수강한 과목 목록 리스트
+        	List<StudentSubjectVO> subjectList = studentService.getStudentSubject(req);
+        	req.setAttribute("subjectList", subjectList);
+        	
+        	req.setAttribute("center", "/students/StudentQnaMain.jsp");
+			nextPage = "/students/StudentMain.jsp";
+        }
+        // 질문 상세 조회
+        else if(action.equals("/qnaStudentDetail")) {
+        	String qnaId = req.getParameter("qnaId");
+        	StudentQnaWithRelpyVO vo = studentService.getQnaWithReply(qnaId);
+			
+			req.setAttribute("qnavo", vo);
+			
+			nextPage = "/students/StudentQnaCheck.jsp";
+        }
+        //학생 질문글 관련 등록
+        else if(action.equals("/insertStudentQ")) {
+            String subjectCode = req.getParameter("subject_code");
+            String title = req.getParameter("title");
+            System.out.println("이거제목"+title);
+            String content = req.getParameter("content");
+
+            StudentQusetionVO vo = new StudentQusetionVO();
+            vo.setSubjectCode(subjectCode);
+            vo.setQuestionerTitle(title);
+            vo.setQuestion(content);
+
+            int result = studentService.insertStudentQna(req, vo);
+
+            out.println("<script>");
+            if (result > 0) {
+                out.println("alert('질문이 등록되었습니다.');");
+            } else {
+                out.println("alert('등록에 실패했습니다.');");
+            }
+            out.println("location.href='" + req.getContextPath() + "/student/qnaLectureList';");
+            out.println("</script>");
 			
 			return;
 			
-        }else if(action.equals("/qnaclass")) {//학생 강의관련 질문글 등록 요청
+        } 
+        else if(action.equals("/deleteQna")) {
+            int qnaId = Integer.parseInt(req.getParameter("qnaId"));
+            studentService.studentDeleteQ(qnaId);
+            out.println("<script>");
+            out.println("alert('질문이 삭제되었습니다.');");
+            out.println("if (window.opener) window.opener.location.reload();"); 
+            out.println("window.close();"); 
+            out.println("</script>");
+            return;
+        }
+        
+        else if(action.equals("/qnaclass")) {//학생 강의관련 질문글 등록 요청
         	
         	studentService.qnaClass(req);
         	

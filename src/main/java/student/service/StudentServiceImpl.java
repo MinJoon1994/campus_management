@@ -12,6 +12,10 @@ import student.dao.StudentDAO;
 import student.vo.LectureVO;
 import student.vo.SemesterGradeVO;
 import student.vo.StudentGradeVO;
+import student.vo.StudentQnaListVO;
+import student.vo.StudentQnaWithRelpyVO;
+import student.vo.StudentQusetionVO;
+import student.vo.StudentSubjectVO;
 import student.vo.StudentTimetableVO;
 import student.vo.SubjectGradeVO;
 
@@ -150,4 +154,37 @@ public class StudentServiceImpl implements StudentService {
     public void qnaCampus(HttpServletRequest req) {
         // TODO: 학교관련 질문글 등록 구현
     }
+
+	@Override
+	public List<StudentSubjectVO> getStudentSubject(HttpServletRequest req) {
+		return studentDAO.getStudentSubject(req);
+	}
+	// 교수, 학생 질문 테이블 조회
+	@Override
+	public List<StudentQnaListVO> getStudentQna(HttpServletRequest req) {
+		return studentDAO.getStudentQna(req);
+	}
+	// 특정 과목에 대한 질문 테이블 조회 (select option 용)
+	@Override
+	public List<StudentQnaListVO> getQnaBySubject(String subjectCode) {
+		return studentDAO.getQnaBySubject(subjectCode);
+	}
+    // 특정 질문 조회
+	@Override
+	public StudentQnaWithRelpyVO getQnaWithReply(String qnaId) {
+		return studentDAO.getQnaWithReply(qnaId);
+	}
+	// 학생 질문 등록
+
+	@Override
+	public int insertStudentQna(HttpServletRequest req, StudentQusetionVO vo) {
+		return studentDAO.insertStudentQna(req, vo);
+	}
+
+	@Override
+	public void studentDeleteQ(int qnaId) {
+		studentDAO.studentDeleteQ(qnaId);
+	}
+	
+	
 }

@@ -27,6 +27,4 @@ public class QnaWithReplyVo {
 	public void setReply(ReplyProfessorVo reply) {
 		this.reply = reply;
 	}
-    
-    
 }
