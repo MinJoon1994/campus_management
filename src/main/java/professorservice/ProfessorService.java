@@ -46,7 +46,7 @@ public class ProfessorService {
 	public boolean addSubject(SubjectVo subjectVo) {
 		return professorDao.addLectureForm(subjectVo);
 	}
-	// subject table 조회 (요청한 강의 확인 + 교수 강의 시간표 조회)
+	// subject table 조회 (요청한 강의 확인 + 교수 강의 시간표 조회) 
 	public Vector<SubjectVo> getAllSubject(String id) {
 		return professorDao.getAllSubject(id);
 	}
@@ -131,5 +131,9 @@ public class ProfessorService {
 	// 교수 공지사항 내용 조회
 	public NoticeProfessorVo getNoticeById(String noticeId) {
 		return professorDao.getNoticeById(noticeId);
+	}
+	// 교수 과목 등록시 과목코드 중복체크
+	public boolean subjectCodeDuplicateCheck(String subjectCode) {
+		return professorDao.subjectCodeDuplicateCheck(subjectCode);
 	}
 }

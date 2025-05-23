@@ -24,11 +24,6 @@
     int start = ((Double) data.get("start")).intValue();
     int end = ((Double) data.get("end")).intValue();
 
-    System.out.println("요일중복체크 교수 아이디 : " + professorId);
-    System.out.println("요일중복체크 day : " + day);
-    System.out.println("요일중복체크 start : " + start);
-    System.out.println("요일중복체크 end : " + end);
-
     Connection conn = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;

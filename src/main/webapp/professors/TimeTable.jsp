@@ -1,4 +1,4 @@
-<%@page import="professorvo.SubjectVo"%>
+<%@page import="professorvo.LectureListVo"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.Map"%>
@@ -6,14 +6,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <%
-	Vector<SubjectVo> subjectVo = (Vector<SubjectVo>) request.getAttribute("subjectList");
+	Vector<LectureListVo> subjectVo = (Vector<LectureListVo>) request.getAttribute("subjectList");
 	// 시간표 초기화
 	String[][] timetable = new String[5][9]; // [요일][교시]
 	String[] days = { "월", "화", "수", "목", "금" };
     
 	Map<String, String> subjectColorMap = new HashMap<>();
     
-	for(SubjectVo v : subjectVo) {
+	for(LectureListVo v : subjectVo) {
     	String subjectName = v.getSubjectName();
     	System.out.println("과목명 : " + subjectName);
     	// 월 3-5교시, 화 4-7교시

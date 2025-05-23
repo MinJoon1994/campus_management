@@ -37,7 +37,13 @@
       font-weight: bold;
       cursor: pointer;
     }
-
+    .nav-link a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      font-weight: bold;
+      cursor: pointer;
+    }
     .nav-link:hover {
       background-color: #004080;
     }
@@ -73,6 +79,12 @@
 <body>
 
   <div class="navbar">
+    <div class="nav-item">
+   	 <div class="nav-link">메인화면</div>
+	 <div class="dropdown">
+	   <a href="${pageContext.request.contextPath}/campus/main">메인화면</a>
+	 </div>
+	</div>
     <div class="nav-item">
       <div class="nav-link">강의관리</div>
       <div class="dropdown">
