@@ -945,4 +945,20 @@ public class ProfessorDao {
 		}
 		return vo;
 	}
+	// 교수 과목 등록시 과목코드 중복체크
+	public boolean subjectCodeDuplicateCheck(String subjectCode) {
+        String sql = "SELECT subject_code FROM Subject WHERE subject_code = ?";
+        try {
+        	conn = DbcpBean.getConnection();
+        	pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, subjectCode);
+            rs = pstmt.executeQuery();
+            
+            return rs.next(); // 있으면 true (중복)
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+	}
 }

@@ -150,11 +150,11 @@
 		        <td colspan="5">질문이 없습니다.</td>
 		    </tr>
 		<% } else {
-		     int index = qnaList.size();
+			 int index = (pageNum - 1) * pageSize + 1;
 		     for (QnaStduentProfessorVo vo : pageList) { %>
 		    <tr data-subject="<%= vo.getSubjectCode() %>">
 		        <td><input type="checkbox" name="qnaIds" value="<%= vo.getQnaId() %>" /></td>
-		        <td><%= index-- %></td>
+		        <td><%= index++ %></td>
 		        <td><a href="#" onclick="openQnaWindow(<%= vo.getQnaId() %>); return false;">
 		            <%= vo.getQuestionerTitle() %></a></td>
 		        <td><%= vo.getStudentName() %></td>

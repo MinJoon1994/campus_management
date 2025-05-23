@@ -66,15 +66,14 @@
 	
 	    .left-box { flex: 6; max-width: 700px; }
 	
-	    .right-box { margin-top: 100px; flex: 4; max-width: 700px; }
+	    .right-box { margin-top: 100px; flex: 4; max-width: 1000px; }
 	
 	    .left-box table { margin: 0; width: 100%; border-collapse: collapse; background-color: #f9f9f9; }
 	
-	    .right-box table { margin: 0; width: 80%; border-collapse: collapse; background-color: #f9f9f9; }
+	    .right-box table { margin: 0; width: 80%; border-collapse: collapse; background-color: #f9f9f9; table-layout: fixed;}
+	    th, td { padding: 12px; border: 1px solid #ddd; text-align: center;}
 	
-	    th, td { padding: 12px; border: 1px solid #ddd; }
-	
-	    th { background-color: #2c3e50; color: white; text-align: center; }
+	    th { background-color: #2c3e50; color: white; }
 	
 	    input[type="text"], input[type="number"], select {
 	        padding: 8px; margin-top: 5px; width: 95%;
@@ -113,76 +112,6 @@
         let isSubjectCodeChecked = false;
         let isProfessorIdChecked = false;
 
-        async function validateForm() {
-            if (!isSubjectCodeChecked) {
-                alert("과목 코드 중복 체크를 완료하세요!");
-                return false;
-            }
-            if (!isProfessorIdChecked) {
-                alert("교수 ID 일치 여부를 확인하세요!");
-                return false;
-            }
-            
-            const dayInputs = document.getElementsByName("day[]");
-            if (dayInputs.length === 0) {
-                alert("개설 요일/시간을 최소 1개 이상 추가해야 합니다!");
-                return false;
-            }
-            // 요일/시간 체크
-            const days = document.getElementsByName("day[]"); // ex 월, 월, 수
-            const startTimes = document.getElementsByName("start_time[]"); // ex 1, 2, 5
-            const endTimes = document.getElementsByName("end_time[]"); // ex 3, 3, 6
-			
-            let tempDay = {"월": [], "화": [], "수": [], "목": [], "금": []};
-            let promises = [];
-            
-            for (let i = 0; i < startTimes.length; i++) {
-            	// i = 0 일때 월 1 ~ 3
-            	// i = 1 일때 월 2 ~ 3
-            	// i = 2 일때 수 5 ~ 6
-            	const day = days[i].value;
-                const start = parseInt(startTimes[i].value);
-                const end = parseInt(endTimes[i].value);
-				
-                if (isNaN(start) || isNaN(end)) {
-                    alert((i+1) + "번째 요일/시간이 비어 있습니다.");
-                    return false;
-                }
-                // 시작 교시가 종료 교시보다 늦을 때
-                if (start > end) {
-                    alert((i+1) + "번째 시작 교시가 종료 교시보다 늦습니다.");
-                    return false;
-                }
-                // 겹치는지 검사
-		        for (let t = start; t <= end; t++) {
-		            if (tempDay[day].includes(t)) {
-		                alert((i + 1)+"번째 입력 ("+day+" "+start+"~"+end+"교시)가 이전 입력과 겹칩니다.");
-		                return false;
-		            }
-		        }
-		        
-		        // 겹치지 않으면 tempDay에 시간 등록
-		        for (let t = start; t <= end; t++) {
-		            tempDay[day].push(t);
-		        }
-		     
-		        // 중복 체크 fetch (await로 바로 응답 확인)
-		        const res = await fetch("<%=contextPath%>/professors/check_schedule_overlap.jsp", {
-		            method: "POST",
-		            headers: { "Content-Type": "application/json" },
-		            body: JSON.stringify({ professorId: "<%=professor_id%>", day, start, end })
-		        });
-		        const result = await res.text();
-
-		        if (result.trim() === "DUPLICATE") {
-		            alert((i + 1) + "번째 입력 " + day + " (" + start + "~" + (end) + "교시)는 이미 등록한 강의와 겹칩니다.");
-		            return false;
-		        }
-		    }
-
-		    return true;
-        }
-
         // 과목코드 중복체크
         function checkSubjectCode() {
             const subjectCode = document.getElementById('subject_code').value.trim();
@@ -190,7 +119,7 @@
                 alert("과목 코드를 입력하세요.");
                 return;
             }
-            fetch('<%=contextPath%>/professors/check_subject_code.jsp?subject_code=' + encodeURIComponent(subjectCode))
+            fetch('<%=contextPath%>/professor/checkSubjectcodeDulicate?subject_code=' + encodeURIComponent(subjectCode))
                 .then(response => response.text())
                 .then(result => {
                     if (result.trim() === "OK") {
@@ -228,7 +157,6 @@
 		// 수업 요일/시작 교시/종료 교시 입력란 한 세트를 동적으로 추가
         function addDayTimeRow() {
             const container = document.getElementById('dayTimeContainer');
-            
             const currentCount = container.getElementsByClassName('day-time-row').length;
 
             if (currentCount >= 2) {
@@ -282,6 +210,84 @@
                 button.parentElement.remove();
             }
         }
+        // 과목 등록 전 유효성 검사
+        // 1. 과목 코드 중복 체크 여부
+        // 2. 교수 ID 확인 여부
+        // 3. 요일/시간 입력값의 유효성 검사
+        //     - 요일/시간 최소 1개 이상 추가
+        // 4. 요일/시간 중복 체크 여부
+        async function validateForm() {
+            if (!isSubjectCodeChecked) {
+                alert("과목 코드 중복 체크를 완료하세요!");
+                return false;
+            }
+            if (!isProfessorIdChecked) {
+                alert("교수 ID 일치 여부를 확인하세요!");
+                return false;
+            }
+            // 요일/시간 최소 1개 이상 추가
+            const dayInputs = document.getElementsByName("day[]");
+            if (dayInputs.length === 0) {
+                alert("개설 요일/시간을 최소 1개 이상 추가해야 합니다!");
+                return false;
+            }
+            // 요일/시간 체크
+            const days = document.getElementsByName("day[]"); // ex 월, 월, 수
+            const startTimes = document.getElementsByName("start_time[]"); // ex 1, 2, 5
+            const endTimes = document.getElementsByName("end_time[]"); // ex 3, 3, 6
+			
+            let tempDay = {"월": [], "화": [], "수": [], "목": [], "금": []};
+            let promises = [];
+            
+            for (let i = 0; i < startTimes.length; i++) {
+            	// i = 0 일때 월 1 ~ 3
+            	// i = 1 일때 월 2 ~ 3
+            	// i = 2 일때 수 5 ~ 6
+            	const day = days[i].value;
+                const start = parseInt(startTimes[i].value);
+                const end = parseInt(endTimes[i].value);
+				
+                // 시작, 종료 교시 선택했는지 검사
+                if (isNaN(start) || isNaN(end)) {
+                    alert((i+1) + "번째 요일/시간이 비어 있습니다.");
+                    return false;
+                }
+                // 시작 교시가 종료 교시보다 늦을 때
+                if (start > end) {
+                    alert((i+1) + "번째 시작 교시가 종료 교시보다 늦습니다.");
+                    return false;
+                }
+                // 겹치는지 검사
+		        for (let t = start; t <= end; t++) {
+		            if (tempDay[day].includes(t)) {
+		                alert((i + 1)+"번째 입력 ("+day+" "+start+"~"+end+"교시)가 이전 입력과 겹칩니다.");
+		                return false;
+		            }
+		        }
+		        
+		        // 겹치지 않으면 tempDay에 시간 등록
+		        for (let t = start; t <= end; t++) {
+		            tempDay[day].push(t);
+		        }
+		     
+		        // 중복 체크 fetch (await로 바로 응답 확인)
+		        const res = await fetch("<%=contextPath%>/professors/check_schedule_overlap.jsp", {
+		            method: "POST",
+		            headers: { "Content-Type": "application/json" },
+		            body: JSON.stringify({ professorId: "<%=professor_id%>", day, start, end })
+		        });
+		        const result = await res.text();
+
+		        if (result.trim() === "DUPLICATE") {
+		            alert((i + 1) + "번째 입력 " + day + " (" + start + "~" + (end) + "교시)는 이미 등록한 강의와 겹칩니다.");
+		            return false;
+		        }
+		    }
+
+		    return true;
+        }
+
+
         // 제출 버튼 처리
         async function handleSubmit() {
             const isValid = await validateForm();
@@ -293,121 +299,131 @@
 </head>
 
 <body>
-<form id="lectureForm" action="<%=contextPath%>/professor/lecturecreate" method="post"
-			onsubmit="return false;">
-<div class="main-wrapper">
-	<div class="left-box">
-			<table>
-				<tr>
-					<th>항목</th>
-					<th>입력</th>
-				</tr>
-	
-				<tr>
-					<td>과목 코드</td>
-					<td>
-						<div class="input-with-button">
-							<input type="text" id="subject_code" name="subject_code" required oninput="isSubjectCodeChecked=false;">
-							<button type="button" onclick="checkSubjectCode()">중복 체크</button>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>과목 이름</td>
-					<td><input type="text" name="subject_name" required></td>
-				</tr>
-				<tr>
-					<td>과목 유형</td>
-					<td><select name="subject_type" required>
-							<option value="전공">전공</option>
-							<option value="교양">교양</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td>개설 학년</td>
-					<td><select name="open_grade" required>
-							<option value="1">1학년</option>
-							<option value="2">2학년</option>
-							<option value="3">3학년</option>
-							<option value="4">4학년</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td>분반</td>
-					<td><input type="text" name="division" required></td>
-				</tr>
-				<tr>
-					<td>학점</td>
-					<td><input type="number" name="credit" required></td>
-				</tr>
-				<tr>
-					<td>담당 교수 ID</td>
-					<td>
-						<div class="input-with-button">
-							<input type="number" id="professor_id" name="professor_id"
-								required oninput="isProfessorIdChecked=false;">
-							<button type="button" onclick="checkProfessorId()">교수 확인</button>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>담당 교수 이름</td>
-					<td><input type="text" name="professor_name" required></td>
-				</tr>
-	
-				<tr>
-					<td>개설 요일/시간</td>
-					<td>
-						<div id="dayTimeContainer"></div>
-						<div class="center_button" style="text-align: center;">
-							<button type="button" class="add-button" onclick="addDayTimeRow()">
-							요일/시간 추가
-							</button>
-						</div>
-					</td>
-				</tr>
-	
-				<tr>
-					<td>수강 정원</td>
-					<td><input type="number" name="capacity" required></td>
-				</tr>
+<form id="lectureForm" action="<%=contextPath%>/professor/lecturecreate" 
+	  method="post" onsubmit="return false;">
+	<div class="main-wrapper">
+		<div class="left-box">
+				<table>
+					<tr>
+						<th>항목</th>
+						<th>입력</th>
+					</tr>
+		
+					<tr>
+						<td>과목 코드</td>
+						<td>
+							<div class="input-with-button">
+								<!-- oninput ="isSubjectCodeChecked=false;" 
+									 사용자가 텍스트를 입력할 때마다 isSubjectCodeChecked라는 변수의 값을 false 로 변경 -->
+								<input type="text" id="subject_code" name="subject_code" required oninput="isSubjectCodeChecked=false;">
+								<button type="button" onclick="checkSubjectCode()">중복 체크</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>과목 이름</td>
+						<td><input type="text" name="subject_name"  maxlength="7" required></td>
+					</tr>
+					<tr>
+						<td>과목 유형</td>
+						<td><select name="subject_type" required>
+								<option value="전공">전공</option>
+								<option value="교양">교양</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>개설 학년</td>
+						<td><select name="open_grade" required>
+								<option value="1">1학년</option>
+								<option value="2">2학년</option>
+								<option value="3">3학년</option>
+								<option value="4">4학년</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>분반</td>
+						<td><input type="text" name="division" required></td>
+					</tr>
+					<tr>
+						<td>학점</td>
+						<td><input type="number" name="credit" required></td>
+					</tr>
+					<tr>
+						<td>담당 교수 ID</td>
+						<td>
+							<div class="input-with-button">
+								<input type="number" id="professor_id" name="professor_id"
+									required oninput="isProfessorIdChecked=false;">
+								<button type="button" onclick="checkProfessorId()">교수 확인</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>담당 교수 이름</td>
+						<td><input type="text" name="professor_name" required></td>
+					</tr>
+		
+					<tr>
+						<td>개설 요일/시간</td>
+						<td>
+							<div id="dayTimeContainer"></div>
+							<div class="center_button" style="text-align: center;">
+								<button type="button" class="add-button" onclick="addDayTimeRow()">
+								요일/시간 추가
+								</button>
+							</div>
+						</td>
+					</tr>
+		
+					<tr>
+						<td>수강 정원</td>
+						<td><input type="number" name="capacity" required></td>
+					</tr>
+				</table>
+		</div>
+		<div class="right-box">
+			<table align="center">
+			    <colgroup>
+			        <col style="width:12.5%;"> <!-- 시간/요일 -->
+			        <col style="width:17.5%;"> <!-- 월 -->
+			        <col style="width:17.5%;"> <!-- 화 -->
+			        <col style="width:17.5%;"> <!-- 수 -->
+			        <col style="width:17.5%;"> <!-- 목 -->
+			        <col style="width:17.5%;"> <!-- 금 -->
+			    </colgroup>
+			    <tr>
+			        <th>시간/요일</th>
+			        <th>월</th>
+			        <th>화</th>
+			        <th>수</th>
+			        <th>목</th>
+			        <th>금</th>
+			    </tr>
+			    <%
+			        for (int i = 0; i < 9; i++) {
+			    %>
+					    <tr>
+					        <td><%= (i+1) %>교시</td>
+					        <%
+					            for (int j = 0; j < 5; j++) {
+					                String cell = timetable[j][i];
+					                String bgColor = (cell != null && subjectColorMap.containsKey(cell)) ? subjectColorMap.get(cell) : "";
+					        %>
+					            <td style="background-color:<%= bgColor %>;">
+					                <%= (cell != null ? cell : "") %>
+					            </td>
+					        <% 
+					        	} 
+					        %>
+					    </tr>
+			    <% 
+			    	} 
+			    %>
 			</table>
+			<input type="hidden" name="current_enrollment" value="0"> 
+			<input type="submit" value="과목 등록" onclick="handleSubmit()" style="margin-top:30px; margin-left: 350px; width: 150px; height: 50px;">
+		</div>
 	</div>
-	<div class="right-box">
-		<table align="center">
-		    <tr>
-		        <th>시간/요일</th>
-		        <th>월</th>
-		        <th>화</th>
-		        <th>수</th>
-		        <th>목</th>
-		        <th>금</th>
-		    </tr>
-		    <%
-		        for (int i = 0; i < 9; i++) {
-		    %>
-				    <tr>
-				        <td><%= (i+1) %>교시</td>
-				        <%
-				            for (int j = 0; j < 5; j++) {
-				                String cell = timetable[j][i];
-				                String bgColor = (cell != null && subjectColorMap.containsKey(cell)) ? subjectColorMap.get(cell) : "";
-				        %>
-				            <td style="background-color:<%= bgColor %>;">
-				                <%= (cell != null ? cell : "") %>
-				            </td>
-				        <% 
-				        	} 
-				        %>
-				    </tr>
-		    <% 
-		    	} 
-		    %>
-		</table>
-		<input type="hidden" name="current_enrollment" value="0"> 
-		<input type="submit" value="과목 등록" onclick="handleSubmit()" style="margin-top:30px; margin-left: 220px; width: 150px; height: 50px;">
-	</div>
-</div>
 </form>	
 	
 </body>

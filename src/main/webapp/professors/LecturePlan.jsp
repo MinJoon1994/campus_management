@@ -26,11 +26,11 @@
   <style>
     body {
       font-family: '맑은 고딕', sans-serif;
-      padding: 20px;
+      padding: 2px;
     }
 
     .plan-container {
-      width: 600px;
+      width: 555px;
       border: 1px solid #000;
       padding: 20px;
     }
@@ -59,7 +59,7 @@
     }
 
     .section {
-      height: 120px;
+      height: 102px;
     }
 
     .bottom-buttons {

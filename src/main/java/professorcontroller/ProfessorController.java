@@ -102,10 +102,24 @@ public class ProfessorController extends HttpServlet {
 			request.setAttribute("center", "/professors/LectureForm.jsp");
 			
 			// 강의 테이블 조회
-			Vector<SubjectVo> subjectVo = professorService.getAllSubject(id);
+			Vector<SubjectVo> subjectVo = professorService.getAllSubject(id); //여기
 			request.setAttribute("subjectList", subjectVo);
 			
 			nextPage = "/professors/ProfessorMain.jsp";
+		}
+		// ✅ 강의 개설 요청 / 강의 개설 폼 요청 -> 과목코드 중복체크 (비동기)
+		else if(action.equals("/checkSubjectcodeDulicate")) {
+			String subjectCode = request.getParameter("subject_code");
+	        
+			PrintWriter out = response.getWriter();
+
+	        try {
+	            boolean exists = professorService.subjectCodeDuplicateCheck(subjectCode);
+	            out.print(exists ? "DUPLICATE" : "OK");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            out.print("ERROR");
+	        }
 		}
 		// ✅ 강의 개설 요청 / 강의 개설 요청
 		else if (action.equals("/lecturecreate")) {
@@ -174,7 +188,7 @@ public class ProfessorController extends HttpServlet {
 			String id = String.valueOf(session.getAttribute("id"));
 			
 			// 나의 강의등록 요청 강의목록
-			Vector<SubjectVo> LectureListV = professorService.getAllSubject(id);
+			Vector<SubjectVo> LectureListV = professorService.getAllSubject(id); 
 			request.setAttribute("subjectList", LectureListV);
 			request.setAttribute("center", "/professors/RequestSubjectList.jsp");
 			nextPage ="/professors/ProfessorMain.jsp";
@@ -276,8 +290,8 @@ public class ProfessorController extends HttpServlet {
 			String id = String.valueOf(session.getAttribute("id"));
 			System.out.println("교수 강의 시간표 조회... : " + id);
 			// 강의 테이블 조회
-			Vector<SubjectVo> subjectVo = professorService.getAllSubject(id);
-			request.setAttribute("subjectList", subjectVo);
+			Vector<LectureListVo> LectureListV = professorService.getAllLectureList(id); // 여기
+			request.setAttribute("subjectList", LectureListV);
 			request.setAttribute("center" , "/professors/TimeTable.jsp");
 			
 			nextPage = "/professors/ProfessorMain.jsp";
